@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Position__c</fullName>
+    <label>Position</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Data Developer</fullName>
+                <default>false</default>
+                <label>Data Developer</label>
+            </value>
+            <value>
+                <fullName>Delivery Manager</fullName>
+                <default>false</default>
+                <label>Delivery Manager</label>
+            </value>
+            <value>
+                <fullName>Engineering Developer</fullName>
+                <default>false</default>
+                <label>Engineering Developer</label>
+            </value>
+            <value>
+                <fullName>Lead Mobile developer</fullName>
+                <default>false</default>
+                <label>Lead Mobile developer</label>
+            </value>
+            <value>
+                <fullName>Location Manager</fullName>
+                <default>false</default>
+                <label>Location Manager</label>
+            </value>
+            <value>
+                <fullName>Machine Learning Senior</fullName>
+                <default>false</default>
+                <label>Machine Learning Senior</label>
+            </value>
+            <value>
+                <fullName>Mobile Developer</fullName>
+                <default>false</default>
+                <label>Mobile Developer</label>
+            </value>
+            <value>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+                <label>Project Manager</label>
+            </value>
+            <value>
+                <fullName>Quality Assurance</fullName>
+                <default>false</default>
+                <label>Quality Assurance</label>
+            </value>
+            <value>
+                <fullName>Talent Acquisition Specialist</fullName>
+                <default>false</default>
+                <label>Talent Acquisition Specialist</label>
+            </value>
+            <value>
+                <fullName>UX/UI Designer</fullName>
+                <default>false</default>
+                <label>UX/UI Designer</label>
+            </value>
+            <value>
+                <fullName>Site Reliability Engineering</fullName>
+                <default>false</default>
+                <label>Site Reliability Engineering</label>
+            </value>
+            <value>
+                <fullName>Firmware</fullName>
+                <default>false</default>
+                <label>Firmware</label>
+            </value>
+            <value>
+                <fullName>Cybersecurity</fullName>
+                <default>false</default>
+                <label>Cybersecurity</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

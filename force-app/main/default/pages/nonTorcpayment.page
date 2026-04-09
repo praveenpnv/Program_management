@@ -1,0 +1,116 @@
+<apex:page standardController="Opportunity" extensions="nonTorcpayment">
+    <apex:sectionHeader title="Load Qubika Payments"/>
+    <apex:form id="frm">
+        <script>
+            function checkuncheckAll(chk, className)
+            {
+                var v = document.getElementsByClassName(className);
+                for(var i in v)
+                    v[i].checked = chk;
+                dummyCall();    
+            }
+        </script>
+        <apex:actionFunction action="{!dummyCall}" name="dummyCall" reRender="totCell,totCell1" oncomplete="hideDisable();"/>
+        <apex:actionFunction action="{!dummyCall}" name="dummyCall1" reRender="frm" oncomplete="hideDisable();"/>
+        <apex:pageblock >
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Load Data From Spreadsheet" action="{!Loaddata}" rendered="{!NOT(isError)}"/>
+                <apex:commandButton value="Save in SFDC" action="{!updateData}" rendered="{!lstData.SIZE>0}"/>
+                <apex:commandButton value="Back" action="{!Cancel}"/>
+            </apex:pageBlockButtons>
+            <div class="pbError">
+                <apex:messages />
+            </div>
+            <div style="font-weight: bold;text-align: center;font-size: large;    color: blue;">
+                {!WarningMessage}
+            </div>
+            <apex:pageblockSection columns="2">
+                <apex:outputField value="{!opp.Name}"/>
+                <apex:outputField value="{!opp.CloseDate}"/>
+                <apex:outputField value="{!opp.AccountId}"/>
+            </apex:pageblockSection>
+            <apex:pageblockSection columns="2">
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Spreadsheet ID"/>
+                    <apex:inputText value="{!spreadsheetId}" required="true" id="SheetId"/>
+                </apex:pageblockSectionItem>    
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Sheet Name"/>
+                    <apex:inputText value="{!sheetName}" required="true" id="SheetName"/>
+                </apex:pageblockSectionItem>    
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Sheet Range"/>
+                    <apex:inputText value="{!sheetRange}" required="true" id="SheetRange"/>
+                </apex:pageblockSectionItem>    
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Engagement Start Date"/>
+                    <apex:inputField value="{!oppLineItem.Engagement_Start_Date__c}" required="true"/>
+                </apex:pageblockSectionItem>    
+            </apex:pageblockSection>
+            
+            <apex:pageblockSection columns="2">
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Show Rows"/>
+                    <apex:selectList id="selc" value="{!showRowsType}" size="1" onchange="showDisable();dummyCall1();">
+                         <apex:selectOptions value="{!ShowTypes}"/>
+                    </apex:selectList>
+                </apex:pageblockSectionItem>   
+            </apex:pageblockSection>
+            <div style="font-size:15px;font-weight:bold">
+            *If there are one ore more paypal payments. Then it will add $20 in bank fee.
+            </div>
+            <apex:pageblockTable var="rec" value="{!showableRows}">
+                <apex:column >
+                    <apex:facet name="header">
+                        <apex:facet name="header"><input type="checkbox" onClick="checkuncheckAll(this.checked,'bills');"/></apex:facet>
+                    </apex:facet>
+                    <apex:inputCheckbox value="{!rec.chk}" id="chk" styleClass="bills" rendered="{!rec.error=''}" onchange="dummyCall();"/>
+                </apex:column>
+                <apex:column headerValue="Qubika Email">
+                    <apex:outputText value="{!rec.OfficialEmail}"/>
+                </apex:column>
+                <apex:column headerValue="Fee">
+                    <apex:outputtext value="{!rec.Fee}"/>
+                </apex:column>
+                <apex:column headerValue="Expense">
+                    <apex:outputText value="{!rec.Expense}"/>
+                </apex:column>
+                <apex:column headerValue="Total">
+                    <apex:outputText value="{!rec.Total}"/>
+                </apex:column>
+                <apex:column headerValue="Non Torc user">
+                    <apex:outputField value="{!rec.payRec.Non_Torc_User__c}"/>
+                </apex:column>
+                <apex:column headerValue="Payment Profile">
+                    <apex:outputField value="{!rec.user.Trolley_Status__c}" rendered="{!rec.user<>NULL}"/>
+                </apex:column>
+                <apex:column headerValue="Docuisign Profile">
+                    <apex:outputField value="{!rec.user.Docusign_Status__c}" rendered="{!rec.user<>NULL}"/>
+                </apex:column>
+                <apex:column headerValue="Bank Fee">
+                    <apex:outputField value="{!rec.payRec.Bank_Fee__c}" rendered="{!rec.error=''}"/>
+                    <apex:facet name="footer"><apex:outputPanel id="totCell">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!TotalbankFee}" />
+                        </apex:outputText>
+                     </apex:outputPanel></apex:facet>
+                </apex:column>
+                <apex:column headerValue="Torc Fee">
+                    <apex:outputField value="{!rec.payRec.Torc_Fee__c}" rendered="{!rec.error=''}"/>
+                    <apex:facet name="footer"><apex:outputPanel id="totCell1">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!TotalTorcFee}" />
+                            </apex:outputText>
+                     </apex:outputPanel></apex:facet>
+                </apex:column>
+                <apex:column headerValue="Payout Method">
+                    <apex:outputField value="{!rec.user.Trolley_recipient__r.Payout_Method__c}"/>
+                </apex:column>
+                <apex:column headerValue="Error">
+                    <apex:outputText value="{!rec.error}"/>
+                </apex:column>
+            </apex:pageblockTable>
+        </apex:pageblock>
+        <c:WaitPopup />
+    </apex:form>
+</apex:page>

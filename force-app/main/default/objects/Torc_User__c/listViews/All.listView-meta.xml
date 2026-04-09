@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>Email__c</columns>
+    <columns>createdAt__c</columns>
+    <columns>Vetting_Date__c</columns>
+    <columns>Vetting_Time__c</columns>
+    <columns>userName__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Delete_From_Platform__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>agreedToTerms__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>All</label>
+    <language>en_US</language>
+</ListView>

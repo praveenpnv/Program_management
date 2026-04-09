@@ -1,0 +1,20 @@
+:host {
+    /* This ensures that the styles only apply within this component */
+}
+
+.slds-progress__item_content {
+    white-space: normal; /* Allows text to wrap */
+    overflow: visible; /* Prevents text from being clipped */
+    text-align: center; /* Center-align text if desired */
+}
+
+.slds-progress__label {
+    max-width: 100px; /* Set a maximum width for the labels */
+    word-wrap: break-word; /* Break words that are too long */
+    white-space: normal; /* Allows text to wrap */
+}
+.readonly-step {
+    pointer-events: none; /* disables clicks */
+    opacity: 0.5;         /* grays it out */
+    cursor: not-allowed;
+}

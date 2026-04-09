@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Month__c</fullName>
+    <externalId>false</externalId>
+    <formula>TEXT(YEAR(Start_Date__c)) &amp; &apos;-&apos; &amp; LPAD(TEXT(Month(Start_Date__c)),2 , &apos;0&apos;) 
+/*CASE(MONTH(Start_Date__c), 
+1, &apos;Jan&apos;, 
+2, &apos;Feb&apos;, 
+3, &apos;Mar&apos;, 
+4, &apos;Apr&apos;, 
+5, &apos;May&apos;, 
+6, &apos;Jun&apos;, 
+7, &apos;Jul&apos;, 
+8, &apos;Aug&apos;, 
+9, &apos;Sep&apos;, 
+10, &apos;Oct&apos;, 
+11, &apos;Nov&apos;, 
+&apos;Dec&apos;
+)+&apos;-&apos; &amp; TEXT(YEAR(Start_Date__c))
+*/</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Month</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AnswerType__c</fullName>
+    <description>Informs the Interface on how to present a question to a User as well as enables Knock Out functionality (Yes/No) or possible Answer options (Picklist)</description>
+    <inlineHelpText>Describe how the Applicant should Answer the Question</inlineHelpText>
+    <label>Answer Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Date</fullName>
+                <default>false</default>
+                <label>Date</label>
+            </value>
+            <value>
+                <fullName>Picklist</fullName>
+                <default>false</default>
+                <label>Picklist</label>
+            </value>
+            <value>
+                <fullName>Text</fullName>
+                <default>false</default>
+                <label>Text</label>
+            </value>
+            <value>
+                <fullName>Boolean</fullName>
+                <default>false</default>
+                <label>Yes/No</label>
+            </value>
+            <value>
+                <fullName>Paragraph</fullName>
+                <default>false</default>
+                <label>Paragraph</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

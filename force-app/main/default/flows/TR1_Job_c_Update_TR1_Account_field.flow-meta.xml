@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Update the TR1__Account__c field from Account__c on the backend to maintain compatibility with existing functionality. This is necessary because TR1__Account__c is part of a managed package and cannot be used directly with standard filtering or logic.</description>
+    <environments>Default</environments>
+    <interviewLabel>TR1__Job__c-Update TR1 Account field {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>TR1__Job__c-Update TR1 Account field</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>TR1_Account_update</name>
+        <label>TR1 Account update</label>
+        <locationX>463</locationX>
+        <locationY>342</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>TR1__Account__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <elementReference>$Record.Account__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>TR1__Account__c</field>
+            <value>
+                <elementReference>$Record.Account__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>330</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>TR1_Account_update</targetReference>
+        </connector>
+        <filterFormula>AND(
+    {!$Setup.Active_Trigger_Flow_VR__c.Job_Flow__c} = TRUE,
+   OR( ISCHANGED({!$Record.Account__c}), ISNEW()),
+    NOT(ISBLANK({!$Record.Account__c}))
+)</filterFormula>
+        <object>TR1__Job__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

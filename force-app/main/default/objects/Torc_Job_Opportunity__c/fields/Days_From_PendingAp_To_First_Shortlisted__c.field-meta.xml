@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Days_From_PendingAp_To_First_Shortlisted__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(OR(PendingApproval_At__c=NULL, First_Shortlisted_At__c =NULL),NULL, First_Shortlisted_At__c - PendingApproval_At__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Days From PendingAp To First Shortlisted</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

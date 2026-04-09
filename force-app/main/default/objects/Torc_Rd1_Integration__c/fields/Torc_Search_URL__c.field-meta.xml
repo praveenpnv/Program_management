@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Torc_Search_URL__c</fullName>
+    <description>Torc Search URL</description>
+    <inlineHelpText>Torc Search URL</inlineHelpText>
+    <label>Torc Search URL</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

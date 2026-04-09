@@ -1,0 +1,119 @@
+<template>
+    <div class="rbv-wrap">
+        <template if:true={isNotEmbedded}>
+            <div class="rbv-header">
+                <div class="rbv-header-left">
+                    <h1 class="rbv-title">Release Board</h1>
+                    <p class="rbv-sub">Stories that passed QA — progress through UAT to Production.</p>
+                </div>
+                <div class="rbv-header-right">
+                    <select class="rbv-date-filter" onchange={handleDateFilter}>
+                    <option value="15d">Last 15 days</option>
+                    <option value="1m">Last 1 month</option>
+                    <option value="2m">Last 2 months</option>
+                    <option value="3m">Last 3 months</option>
+                    <option value="all" selected>All records</option>
+                    </select>
+                    <input class="rbv-search" type="text" placeholder="Search stories…" onkeyup={handleSearch}/>
+                </div>
+            </div>
+            
+            <div class="rbv-stats">
+                <div class="rbv-stat rbv-stat-uat"><span class="rbv-stat-num">{uatCount}</span><span class="rbv-stat-lbl">In UAT</span></div>
+                <div class="rbv-stat rbv-stat-signed"><span class="rbv-stat-num">{signedCount}</span><span class="rbv-stat-lbl">UAT Signed Off</span></div>
+                <div class="rbv-stat rbv-stat-prod"><span class="rbv-stat-num">{prodCount}</span><span class="rbv-stat-lbl">In Production</span></div>
+                <div class="rbv-stat rbv-stat-total"><span class="rbv-stat-num">{totalCount}</span><span class="rbv-stat-lbl">Total</span></div>
+            </div>
+        </template>
+
+        <div class="rbv-board">
+            <template for:each={columns} for:item="col">
+                <div key={col.status}
+                     class={col.colCls}
+                     data-status={col.status}
+                     ondragover={handleDragOver}
+                     ondrop={handleDrop}
+                     ondragleave={handleDragLeave}>
+
+                    <div class="rbv-col-hdr" style={col.hdrStyle}>
+                        <span class="rbv-col-title">{col.label}</span>
+                        <span class="rbv-col-count">{col.count}</span>
+                    </div>
+
+                    <div class="rbv-col-body">
+                        <template for:each={col.cards} for:item="card">
+                            <div key={card.Id}
+                                 class={card.cardCls}
+                                 draggable="true"
+                                 data-id={card.Id}
+                                 data-status={card.Status__c}
+                                 ondragstart={handleDragStart}
+                                 ondragend={handleDragEnd}>
+
+                                <div class="rbv-card-top">
+                                    <span class="rbv-type-badge">{card.Story_Type__c}</span>
+                                    <span class={card.priCls}>{card.Priority__c}</span>
+                                </div>
+
+                                
+                                <template if:true={card.hasProjects}>
+                                    <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px;">
+                                        <template for:each={card.projectNames} for:item="pName">
+                                            <div key={pName} class="rbv-project-tag">📁 {pName}</div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <p class="rbv-card-name">{card.Name}</p>
+
+                                <template if:true={card.featureName}>
+                                    <span class="rbv-feature-tag">{card.featureName}</span>
+                                </template>
+
+                                <template if:true={card.releaseName}>
+                                    <div class="rbv-release-link">📦 {card.releaseName}</div>
+                                </template>
+
+                                <template if:true={card.requirementName}>
+                                    <div class="rbv-req-link">🔗 Req: {card.requirementName}</div>
+                                </template>
+
+                                <div class="rbv-card-meta">
+                                    <template if:true={card.assigneeName}>
+                                        <span class="rbv-assignee">👤 {card.assigneeName}</span>
+                                    </template>
+                                    <template if:true={card.Story_Points__c}>
+                                        <span class="rbv-pts">{card.Story_Points__c}pt</span>
+                                    </template>
+                                </div>
+
+                                <div class="rbv-card-btns">
+                                    <template if:true={card.canMovePrev}>
+                                        <button class="rbv-move-btn" title="Move back"
+                                                value={card.prevStatusKey}
+                                                onclick={handleMove}>&larr;</button>
+                                    </template>
+                                    
+                                    <template if:true={card.canApprove}>
+                                        <button class="rbv-approve-btn" value={card.Id} onclick={handleApprove}>✓ Approve</button>
+                                    </template>
+
+                                    <button class="rbv-view-btn" value={card.Id} onclick={handleOpen}>View</button>
+                                    
+                                    <template if:true={card.canMoveNext}>
+                                        <button class="rbv-move-btn rbv-move-fwd" title="Move forward"
+                                                value={card.nextStatusKey}
+                                                onclick={handleMove}>&rarr;</button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={col.hasCards}>
+                            <div class="rbv-empty-col">No stories here</div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

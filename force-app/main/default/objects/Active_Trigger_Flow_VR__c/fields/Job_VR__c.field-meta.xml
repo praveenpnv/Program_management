@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Job_VR__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>If unchecked, Job validation rules will not be fired. By default it will be checked but can be turned off at user / profile level.</description>
+    <inlineHelpText>If checked, validation rules will fire on Job records. Unchecking it, prevents any flow from firing on the record</inlineHelpText>
+    <label>Job.VR</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

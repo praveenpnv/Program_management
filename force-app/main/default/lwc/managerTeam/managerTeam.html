@@ -1,0 +1,87 @@
+<template>
+    <lightning-card title={parentlabel} icon-name="standard:team_member">
+        <div class="slds-grid slds-wrap slds-gutters">
+
+           <!-- LEFT: Available Users -->
+<div class="slds-col slds-size_1-of-2">
+    <div class="slds-box slds-theme_default column-box"
+         ondrop={handleRemoveDrop} ondragover={allowDrop}>
+        <h2 class="slds-text-heading_small slds-m-bottom_small">{label}</h2>
+
+        <!-- Search -->
+        <lightning-input type="search"
+                         placeholder="Search users..."
+                         value={searchKey}
+                         onchange={handleSearchChange}>
+        </lightning-input>
+
+        <!-- User List -->
+        <ul class="slds-list_vertical slds-has-dividers_top-space slds-scrollable_y"
+            style="max-height:400px;">
+            <template for:each={pagedUsers} for:item="user">
+            <li
+            key={user.Id}
+            draggable="true"
+            data-id={user.Id}
+            ondragstart={handleDragStart}
+            class="user-item"
+            >
+            <div class="user-icon-container">
+                <lightning-icon
+                icon-name="standard:user"
+                size="x-small"
+                class="user-icon"
+                ></lightning-icon>
+            </div>
+            <div class="user-info">
+                <span class="user-name">{user.Name} - {user.Email}</span>
+            </div>
+            </li>
+            </template>
+        </ul>
+
+        <!-- Pagination -->
+        <div class="slds-m-top_small slds-align_absolute-center">
+            <lightning-button label="Previous" onclick={handlePrev} disabled={isFirstPage}></lightning-button>
+            <span class="slds-p-horizontal_small">Page {pageNumber} of {totalPages}</span>
+            <lightning-button label="Next" onclick={handleNext} disabled={isLastPage}></lightning-button>
+        </div>
+    </div>
+</div>
+
+<!-- RIGHT: My Team -->
+<div class="slds-col slds-size_1-of-2">
+    <div class="slds-box slds-theme_default column-box"
+         ondrop={handleDrop} ondragover={allowDrop}>
+        <h2 class="slds-text-heading_small slds-m-bottom_small">{sublabel}</h2>
+
+        <ul class="slds-list_vertical slds-has-dividers_top-space slds-scrollable_y" style="max-height:400px;">
+            <template if:true={teamMembers}>
+                <template for:each={teamMembers} for:item="member">
+                <li
+                key={member.Id}
+                draggable="true"
+                data-id={member.Id}
+                ondragstart={handleDragStart}
+                class="user-item"
+                >
+                <div class="user-icon-container">
+                    <lightning-icon
+                    icon-name="standard:user"
+                    size="x-small"
+                    class="user-icon"
+                    ></lightning-icon>
+                </div>
+                <span class="user-name">{member.Name} - {member.Email}</span>
+                </li>
+                </template>
+            </template>
+            <template if:false={teamMembers}>
+                <li class="slds-item">No team members yet.</li>
+            </template>
+        </ul>
+    </div>
+</div>
+        </div>
+    </lightning-card>
+</template>

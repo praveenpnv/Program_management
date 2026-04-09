@@ -1,0 +1,63 @@
+/* Standard Salesforce Record Type Picker Styling */
+.slds-modal__container_medium {
+    width: 32rem;
+    max-width: 40rem;
+    min-width: 20rem;
+}
+
+.slds-modal__header_empty {
+    padding: 1rem 1rem 0;
+    position: relative;
+}
+
+.slds-modal__header_empty h2 {
+    text-align: center;
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: #181818;
+    margin: 0;
+    padding-right: 2rem;
+}
+
+.slds-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.slds-modal__content {
+    padding: 1rem 1.5rem;
+}
+
+.slds-text-body_regular {
+    font-size: 0.875rem;
+    line-height: 1.25;
+}
+
+/* Simple radio button styling */
+.slds-radio {
+    margin-bottom: 0.5rem;
+}
+
+.slds-radio__label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1.25;
+}
+
+.slds-radio_faux {
+    margin-right: 0.5rem;
+}
+
+.slds-form-element__label {
+    color: #181818;
+}
+
+.slds-modal__footer {
+    padding: 0.75rem 1.5rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

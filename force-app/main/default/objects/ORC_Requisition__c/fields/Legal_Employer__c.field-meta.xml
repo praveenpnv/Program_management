@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Legal_Employer__c</fullName>
+    <defaultValue>&quot;Randstad Digital Talent Center Pvt Ltd&quot;</defaultValue>
+    <description>Identifies the legally recognized entity for compliance. Default = &quot;Randstad Digital Talent Center Pvt Ltd&quot;</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Identifies the legally recognized entity for compliance. Default = &quot;Randstad Digital Talent Center Pvt Ltd&quot;</inlineHelpText>
+    <label>Legal Employer</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

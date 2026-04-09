@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_Opco</name>
+        <label>Check Opco</label>
+        <locationX>299</locationX>
+        <locationY>375</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Opco_of_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Opco__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>India</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Business_Unit</targetReference>
+            </connector>
+            <label>Check Opco of User</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>After_Save_Opportunity_Update_BusinessUnit {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>After_Save_Opportunity_Update_BusinessUnit</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Business_Unit</name>
+        <label>Update Business Unit</label>
+        <locationX>318</locationX>
+        <locationY>534</locationY>
+        <inputAssignments>
+            <field>Business_unit__c</field>
+            <value>
+                <elementReference>$Record.Business_Unit_India__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>330</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Check_Opco</targetReference>
+        </connector>
+        <object>Opportunity</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+</Flow>

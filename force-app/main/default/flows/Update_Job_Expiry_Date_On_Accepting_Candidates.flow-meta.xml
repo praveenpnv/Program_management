@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <description>Test</description>
+        <name>BypassTriggerValidation</name>
+        <label>BypassTriggerValidation</label>
+        <locationX>1172</locationX>
+        <locationY>323</locationY>
+        <actionName>TriggerControlFlowHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Check_Job_Status_and_Timer_Extension_Details</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>flowLabels</name>
+            <value>
+                <stringValue>JobPrefillHandler</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>TriggerControlFlowHelper</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <description>Notifies the record owner when a job status changes to &apos;Accepting Candidates&apos; and informs them that a 15-day timer has started.</description>
+        <name>Email_Job_Timer_Started</name>
+        <label>Email Job Timer Started</label>
+        <locationX>182</locationX>
+        <locationY>647</locationY>
+        <actionName>TR1__Job__c.Candidate_Accepting_Job_Timer_Started</actionName>
+        <actionType>emailAlert</actionType>
+        <connector>
+            <targetReference>Checking_Responsible_Recruiter_value</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Job__c.Candidate_Accepting_Job_Timer_Started</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <description>This email template is triggered when the job timer ends or the job status changes to &apos;Closed&apos;. It notifies relevant stakeholders that the job is no longer active.</description>
+        <name>Job_Timer_Ended_Closed_Status_Notification</name>
+        <label>Job Timer Ended/Closed Status Notification</label>
+        <locationX>1502</locationX>
+        <locationY>539</locationY>
+        <actionName>TR1__Job__c.Job_Timer_Ended_Closed_Status_Notification</actionName>
+        <actionType>emailAlert</actionType>
+        <connector>
+            <targetReference>Check_If_Status_is_Closed_Expired</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Job__c.Job_Timer_Ended_Closed_Status_Notification</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <description>Notification informing the record owner that the job timer has been extended, including details on the new expiration timeline and any relevant updates.</description>
+        <name>Job_Timer_Extended</name>
+        <label>Job Timer Extended</label>
+        <locationX>842</locationX>
+        <locationY>539</locationY>
+        <actionName>TR1__Job__c.Job_Timer_Extension_Notification</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Job__c.Job_Timer_Extension_Notification</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <name>Send_email_to_responsible_recruiter</name>
+        <label>Send email to responsible recruiter</label>
+        <locationX>50</locationX>
+        <locationY>863</locationY>
+        <actionName>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <name>Send_mail_to_Responsible_recruiter</name>
+        <label>Send mail to Responsible recruiter</label>
+        <locationX>578</locationX>
+        <locationY>647</locationY>
+        <actionName>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</nameSegment>
+    </actionCalls>
+    <apiVersion>61.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <description>Please Fill Mandatory Fields on Job</description>
+        <name>FillMandatoryFieldsinJob</name>
+        <label>FillMandatoryFieldsinJob</label>
+        <locationX>1634</locationX>
+        <locationY>863</locationY>
+        <customErrorMessages>
+            <errorMessage>Please Fill Mandatory Fields on Job</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <description>If the job status is &quot;Closed Expired,&quot; then update the related opportunity as &quot;Closed Lost.&quot;</description>
+        <name>Check_If_Status_is_Closed_Expired</name>
+        <label>Check If Status is Closed Expired</label>
+        <locationX>1502</locationX>
+        <locationY>647</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_Closed_Expired</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TR1__Closed_Reason__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed Expired</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Related_Opportunity_Record</targetReference>
+            </connector>
+            <label>If Closed Expired</label>
+        </rules>
+        <rules>
+            <name>If_Closed_Won</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TR1__Closed_Reason__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed Filled Internally</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_the_Job_Record_if_Closed</targetReference>
+            </connector>
+            <label>If Closed Won</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Check if Job Status is &apos;Accepting Candidates&apos; and Has_Been_Extended__c Field is True</description>
+        <name>Check_Job_Status_and_Timer_Extension_Details</name>
+        <label>Check Job Status and Timer Extension Details</label>
+        <locationX>1172</locationX>
+        <locationY>431</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_Job_Status_is_Accepting_Candidates</name>
+            <conditionLogic>(1 AND 2 AND 3) AND (7 OR (4 AND 5 AND 6))</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Accepting Candidates</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.TR1__Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Covered</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.TR1__Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>On Hold</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.TR1__Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Unqualified</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Job_Expiry_Date__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Job_Expiry_Date_for_Accepting_Candidates</targetReference>
+            </connector>
+            <label>If Job Status is Accepting Candidates</label>
+        </rules>
+        <rules>
+            <name>Responsible_Recruiter_is_filled</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Accepting Candidates</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Job_Expiry_Date_for_Responsible_Recruiter</targetReference>
+            </connector>
+            <label>Responsible Recruiter is filled</label>
+        </rules>
+        <rules>
+            <name>If_field_Has_Been_Extended_c_is_True</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Has_Been_Extended__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Has_Been_Extended__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Job_Timer_Extended</targetReference>
+            </connector>
+            <label>If field Has_Been_Extended__c is True</label>
+        </rules>
+        <rules>
+            <name>If_Job_Status_Closed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Job_Timer_Ended_Closed_Status_Notification</targetReference>
+            </connector>
+            <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+            <label>If Job Status Closed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <description>Check the Job Record if Closed</description>
+        <name>Check_the_Job_Record_if_Closed</name>
+        <label>Check the Job Record if Closed</label>
+        <locationX>1502</locationX>
+        <locationY>755</locationY>
+        <defaultConnector>
+            <targetReference>FillMandatoryFieldsinJob</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>If Job Not Closed</defaultConnectorLabel>
+        <rules>
+            <name>If_Job_Closed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Related_Opportunity_Record_Closed_Won</targetReference>
+            </connector>
+            <label>If Job Closed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Checking_Responsible_Recruiter_value</name>
+        <label>Checking Responsible Recruiter value</label>
+        <locationX>182</locationX>
+        <locationY>755</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Responsible_Recruiter_should_not_null</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_email_to_responsible_recruiter</targetReference>
+            </connector>
+            <label>Responsible Recruiter should not null</label>
+        </rules>
+    </decisions>
+    <description>Update Job Expiry Date On Accepting Candidates and Send Email For When Timer Starts and also When user extends the job timer to a new date (15, 30, or 45 days).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>CurrentDatePlus15Days</name>
+        <dataType>DateTime</dataType>
+        <expression>{!$Flow.CurrentDateTime}+15</expression>
+    </formulas>
+    <interviewLabel>Update Job Expiry Date On Accepting Candidates {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Update Job Expiry Date On Accepting Candidates and Send Email</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <description>Update Job Expiry Date On Selecting Job Status As &apos;Accepting Candidates&apos;</description>
+        <name>Update_Job_Expiry_Date_for_Accepting_Candidates</name>
+        <label>Update Job Expiry Date for Accepting Candidates</label>
+        <locationX>182</locationX>
+        <locationY>539</locationY>
+        <connector>
+            <targetReference>Email_Job_Timer_Started</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Job_Expiry_Date__c</field>
+            <value>
+                <elementReference>CurrentDatePlus15Days</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Update Job Expiry Date On Selecting  &apos;Responsible Recruiter&apos;</description>
+        <name>Update_Job_Expiry_Date_for_Responsible_Recruiter</name>
+        <label>Update Job Expiry Date for Responsible Recruiter</label>
+        <locationX>578</locationX>
+        <locationY>539</locationY>
+        <connector>
+            <targetReference>Send_mail_to_Responsible_recruiter</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Job_Expiry_Date__c</field>
+            <value>
+                <elementReference>CurrentDatePlus15Days</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Related_Opportunity_Record</name>
+        <label>Update Related Opportunity Record</label>
+        <locationX>1106</locationX>
+        <locationY>755</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Opportunity__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Reason_lost__c</field>
+            <value>
+                <stringValue>Other</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>StageName</field>
+            <value>
+                <stringValue>Closed Lost</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Related_Opportunity_Record_Closed_Won</name>
+        <label>Update Related Opportunity Record Closed Won</label>
+        <locationX>1370</locationX>
+        <locationY>863</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Opportunity__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>StageName</field>
+            <value>
+                <stringValue>Closed Won</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <start>
+        <locationX>1046</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>BypassTriggerValidation</targetReference>
+        </connector>
+        <filterFormula>{!$Setup.Active_Trigger_Flow_VR__c.Job_Flow__c}</filterFormula>
+        <object>TR1__Job__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

@@ -1,0 +1,73 @@
+<apex:page standardController="Account" extensions="loadQubikaData">
+    <apex:sectionHeader title="Load Qubika Data"/>
+    <apex:form >
+        <apex:pageblock >
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Load Data From Spreadsheet" action="{!Loaddata}"/>
+                <apex:commandButton value="Save in SFDC" action="{!updateData}" rendered="{!lstData.SIZE>0}"/>
+                <apex:commandButton value="Back" action="{!Cancel}"/>
+            </apex:pageBlockButtons>
+            <div class="pbError">
+                <apex:messages />
+            </div>
+            <apex:pageblockSection columns="2">
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Spreadsheet ID"/>
+                    <apex:inputText value="{!spreadsheetId}" required="true"/>
+                </apex:pageblockSectionItem>    
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Sheet Name"/>
+                    <apex:inputText value="{!sheetName}" required="true"/>
+                </apex:pageblockSectionItem>    
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Sheet Range"/>
+                    <apex:inputText value="{!sheetRange}" required="true"/>
+                </apex:pageblockSectionItem>    
+            </apex:pageblockSection>
+            <apex:pageblockTable var="rec" value="{!lstData}">
+                <apex:column >
+                    <apex:facet name="header">
+                    </apex:facet>
+                    <apex:inputCheckbox value="{!rec.chk}"/>
+                </apex:column>
+                <apex:column headerValue="Existing SFDC Record">
+                    <apex:outputField value="{!rec.user.Name}" rendered="{!rec.user.id<>NULL}"/>
+                </apex:column>
+                <apex:column headerValue="First Name">
+                    <apex:inputField value="{!rec.user.Given_Name__c}"/>
+                </apex:column>
+                <apex:column headerValue="Last Name">
+                    <apex:inputField value="{!rec.user.Family_Name__c}"/>
+                </apex:column>
+                <apex:column headerValue="Email">
+                    <apex:outputField value="{!rec.user.Email__c}"/>
+                </apex:column>
+                <apex:column headerValue="Qubika Email">
+                    <apex:outputField value="{!rec.user.Official_Email__c}"/>
+                </apex:column>
+                <apex:column headerValue="Start Date">
+                    <apex:outputField value="{!rec.user.First_Month__c}"/>
+                </apex:column>
+                <apex:column headerValue="Payment Start Date">
+                    <apex:outputField value="{!rec.user.Payment_Start_Date__c}"/>
+                </apex:column>
+                <apex:column headerValue="Role">
+                    <apex:outputField value="{!rec.user.Position__c}"/>
+                </apex:column>
+                <apex:column headerValue="Country">
+                    <apex:outputField value="{!rec.user.Country__c}"/>
+                </apex:column>
+                <apex:column headerValue="USD Monthly">
+                    <apex:outputField value="{!rec.user.Default_Monthly_Rate__c}"/>
+                </apex:column>
+                <apex:column headerValue="Monthly Expense">
+                    <apex:outputField value="{!rec.user.Monthly_USD_Expense__c}"/>
+                </apex:column>
+                <apex:column headerValue="Terminated  (Last day/Month)">
+                    <apex:outputField value="{!rec.user.Termination_Date__c}"/>
+                </apex:column>
+            </apex:pageblockTable>
+        </apex:pageblock>
+    </apex:form>
+
+</apex:page>

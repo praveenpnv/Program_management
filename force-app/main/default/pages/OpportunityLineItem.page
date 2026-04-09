@@ -1,0 +1,375 @@
+<apex:page tabStyle="Opportunity"  controller="OpportunityLineItemController" >
+<style>
+.readonlycalc
+{
+    background-color:#d2d2c7;
+    border-color:#d2d2c7;
+    border:40px;
+    font-size:12px;
+    color:red;
+    width:90% 
+}
+.normalcalc
+{
+    width:90% 
+}
+
+.headerRed
+{
+    color:red;
+}
+.dateFormat{
+    display:none;
+    }
+    
+     .opportunityTab .frm .secondaryPalette.bPageBlock {
+      border-radius: 0px;
+    }
+    
+    .firstTab {
+      border-top-left-radius: 4px;
+    }
+    .lastTab {
+      border-top-right-radius: 4px;
+    }
+      .activeTab {
+          background-color: #e5c130; 
+          color:white; 
+          background-image:none;
+          padding:5px;
+          font-weight: bolder;
+          vertical-align: middle;
+          font-size: 14px;
+          cursor: pointer;
+          }
+          
+      .activeTab a {
+        text-decoration: none;
+      }
+
+      .inactiveTab { 
+          background-color: lightgrey; 
+          color:black; 
+          background-image:none;
+          padding:5px;
+          font-weight: bolder;
+          vertical-align: middle;
+          font-size: 14px;
+          cursor: pointer;
+          }
+      .inactiveTab a {
+        text-decoration: none;
+      }
+      
+      .inactiveTab a:hover {
+        text-decoration: none;
+        color: #015ba7;
+      }
+      
+      .top,.bottom {
+           display:block;
+           padding:5px;
+           clear:both;
+           display: inline-block;
+           width:100%;
+         }
+         
+         .paginate_disabled_previous {
+           cursor:hand;
+           padding:5px;
+         }
+         
+         .paginate_enabled_previous {
+           cursor:hand;
+           padding:5px;
+         }
+         
+         .paginate_enabled_next {
+           cursor:hand;
+           padding:5px;
+         } 
+         
+         .paginate_disabled_next {
+            cursor:hand;
+           padding:5px;
+         }
+        
+        
+         .dataTables_length, .dataTables_info {
+           float:left;
+           width:50%;
+           padding:5px;
+           display:block;
+         }
+        
+         .dataTables_filter, .dataTables_paginate  {
+           float:right;
+           padding:5px;
+           display:block;
+         }
+</style>
+<script>
+    function setPriceCheck(rowNum,productCode)
+    {
+    }
+    function checkTAASWeek()
+    {
+        showDisable();
+        return true;
+    }
+</script>
+<apex:sectionHeader title="{!title}" subtitle="{!SubTitle}"/>
+ <apex:form id="frm1" rendered="{!IF(FirsterrorMessage ='',False,True)}">
+        <div width="100%" style="color:red;font-weight:bold">
+            {!FirsterrorMessage}
+        </div>
+    </apex:form>
+ 
+ <apex:form id="frm" rendered="{!stillShowForm}" styleClass="frm">
+ <script>
+     function dummyRefresh()
+     {
+         dummyRefresh1();
+     }
+     
+     function hideFilterList()
+    {
+        var popups = document.getElementsByClassName("popup1");
+        for(var i=0; i < popups.length;i++)
+        {
+            popups[i].style.display = 'none';
+        }
+    }
+    function showFilterList(fldNumber,e)
+    {
+        if(!{!ShowDropDown})
+            return;
+        var div1 = document.getElementById(fldNumber.replace('outerpanel','innerpanel'));
+        var popups = document.getElementsByClassName("popup1");
+        for(var i=0; i < popups.length;i++){
+            popups[i].style.display = 'none';
+        }
+        div1.style.display="block";
+    }
+    function filterchkbox(selid)
+    {   
+        var txtbx = document.getElementById(selid.replace('sellst','username'));
+        txtbx.value=document.getElementById(selid).value;
+        hideFilterList();
+    }
+ </script>
+     <apex:commandlink value="<<Go Back" action="{!Cancel}"/>
+        <apex:actionFunction action="{!removeRow}" name="removeRow" reRender="frm"  oncomplete="hideDisable();">
+                  <apex:param assignTo="{!deleteRowNumber}" value="" Name="deleteRowNumber" id="deleteRowNumber"/>
+        </apex:actionFunction>
+        <apex:actionFunction action="{!WorkLoadChange}" name="WorkLoadChange" reRender="frm"  oncomplete="hideDisable();">
+                  <apex:param assignTo="{!deleteRowNumber}" value="" Name="deleteRowNumber" id="deleteRowNumber1"/>
+        </apex:actionFunction>
+        <apex:actionFunction action="{!dummyRefresh}" name="dummyRefresh1" reRender="totpnt,totpt,totptaas,weepr,weeprT,hpw,opdt,totpnt1,totpt1,totptaas1,weepr1,weeprT1,hpw1,opdt1"/>
+
+     <apex:pageblock mode="edit" title="Opportunity Line Items" id="pgb"> 
+         <apex:pageBlockButtons location="top">
+             <apex:commandButton value="Save" action="{!Save}" onclick="return showDisable();"/>
+             <apex:commandButton value="Cancel" action="{!Cancel}"/>
+         </apex:pageBlockButtons>
+
+         <apex:pageblockSection title="Opportunity Details">
+             <apex:outputField value="{!Opty.Name}" />
+             <apex:outputField value="{!Opty.CloseDate}"/>
+             <apex:outputField value="{!Opty.StageName}"/>
+             <apex:outputField value="{!Opty.Job_Opportunity__c}"/>
+             <apex:outputField value="{!Opty.Job_Category__c}"/>
+             <apex:pageblocksectionItem >
+                 <apex:outputLabel value="Total"/>
+                 <apex:outputPanel id="totpt1">
+                     <apex:outputText value="USD {0, number, ###,##0.00}"><apex:param value="{!total}"/></apex:outputText>
+                 </apex:outputPanel>
+             </apex:pageblocksectionItem>
+             <apex:outputField value="{!Opty.Background_Check_Needed__c}"/>
+        </apex:pageblockSection>
+        <div class="pbError" id="errorDiv_ep">
+                    <apex:messages />
+         </div>
+         <div class="pbError">
+             <apex:actionStatus startText="Deleting....." id="duringdeleteRow"/>
+         </div>
+         <apex:pageblockSection title="Extension Scenario" columns="1" rendered="{!extensionMismatches<>''}">
+            <apex:outputPanel >
+            <apex:outputlabel value="{!extensionMismatches}" escape="false" style="font-size:17px"/>
+            <br/>
+            <div style="width:100%">
+                <table><tr><td>
+                    <apex:commandButton value="Link Parent Opportunity" action="{!updateParentOpportunityonly}" rendered="{!newParentOpportunity<>NULL}"/>               
+                </td><td>
+                
+                <apex:commandButton value="Continue Anyway" action="{!saveWithoutPlacementCheck}"/>
+                </td></tr></table>
+            </div>
+            </apex:outputPanel>
+         </apex:pageblockSection>
+         
+         <apex:pageblockSection title="Line Items(Talent)" columns="1" id="lil" rendered="{!showTalentTab}">
+             <apex:pageBlockTable value="{!lstLineItemsTAAS}" var="item" id="tbl">
+                 <apex:column > 
+                        <a href="javascript:void();" onclick="showDisable();removeRow({!item.rowNumber})">Delete</a>            
+                 </apex:column>
+                 <apex:column headervalue="Type"> 
+                    <span class="helpButton" id="P{!item.productId}-_help">
+                        <a href="/{!item.productId}">{!item.ProductName}</a>            
+                    </span>
+                 </apex:column>
+                 <apex:column rendered="{!Opty.Job_Opportunity__c = NULL}">
+                    <apex:facet name="header"><div>Category</div></apex:facet>            
+                     <Apex:inputField value="{!item.oli.Product_Category__c}"/>
+                 </apex:column> 
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Workload</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Time_Commitment__c}" onchange="WorkLoadChange({!item.rowNumber});"/>
+                 </apex:column>
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Hours/Week</div></apex:facet>
+                     <apex:outputPanel id="hpw">
+                         <Apex:inputField value="{!item.oli.Hours_Week__c}" required="false" onchange="dummyRefresh();" style="width:60px"/>
+                     </apex:outputPanel>
+                 </apex:column> 
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Start Date</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Engagement_Start_Date__c}" required="false" onchange="dummyRefresh();"/>
+                 </apex:column>  
+                 
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red"># Weeks</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Engagement_Duration_weeks__c}" required="false" onchange="dummyRefresh();" style="width:60px"/>
+                 </apex:column> 
+                 <apex:column > 
+                     <apex:facet name="header">End Date</apex:facet>
+                     <apex:outputPanel id="opdt">          
+                         <apex:outputText value="{0, date, MM/dd/yyyy}"><apex:param value="{!item.EngagementEndDate}"/></apex:outputText>
+                     </apex:outputPanel>          
+                 </apex:column> 
+                 
+                 <apex:column >
+                    <apex:facet name="header"><div style="color:red">Hourly Bill Rate</div></apex:facet>            
+                     <Apex:inputField value="{!item.oli.Customer_Hourly_Bill_Rate__c}"  onchange="dummyRefresh();" style="width:60px"/>
+                 </apex:column> 
+                 <apex:column >
+                    <apex:facet name="header">Weekly Rate</apex:facet>  
+                    <apex:outputPanel id="weepr">          
+                         <apex:outputText value="USD {0, number, ###,##0.00}"><apex:param value="{!item.WeeklyPrice}"/></apex:outputText>
+                    </apex:outputPanel>     
+                 </apex:column> 
+                 <apex:column headervalue="Total"> 
+                     <apex:outputPanel >
+                         <apex:outputPanel id="totptaas">
+                             <apex:outputText value="USD {0, number, ###,##0.00}"><apex:param value="{!item.TotalPrice}"/></apex:outputText>
+                         </apex:outputPanel>
+                     </apex:outputPanel>
+                 </apex:column> 
+                 <apex:column rendered="{!AND(isAdmin,opty.Use_Pay_Rate_To_Invoice__c)}">
+                    <apex:facet name="header"><div>Original Bill Rate</div></apex:facet>            
+                     <Apex:inputField value="{!item.oli.Original_Rate__c}" style="width:60px"/>
+                 </apex:column> 
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Talent Hourly Rate</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Talent_Hourly_Pay_Rate__c}" style="width:60px" onchange="dummyRefresh();"/>
+                 </apex:column> 
+                 <apex:column >
+                    <apex:facet name="header">Talent Weekly Rate</apex:facet>  
+                    <apex:outputPanel id="weeprT">          
+                         <apex:outputText value="USD {0, number, ###,##0.00}"><apex:param value="{!item.TalentWeeklyPrice}"/></apex:outputText>
+                    </apex:outputPanel>     
+                 </apex:column> 
+                 
+                 <apex:column > 
+                    <apex:facet name="header"><div style="color:red">Talent User Name</div></apex:facet>
+                    <Apex:inputField id="selList1" value="{!item.oli.Talent_Username__c}" style="width:80px" rendered="{!NOT(ShowDropDown)}"/>
+                    <apex:selectList id="sellst" value="{!item.oli.Talent_Username__c}" size="1" rendered="{!(ShowDropDown)}" >
+                        <apex:selectOptions value="{!JobOpportunityUSerList}"/>
+                    </apex:selectList>
+                    <apex:outputPanel rendered="{!AND(item.isUserameError,ShowDropDown)}"><div class="errorMsg"><strong>Error:</strong>Add User</div></apex:outputPanel>
+                 </apex:column> 
+                 <apex:column headervalue="Background Check Done?" rendered="{!opty.Background_Check_Needed__c}"> 
+                     <apex:inputField value="{!item.oli.Background_Check_Done__c}"/>
+                 </apex:column> 
+             </apex:pageBlockTable>
+         </apex:pageblockSection>
+        
+         <apex:pageblockSection title="Line Items(Hiring Fee)" columns="1" id="li2" rendered="{!showHiringTab}">
+             <apex:pageBlockTable value="{!lstLineItemsHIRING}" var="item" id="tbl">
+                 <apex:column > 
+                        <a href="javascript:void();" onclick="showDisable();removeRow({!item.rowNumber})">Delete</a>            
+                 </apex:column>
+                 <apex:column headervalue="Type"> 
+                    <span class="helpButton" id="P{!item.productId}-_help">
+                        <a href="/{!item.productId}">{!item.ProductName}</a>            
+                    </span>
+                 </apex:column>
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Start Date</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Engagement_Start_Date__c}" required="false" onchange="dummyRefresh();"/>
+                 </apex:column>                   
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Direct Revenue</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Direct_Revenue__c}" required="false" onchange="dummyRefresh();" style="width:60px"/>
+                 </apex:column> 
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Margin(%)</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Margin__c}" required="false" onchange="dummyRefresh();" style="width:60px"/>
+                 </apex:column> 
+                 <apex:column headervalue="Total"> 
+                     <apex:outputPanel >
+                         <apex:outputPanel id="totptaas1">
+                             <apex:outputText value="USD {0, number, ###,##0.00}"><apex:param value="{!item.TotalPrice}"/></apex:outputText>
+                         </apex:outputPanel>
+                     </apex:outputPanel>
+                 </apex:column> 
+                 <apex:column > 
+                    <apex:facet name="header"><div style="color:red">Talent User Name</div></apex:facet>
+                    <Apex:inputField id="selList1" value="{!item.oli.Talent_Username__c}" style="width:80px" rendered="{!NOT(ShowDropDown)}"/>
+                    <apex:selectList id="sellst" value="{!item.oli.Talent_Username__c}" size="1" rendered="{!(ShowDropDown)}" >
+                        <apex:selectOptions value="{!JobOpportunityUSerList}"/>
+                    </apex:selectList>
+                    <apex:outputPanel rendered="{!AND(item.isUserameError,ShowDropDown)}"><div class="errorMsg"><strong>Error:</strong>Add User</div></apex:outputPanel>
+                 </apex:column> 
+             </apex:pageBlockTable>
+         </apex:pageblockSection>
+         
+         <apex:pageblockSection title="Line Items(Transaction Fee)" columns="1" id="li3" rendered="{!showTransactionFeeTab}">
+             <apex:pageBlockTable value="{!lstLineItemsTransactionFee}" var="item" id="tbl">
+                 <apex:column > 
+                        <a href="javascript:void();" onclick="showDisable();removeRow({!item.rowNumber})">Delete</a>            
+                 </apex:column>
+                 <apex:column headervalue="Type"> 
+                    <span class="helpButton" id="P{!item.productId}-_help">
+                        <a href="/{!item.productId}">{!item.ProductName}</a>            
+                    </span>
+                 </apex:column>
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Start Date</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Engagement_Start_Date__c}" required="false" onchange="dummyRefresh();"/>
+                 </apex:column> 
+                 <apex:column > 
+                     <apex:facet name="header"><div style="color:red">Transaction Fee</div></apex:facet>
+                     <Apex:inputField value="{!item.oli.Customer_Hourly_Bill_Rate__c}" required="false" onchange="dummyRefresh();" style="width:60px"/>
+                 </apex:column> 
+                 <apex:column > 
+                     <apex:facet name="header">Bank Fee</apex:facet>
+                     <Apex:inputField value="{!item.oli.Bank_Fee__c}" required="false" style="width:60px"/>
+                 </apex:column> 
+             </apex:pageBlockTable>
+         </apex:pageblockSection>
+         
+         <apex:outputPanel rendered="{!showSaveButton}">
+             <br/>
+             <table style="width:100%"><tr>
+                 <td style="width:50%"><b>Add :</b> <apex:inputText value="{!AddLineItemCount}" maxlength="2"  style="width:20px"/> <b> New&nbsp;</b>
+                     <apex:selectList value="{!newrowProductId}" size="1" multiselect="false">
+                         <apex:selectOptions value="{!Products}"/>
+                     </apex:selectList>
+                    <apex:commandButton value="Add" action="{!addnewRow}" onclick="showDisable();" reRender="pgb" oncomplete="hideDisable();"/></td>
+            </tr></table>
+         </apex:outputPanel>
+     </apex:pageblock>
+     <c:WaitPopup />
+ </apex:form>
+</apex:page>

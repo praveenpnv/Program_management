@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Expense_Message__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(OR( Monthly_USD_Expense__c =NULL,Monthly_USD_Expense__c=0),&apos;&apos;,
+&apos;* The resource is eligible for a monthly expense of &apos;+ TEXT(Monthly_USD_Expense__c) +&apos; USD.&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Expense Message</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,384 @@
+/* Base Container */
+.territory-map-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    background: #f3f3f3;
+}
+
+/* LEFT PANEL */
+.left-panel {
+    width: 360px;
+    background: white;
+    border-right: 1px solid #dddbda;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.panel-header h3 {
+    color: white;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+}
+
+.filter-container {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.filter-section {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.urgent-section {
+    background: #fff3cd;
+    border-bottom: 3px solid #ffc107;
+}
+
+.filter-section-title {
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #080707;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-count {
+    background: #667eea;
+    color: white;
+    border-radius: 12px;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    margin-left: auto;
+}
+
+/* Priority Cards */
+.priority-card {
+    background: white;
+    border: 1px solid #dddbda;
+    border-left: 4px solid #667eea;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.priority-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateX(2px);
+}
+
+.priority-card.critical {
+    border-left-color: #c23934;
+    background: #fff5f5;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 0.9375rem;
+}
+
+/* Territory Cards */
+.territory-card {
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 6px;
+    padding: 0.875rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.territory-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    transform: translateX(2px);
+}
+
+.territory-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.color-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.stat-value.stat-error {
+    color: #c23934;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    text-transform: uppercase;
+}
+
+/* Map Wrapper */
+.map-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Map Legend */
+.map-legend {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+}
+
+.legend-marker {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.legend-marker.critical { background: #c23934; }
+.legend-marker.high { background: #ffb75d; }
+.legend-marker.normal { background: #04844b; }
+.legend-marker.hotspot { background: #7b1fa2; }
+
+/* Right Panel */
+.side-panel {
+    width: 400px;
+    background: white;
+    border-left: 1px solid #dddbda;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.side-panel-hidden {
+    display: none;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.region-details {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.panel-section {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.health-section {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.health-score-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.health-score-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #04844b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.score-number {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.score-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+}
+
+.health-indicators {
+    flex: 1;
+}
+
+.indicator-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.kpi-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.kpi-value.kpi-error { color: #c23934; }
+.kpi-value.kpi-warning { color: #ffb75d; }
+.kpi-value.kpi-success { color: #04844b; }
+
+.kpi-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Record List */
+.record-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.record-card {
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+
+.record-card:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+.record-card[data-urgency="critical"] {
+    border-left: 4px solid #c23934;
+}
+
+.record-content {
+    flex: 1;
+}
+
+.record-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.record-name {
+    font-weight: bold;
+    font-size: 0.9375rem;
+}
+
+.record-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    color: #706e6b;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.overdue-badge {
+    color: #c23934;
+    font-weight: bold;
+}
+
+.empty-state,
+.empty-panel {
+    text-align: center;
+    padding: 2rem;
+    color: #706e6b;
+}
+
+.empty-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}

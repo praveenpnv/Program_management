@@ -1,0 +1,480 @@
+<template>
+    <div class="territory-map-container">
+        <!-- LEFT PANEL: Decision Support -->
+        <div class="left-panel">
+            <!-- View Mode Selector -->
+            <div class="view-mode-selector">
+                <lightning-button-group>
+                    <lightning-button 
+                        label="Daily View" 
+                        variant={isDailyView}
+                        onclick={handleDailyView}
+                        icon-name="utility:planning_poker">
+                    </lightning-button>
+                    <lightning-button 
+                        label="Workload" 
+                        variant={isWorkloadView}
+                        onclick={handleWorkloadView}
+                        icon-name="utility:resource_capacity">
+                    </lightning-button>
+                    <lightning-button 
+                        label="Performance" 
+                        variant={isPerformanceView}
+                        onclick={handlePerformanceView}
+                        icon-name="utility:trending">
+                    </lightning-button>
+                </lightning-button-group>
+            </div>
+
+            <!-- DAILY VIEW: Jobs to Work Today -->
+            <template if:true={showDailyView}>
+                <div class="panel-content">
+                    <div class="priority-section urgent">
+                        <div class="section-header-priority">
+                            <lightning-icon icon-name="utility:warning" size="small"></lightning-icon>
+                            <h3>🔥 URGENT - Work Now ({urgentJobs.length})</h3>
+                        </div>
+                        <div class="priority-list">
+                            <div class="priority-card critical">
+                                <div class="priority-label">Past SLA</div>
+                                <div class="priority-count">{pastSLACount}</div>
+                                <lightning-button label="Show on Map" size="small" onclick={handleShowPastSLA}></lightning-button>
+                            </div>
+                            <div class="priority-card warning">
+                                <div class="priority-label">Due Today</div>
+                                <div class="priority-count">{dueTodayCount}</div>
+                                <lightning-button label="Show on Map" size="small" onclick={handleShowDueToday}></lightning-button>
+                            </div>
+                            <div class="priority-card warning">
+                                <div class="priority-label">No Candidates Yet</div>
+                                <div class="priority-count">{noCandidatesCount}</div>
+                                <lightning-button label="Show on Map" size="small" onclick={handleShowNoCandidates}></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="priority-section high">
+                        <h3>⚡ HIGH PRIORITY ({highPriorityJobs.length})</h3>
+                        <div class="priority-list">
+                            <div class="priority-card high">
+                                <div class="priority-label">Due This Week</div>
+                                <div class="priority-count">{dueThisWeekCount}</div>
+                                <lightning-button label="Show on Map" size="small" onclick={handleShowDueThisWeek}></lightning-button>
+                            </div>
+                            <div class="priority-card high">
+                                <div class="priority-label">VIP Client Requests</div>
+                                <div class="priority-count">{vipClientCount}</div>
+                                <lightning-button label="Show on Map" size="small" onclick={handleShowVIPClients}></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="territory-summary-section">
+                        <h3>📍 My Territories</h3>
+                        <template for:each={territorySummaries} for:item="territory">
+                            <div key={territory.id} class="territory-summary-card" onclick={handleTerritoryCardClick} data-id={territory.id}>
+                                <div class="territory-header">
+                                    <span class="territory-dot" style={territory.colorStyle}></span>
+                                    <span class="territory-name">{territory.name}</span>
+                                </div>
+                                <div class="territory-stats">
+                                    <div class="stat">
+                                        <span class="stat-label">Open Jobs:</span>
+                                        <span class="stat-value">{territory.openJobs}</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-label">Urgent:</span>
+                                        <span class="stat-value-urgent">{territory.urgentJobs}</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-label">Fill Rate:</span>
+                                        <span class="stat-value">{territory.fillRate}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- WORKLOAD VIEW: Distribution & Balancing -->
+            <template if:true={showWorkloadView}>
+                <div class="panel-content">
+                    <div class="workload-section">
+                        <h3>👥 Team Workload Distribution</h3>
+                        <div class="workload-cards">
+                            <template for:each={recruiterWorkloads} for:item="recruiter">
+                                <div key={recruiter.id} class="recruiter-card" data-status={recruiter.workloadStatus}>
+                                    <div class="recruiter-header">
+                                        <span class="recruiter-name">{recruiter.name}</span>
+                                        <span class="workload-badge" data-level={recruiter.workloadLevel}>
+                                            {recruiter.workloadLabel}
+                                        </span>
+                                    </div>
+                                    <div class="recruiter-stats">
+                                        <div class="stat-row">
+                                            <span>Active Jobs:</span>
+                                            <strong>{recruiter.activeJobs}</strong>
+                                        </div>
+                                        <div class="stat-row">
+                                            <span>Overdue:</span>
+                                            <strong class="text-error">{recruiter.overdueJobs}</strong>
+                                        </div>
+                                        <div class="stat-row">
+                                            <span>Avg Time to Fill:</span>
+                                            <strong>{recruiter.avgTimeToFill} days</strong>
+                                        </div>
+                                    </div>
+                                    <lightning-button 
+                                        label="View Territory" 
+                                        size="small" 
+                                        onclick={handleShowRecruiterTerritory}
+                                        data-id={recruiter.id}>
+                                    </lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="balance-section">
+                        <h3>⚖️ Workload Balance Actions</h3>
+                        <div class="balance-insights">
+                            <div class="insight-card">
+                                <lightning-icon icon-name="utility:warning" size="small"></lightning-icon>
+                                <div class="insight-text">
+                                    <strong>3 recruiters overloaded</strong>
+                                    <p>Consider redistributing jobs</p>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <lightning-icon icon-name="utility:check" size="small"></lightning-icon>
+                                <div class="insight-text">
+                                    <strong>2 recruiters under capacity</strong>
+                                    <p>Can take on more assignments</p>
+                                </div>
+                            </div>
+                        </div>
+                        <lightning-button 
+                            label="Auto-Balance Workload" 
+                            variant="brand" 
+                            class="full-width"
+                            onclick={handleAutoBalance}>
+                        </lightning-button>
+                    </div>
+
+                    <div class="territory-needs-section">
+                        <h3>📊 Territory Resource Needs</h3>
+                        <template for:each={territoryNeeds} for:item="territory">
+                            <div key={territory.id} class="need-card" data-urgency={territory.urgencyLevel}>
+                                <div class="need-header">
+                                    <span>{territory.name}</span>
+                                    <span class="need-badge">{territory.needLabel}</span>
+                                </div>
+                                <div class="need-details">
+                                    <p>Open Jobs: {territory.openJobs}</p>
+                                    <p>Current Recruiters: {territory.recruiterCount}</p>
+                                    <p>Recommended: {territory.recommendedRecruiters}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- PERFORMANCE VIEW: Analytics & Insights -->
+            <template if:true={showPerformanceView}>
+                <div class="panel-content">
+                    <div class="performance-overview">
+                        <h3>📈 Territory Performance</h3>
+                        <div class="performance-grid">
+                            <template for:each={territoryPerformance} for:item="territory">
+                                <div key={territory.id} class="performance-card" onclick={handlePerformanceCardClick} data-id={territory.id}>
+                                    <div class="perf-header">
+                                        <h4>{territory.name}</h4>
+                                        <div class="perf-trend" data-trend={territory.trend}>
+                                            {territory.trendIcon} {territory.trendLabel}
+                                        </div>
+                                    </div>
+                                    <div class="perf-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Fill Rate</span>
+                                            <span class="metric-value" data-status={territory.fillRateStatus}>
+                                                {territory.fillRate}%
+                                            </span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Days to Fill</span>
+                                            <span class="metric-value">{territory.avgDaysToFill}</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Placements/Month</span>
+                                            <span class="metric-value">{territory.placementsPerMonth}</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Revenue</span>
+                                            <span class="metric-value">${territory.revenue}K</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="focus-recommendations">
+                        <h3>🎯 Where to Focus Hiring Efforts</h3>
+                        <div class="recommendation-list">
+                            <div class="recommendation high-priority">
+                                <lightning-icon icon-name="utility:trending" size="small"></lightning-icon>
+                                <div>
+                                    <strong>High Demand: Bay Area Tech</strong>
+                                    <p>15 open reqs, strong client pipeline, hire 2 more recruiters</p>
+                                </div>
+                            </div>
+                            <div class="recommendation medium-priority">
+                                <lightning-icon icon-name="utility:announcement" size="small"></lightning-icon>
+                                <div>
+                                    <strong>Growth Opportunity: Austin</strong>
+                                    <p>Low competition, high fill rate, expand presence</p>
+                                </div>
+                            </div>
+                            <div class="recommendation low-priority">
+                                <lightning-icon icon-name="utility:warning" size="small"></lightning-icon>
+                                <div>
+                                    <strong>Underperforming: SoCal Healthcare</strong>
+                                    <p>Low fill rate (62%), investigate blockers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comparison-section">
+                        <h3>📊 Territory Comparison</h3>
+                        <lightning-button label="Compare 2 Territories" onclick={handleCompareMode}></lightning-button>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- MAP DISPLAY -->
+        <div class="map-wrapper">
+            <div class="map-controls">
+                <lightning-combobox
+                    name="objectType"
+                    label="View"
+                    value={objectType}
+                    options={objectTypeOptions}
+                    onchange={handleObjectTypeChange}>
+                </lightning-combobox>
+                
+                <div class="map-legend">
+                    <h4>Map Legend</h4>
+                    <div class="legend-item">
+                        <span class="legend-marker critical"></span>
+                        <span>Past SLA (Urgent)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-marker high"></span>
+                        <span>Due This Week</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-marker normal"></span>
+                        <span>Active (On Track)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-marker filled"></span>
+                        <span>Recently Filled</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-container" lwc:dom="manual"></div>
+        </div>
+
+        <!-- RIGHT PANEL: Contextual Actions -->
+        <div class={sidePanelClass}>
+            <template if:true={selectedRegion}>
+                <div class="panel-header">
+                    <div class="header-content">
+                        <h2 class="slds-text-heading_medium">{selectedRegion.Name}</h2>
+                        <p class="slds-text-body_small region-details">
+                            {selectedRegion.RegionType} • {selectedRegion.StateCode}
+                        </p>
+                    </div>
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        variant="bare"
+                        alternative-text="Close"
+                        onclick={handleCloseSidePanel}>
+                    </lightning-button-icon>
+                </div>
+
+                <!-- Territory Health Score -->
+                <div class="panel-section health-section">
+                    <h3 class="slds-text-heading_small">Territory Health</h3>
+                    <div class="health-score" data-score={territoryHealthScore}>
+                        <div class="score-circle">
+                            <span class="score-number">{territoryHealthScore}</span>
+                            <span class="score-label">/100</span>
+                        </div>
+                        <div class="health-indicators">
+                            <div class="indicator">
+                                <span>Fill Rate: {kpis.fillRate}%</span>
+                            </div>
+                            <div class="indicator">
+                                <span>On-Time: {kpis.onTimePercentage}%</span>
+                            </div>
+                            <div class="indicator">
+                                <span>Workload: {workloadStatus}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPIs -->
+                <div class="panel-section">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Key Metrics</h3>
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-value">{kpis.total}</div>
+                            <div class="kpi-label">Open Jobs</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value kpi-error">{kpis.overdue}</div>
+                            <div class="kpi-label">Past SLA</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value kpi-warning">{kpis.inProgress}</div>
+                            <div class="kpi-label">In Pipeline</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value kpi-success">{kpis.completed}</div>
+                            <div class="kpi-label">Filled MTD</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decision Support Actions -->
+                <div class="panel-section">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Quick Actions</h3>
+                    <div class="action-buttons">
+                        <lightning-button
+                            label="Reassign Overdue Jobs"
+                            variant="destructive"
+                            class="slds-m-bottom_x-small"
+                            disabled={hasNoOverdueJobs}
+                            onclick={handleReassignOverdue}>
+                        </lightning-button>
+                        <lightning-button
+                            label="Balance Workload"
+                            variant="brand"
+                            class="slds-m-bottom_x-small"
+                            onclick={handleBalanceWorkload}>
+                        </lightning-button>
+                        <lightning-button
+                            label="Request Support"
+                            variant="neutral"
+                            class="slds-m-bottom_x-small"
+                            onclick={handleRequestSupport}>
+                        </lightning-button>
+                        <lightning-button
+                            label="View Full Report"
+                            variant="neutral"
+                            onclick={handleViewReport}>
+                        </lightning-button>
+                    </div>
+                </div>
+
+                <!-- Jobs List -->
+                <div class="panel-section">
+                    <div class="section-header">
+                        <h3 class="slds-text-heading_small">Jobs ({records.length})</h3>
+                        <lightning-button
+                            label="Refresh"
+                            icon-name="utility:refresh"
+                            variant="neutral"
+                            onclick={handleRefresh}>
+                        </lightning-button>
+                    </div>
+
+                    <div class="record-list">
+                        <template if:true={records.length}>
+                            <template for:each={records} for:item="record">
+                                <div key={record.Id} class="record-card" data-urgency={record.urgencyLevel}>
+                                    <input 
+                                        type="checkbox" 
+                                        data-id={record.Id}
+                                        onchange={handleRecordSelect}
+                                        class="record-checkbox">
+                                    
+                                    <div class="record-content">
+                                        <div class="record-header">
+                                            <span class="record-name">{record.Name}</span>
+                                            <lightning-badge label={record.Status}></lightning-badge>
+                                        </div>
+                                        <div class="record-details">
+                                            <span class="detail-item">
+                                                <lightning-icon icon-name="utility:priority" size="xx-small"></lightning-icon>
+                                                {record.Priority}
+                                            </span>
+                                            <span class="detail-item">
+                                                <lightning-icon icon-name="utility:user" size="xx-small"></lightning-icon>
+                                                {record.OwnerName}
+                                            </span>
+                                            <template if:true={record.IsOverdue}>
+                                                <span class="detail-item overdue-badge">
+                                                    <lightning-icon icon-name="utility:warning" size="xx-small"></lightning-icon>
+                                                    OVERDUE
+                                                </span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template if:false={selectedRegion}>
+                <div class="empty-panel">
+                    <lightning-icon icon-name="utility:info" size="large"></lightning-icon>
+                    <p class="slds-m-top_medium">Click on a territory to view details</p>
+                </div>
+            </template>
+        </div>
+
+        <!-- Reassignment Modal -->
+        <template if:true={showReassignModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                                onclick={handleCancelReassign}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate">Reassign Jobs</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <p class="slds-m-bottom_medium">
+                            Reassigning {selectedCount} job(s). Select the new owner:
+                        </p>
+                        <lightning-combobox
+                            name="newOwner"
+                            label="New Owner"
+                            placeholder="Select a user"
+                            options={availableUsers}
+                            value={selectedOwnerId}
+                            onchange={handleOwnerChange}
+                            required>
+                        </lightning-combobox>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="Cancel" onclick={handleCancelReassign}></lightning-button>
+                        <lightning-button label="Reassign" variant="brand" onclick={handleConfirmReassign}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>

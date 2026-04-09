@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Docusign_Status__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( Explicit_Docusign_Mark_Complete__c ,&apos;Completed&apos;,
+IF( Latest_DocuSign_Status__c = NULL,&apos;Not Sent&apos;,  Latest_DocuSign_Status__r.dfsle__Status__c ))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Docusign Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

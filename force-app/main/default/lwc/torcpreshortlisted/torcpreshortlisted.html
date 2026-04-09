@@ -1,0 +1,66 @@
+<template>
+    <lightning-card>
+        <template if:true={torcId}>
+            <div class="slds-grid slds-grid_align-spread slds-p-around_x-small">
+                <div class="slds-text-heading_small slds-text-title_bold">🔍 Torc Search + Match</div>            
+            </div>
+
+            <div class="slds-p-around_small">
+                <!-- Action Buttons -->
+                
+                <div class="slds-text-align_center slds-m-bottom_small">
+                    <button class="custom-blue-button" onclick={handleRedirectToTorcFederated}>
+                        View Preliminary Candidates
+                    </button>
+                </div>
+
+                <!-- No Matches or Message Display -->
+                <template if:false={matches.length}>
+                    <div class="slds-text-body_regular slds-text-align_center slds-p-around_small slds-text-color_weak">
+                        <template if:true={error}>
+                            <p>{error}</p>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Matches List -->
+                <template if:true={matches}>
+                    <div class="scrollbox-force">
+                        <template for:each={matches} for:item="match">
+                            <div key={match.Id} class="match-card slds-box slds-m-bottom_xx-small slds-p-around_x-small slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <div class="slds-col slds-size_10-of-12">
+                                    {match.UserFullName}
+                                </div>
+                                <div class="slds-col slds-size_2-of-12 slds-text-align_right">
+                                    <lightning-icon icon-name="utility:signal" size="x-small"></lightning-icon>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Search in Torc -->
+                <div class="slds-text-align_center slds-m-top_small">
+                    <button class="custom-blue-button" onclick={handleRedirectToTorc}>
+                        Search in Torc
+                    </button> &nbsp;&nbsp;
+                    <button class="custom-blue-button" onclick={handleRefreshMatches}>
+                        Reload
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <template if:false={torcId}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <p>⏳ Waiting to create job on Torc platform...</p>
+                <lightning-spinner alternative-text="Loading..." size="medium" variant="brand"></lightning-spinner>
+            </div>
+        </template>
+<!--
+        <template if:true={error}>
+            <div class="slds-text-color_error slds-p-around_small">{error}</div>
+        </template>
+-->        
+    </lightning-card>
+</template>

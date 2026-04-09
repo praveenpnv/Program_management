@@ -1,0 +1,19 @@
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.large-button {
+    font-size: 1.25rem;  /* Larger font */
+}
+
+.slds-modal__container.custom-size {
+    width: 90vw;
+    max-width: 90vw;
+    height: 110vh;
+    max-height: 110vh;
+}
+.slds-modal__content.custom-size {
+    height: 100%;
+    overflow: hidden;
+}

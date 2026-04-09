@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status_Stage_Correlation</fullName>
+    <active>true</active>
+    <description>Enforces that Project Status and Stage are logically aligned. Planning/Active projects must not be in Closure. Completed projects must be in Closure.</description>
+    <errorConditionFormula>OR(
+            AND(ISPICKVAL(Status__c, &apos;Completed&apos;), NOT(ISPICKVAL(Stage__c, &apos;Closure&apos;))),
+            AND(ISPICKVAL(Status__c, &apos;Planning&apos;),  ISPICKVAL(Stage__c, &apos;Closure&apos;)),
+            AND(ISPICKVAL(Status__c, &apos;Active&apos;),    ISPICKVAL(Stage__c, &apos;Closure&apos;))
+        )</errorConditionFormula>
+    <errorMessage>Status and Stage are misaligned. Completed projects must be in Closure stage. Planning/Active projects cannot be in Closure.</errorMessage>
+</ValidationRule>

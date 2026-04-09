@@ -1,0 +1,29 @@
+<!--<template>
+    <lightning-card title="Allsorter Reformatting">
+        <iframe
+            src={urlAllsorter}
+            width="100%"
+            height="600px"
+            frameborder="0"
+            style="border: none;"
+        ></iframe>
+    </lightning-card>
+</template>-->
+
+
+<template>
+    <!--<lightning-card title="Allsorter Reformatting">-->
+        <template if:true={recordId}>
+            <iframe
+                src={urlAllsorter}
+                width="100%"
+                height="100%"
+                frameborder="0"
+                style="border: none;"
+            ></iframe>
+        </template>
+        <template if:false={recordId}>
+            <p class="slds-p-around_medium">Loading or missing record ID...</p>
+        </template>
+    <!--</lightning-card>-->
+</template>

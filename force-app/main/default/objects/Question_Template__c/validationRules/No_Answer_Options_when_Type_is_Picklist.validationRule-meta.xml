@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>No_Answer_Options_when_Type_is_Picklist</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND( 
+  ISPICKVAL(AnswerType__c, &apos;Picklist&apos;),   
+  ISBLANK(AnswerOptions__c ) 
+)</errorConditionFormula>
+    <errorDisplayField>AnswerOptions__c</errorDisplayField>
+    <errorMessage>Answer Options must be provided if the Answer Type is &quot;Picklist&quot;</errorMessage>
+</ValidationRule>

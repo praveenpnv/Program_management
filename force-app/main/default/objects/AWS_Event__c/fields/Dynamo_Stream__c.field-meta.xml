@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dynamo_Stream__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Dynamo Stream</label>
+    <referenceTo>Dynamo_Stream_Shadow__c</referenceTo>
+    <relationshipLabel>AWS Events</relationshipLabel>
+    <relationshipName>AWS_Events</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

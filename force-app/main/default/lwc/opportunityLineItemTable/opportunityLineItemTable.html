@@ -1,0 +1,15 @@
+<template>
+     <div class="my-unique-datatable-header-style">
+    <lightning-datatable
+        key-field="name"
+        data={flattenedData}
+        columns={columns}
+        onrowaction={handleRowAction}
+        onrowselection={handleRowSelection}
+        max-row-selection="100"
+        row-attributes-field="rowAttributes" 
+        selected-rows={selectedRowIds}
+        >
+    </lightning-datatable>
+    </div>
+</template>

@@ -1,0 +1,69 @@
+<template>
+    <!-- List View style heading row -->
+    <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+            <!-- Title -->
+            <div class="slds-col">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="standard:record" size="small"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h1 class="slds-page-header__title slds-truncate" title="Change Requests">
+                                    Change Requests
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="slds-col slds-p-right_small">
+                <lightning-button-group>
+                    <lightning-button 
+                        label="Accept" 
+                        variant="brand" 
+                        onclick={handleAccept}>
+                    </lightning-button>
+                </lightning-button-group>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datatable with proper border -->
+    <div class="slds-box slds-m-top_small">
+        <lightning-datatable
+            key-field="Id"
+            data={data}
+            columns={columns}
+            onrowselection={handleRowSelection}
+            show-row-number-column
+            max-row-selection="999"
+        >
+        </lightning-datatable>
+    </div>
+
+    <!-- Pagination -->
+    <div class="slds-align_absolute-center slds-m-vertical_medium">
+        <lightning-button
+            label="Previous"
+            variant="neutral"
+            onclick={handlePrev}
+            disabled={isPrevDisabled}
+            class="slds-m-right_small">
+        </lightning-button>
+
+        <span>Page {currentPage} of {totalPages}</span>
+
+        <lightning-button
+            label="Next"
+            variant="neutral"
+            onclick={handleNext}
+            disabled={isNextDisabled}
+            class="slds-m-left_small">
+        </lightning-button>
+    </div>
+</template>

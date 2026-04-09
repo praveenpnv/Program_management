@@ -1,0 +1,49 @@
+<!--
+  @description       : Custom Flow Footer
+  @author            : ragaswaroop.kundrathurviswanathan@randstadusa.com
+  @last modified on  : 05-09-2022
+  @last modified by  : mhamdaoui@salesforce.com
+  Modifications Log
+  Ver   Date         Author                                              Modification
+  1.0   11-12-2021   ragaswaroop.kundrathurviswanathan@randstadusa.com   Initial Version
+  1.1   03-01-2022   mhamdaoui@salesforce.com                            Update Styling: CITPI3RCT2-224
+  1.2   04-04-2022   mhamdaoui@salesforce.com                            CITATS-92 (e2e fix)
+  1.3   04-26-2022   heather.romano@randstadusa.com                      Replace Reject button name with Disposition
+  2.0   04-26-2022   mhamdaoui@salesforce.com                            CITATS-407 (CITATS-186)
+  2.1   07-12-2022   Raga Viswanathan                                    CITATS-1210
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,lightning:availableForFlowScreens" access="global">
+    <!-- Show Disposition Modal Boolean -->
+    <aura:attribute name="showRejectionModal" type="Boolean" access="private" />
+
+    <!-- Init Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <!-- Application Id Used in Flow -->
+    <aura:attribute name="recordId" type="String" access="public" />
+
+    <!-- LMS used to show/hide previous button from LWC -->
+    <lightning:messageChannel type="RefreshATS__c" aura:id="RefreshATSMessage" onMessage="{!c.atsRefresh}" />
+
+    <!-- Global component event to refresh the ATS -->
+    <aura:registerEvent name="notifyUpdateEvent" type="TR1:ATS_Application_Update_Event" />
+
+    <!-- Disposition Modal -->
+    <aura:if isTrue="{!v.showRejectionModal}">
+        <c:RejectionWrapper recordId="{#v.recordId}" />
+    </aura:if>
+
+    
+    <!-- Proposed to Client Email Modal -->
+    <c:EmailBHWrapper stage="Submittal" recordId="{#v.recordId}"/>
+
+    <!-- Application Email Modal -->
+    <c:EmailBHWrapper stage="Internal Interview" recordId="{#v.recordId}"/>
+    
+    <!-- Solutions Email Modal -->
+    <c:EmailBHWrapper stage="Solutions Review" recordId="{#v.recordId}"/>
+
+    <!-- Client Offer Email Modal -->
+    <c:EmailBHWrapper stage="Offer" recordId="{#v.recordId}"/>
+
+</aura:component>

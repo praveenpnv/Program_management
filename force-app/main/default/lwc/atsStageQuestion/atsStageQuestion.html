@@ -1,0 +1,88 @@
+<template>
+    <lightning-card title="Job Prescreening Questions">
+        <template if:true={groupedQuestions}>
+            <lightning-accordion allow-multiple-sections-open>
+                <!-- Iterate over each group to create an accordion section -->
+                <template for:each={groupedQuestions} for:item="group">
+                    <lightning-accordion-section key={group.groupName} label={group.groupName}>
+                        <!-- Iterate over the questions within the group -->
+                        <template for:each={group.questions} for:item="question">
+                            <div key={question.questionId} class="slds-m-bottom_medium">
+                                <div class="slds-grid slds-wrap slds-m-bottom_small">
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <span>
+                                            <!-- Required Indicator -->
+                                           <!-- <template if:true={question.isRequired}>
+                                                <span class="slds-required">*</span>
+                                            </template> -->
+                                            <!-- Question Text -->
+                                            <span class="slds-form-element__label">{question.questionText}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Text Input Template -->
+                                <template if:true={question.isText}>
+                                    <div class="slds-form-element__control">
+                                        <lightning-textarea 
+                                            name={question.questionId}
+                                            value={question.responseValue}
+                                            data-resid={question.responseId}
+                                            placeholder="Enter your answer" 
+                                            onchange={handleInputChange}
+                                            style="width: 140px">
+                                        </lightning-textarea>
+                                    </div>
+                                </template>
+
+                                <!-- Picklist Template -->
+                                <template if:true={question.isPicklist}>
+                                    <div class="slds-form-element__control">
+                                        <lightning-combobox 
+                                            name={question.questionId} 
+                                            value={question.responseValue}
+                                            data-resid={question.responseId}
+                                            placeholder="Select an option" 
+                                            options={question.picklistOptions}
+                                            onchange={handleInputChange}
+                                            style="width: 140px">
+                                        </lightning-combobox>
+                                    </div>
+                                </template>
+
+                                <!-- Paragraph Template -->
+                                <template if:true={question.isParagraph}>
+                                    <div class="slds-form-element__control">
+                                        <lightning-textarea 
+                                            name={question.questionId}
+                                            value={question.responseValue}
+                                            data-resid={question.responseId}
+                                            placeholder="Enter your answer" 
+                                            onchange={handleInputChange}>
+                                        </lightning-textarea>
+                                    </div>
+                                </template>
+                                
+                                <!-- Boolean Template (Radio Group) -->
+                                <template if:true={question.isBoolean}>
+                                    <div class="slds-form-element__control">
+                                        <lightning-radio-group 
+                                            name={question.questionId}
+                                            value={question.responseValue}
+                                            data-resid={question.responseId}
+                                            options={booleanOptions}
+                                            onchange={handleInputChange}
+                                            >
+                                        </lightning-radio-group>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </lightning-accordion-section>
+                </template>
+            </lightning-accordion>
+        </template>
+
+<!--        <lightning-button label="Save Responses" onclick={saveResponses} class="slds-m-top_medium"></lightning-button> -->
+    </lightning-card>
+</template>

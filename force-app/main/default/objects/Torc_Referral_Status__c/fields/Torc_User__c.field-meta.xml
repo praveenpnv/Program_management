@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Torc_User__c</fullName>
+    <label>Torc User</label>
+    <referenceTo>Torc_User__c</referenceTo>
+    <relationshipLabel>Torc Referral Statuses</relationshipLabel>
+    <relationshipName>Torc_Referral_Statuses</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

@@ -1,0 +1,50 @@
+<template>
+    <lightning-card title="SuperView Board" icon-name="standard:employee">
+        <div class="slds-m-around_small">
+
+            <!-- Searchable Combobox -->
+            <c-reusable-lookup icon-name="standard:user"
+                         s-object-api-name="User"
+                         label="Select User"
+                         onlookupupdate={handleSelect}
+                         placeholder="Search User here..."
+                         user-type="All"></c-reusable-lookup>
+
+            <!-- Child Components Grid -->
+            <div class="slds-grid slds-wrap slds-m-top_large">
+                <div class="slds-col slds-size_1-of-2 ">
+                    <c-manager-team
+                        type="Account Manager"
+                        parentlabel="Account Manager Process"
+                        label="Available Sales (Account Managers)"
+                        sublabel="Borrowed Sales (Account Managers)"
+                        selected-user-id={selectedUserId}>
+                    </c-manager-team>
+                </div>
+
+                <div class="slds-col slds-size_1-of-2 ">
+                    <c-manager-team
+                        type="Recruiter"
+                        parentlabel="Recruiters Process"
+                        label="Available Recruiters"
+                        sublabel="Borrowed Recruiters"
+                        selected-user-id={selectedUserId}>
+                    </c-manager-team>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap slds-m-top_large">
+                    <c-rm-job-datatable
+                        title="Jobs"
+                        icon-name="standard:job"
+                        selected-user-id={selectedUserId}>
+                    </c-rm-job-datatable>
+            </div>
+            <!-- <div class="slds-grid slds-wrap slds-m-top_large">
+                 <c-recruiter-jobs-datatable type="Job" selected-user-id={selectedUserId}></c-recruiter-jobs-datatable>
+            </div>
+            <div class="slds-grid slds-wrap slds-m-top_large">
+                 <c-recruiter-jobs-datatable type="Placement" selected-user-id={selectedUserId}></c-recruiter-jobs-datatable>
+            </div> -->
+        </div>
+    </lightning-card>
+</template>

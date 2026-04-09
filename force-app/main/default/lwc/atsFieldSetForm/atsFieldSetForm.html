@@ -1,0 +1,27 @@
+<template>
+    <lightning-accordion>
+        <lightning-accordion-section name="A" label={appStageName} class="ats-accordion" active-section-name={activeSection}>
+            <template if:true={fields}>
+                <lightning-record-edit-form
+                    object-api-name={objectApiName}
+                    record-id={recordId}
+                    onsubmit={handleSubmit}
+                    onsuccess={handleSuccess}
+                    onerror={handleError}
+                >
+    <lightning-messages></lightning-messages>
+                    <div class="slds-grid slds-wrap">
+                        <template for:each={fields} for:item="field">
+                            <div key={field.fieldPath} class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                                <lightning-input-field field-name={field.fieldPath} disabled={isReadOnly} required={field.required}></lightning-input-field>
+                            </div>
+                        </template>
+                    </div>               
+                </lightning-record-edit-form>
+            </template>
+            <template if:false={fields}>
+                No fields found.
+            </template>
+        </lightning-accordion-section>
+    </lightning-accordion>
+</template>

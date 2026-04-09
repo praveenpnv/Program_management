@@ -1,0 +1,175 @@
+<apex:page standardController="Placement__c" extensions="QBPlacementCompare" action="{!pageToken}" title="Cross Check Bill/Invoice" showHeader="false" sidebar="false">
+<style>
+.dateFormat{
+    display:none;
+    }
+.UCls
+{
+    background-color:'yellow';
+}
+
+.DCls
+{
+    background-color:'#f9c7c7';
+}
+.ICls
+{
+    background-color:'#aff5af';
+}
+.NCls
+{
+    background-color:'white';
+}
+
+.rich-tabhdr-side-cell {border-top:none;}   
+.rich-tabhdr-side-border {background-image:none;}
+
+.tabPanel {
+   border: none !important;
+   }
+
+.activeTab {
+    background-color: lightblue;    
+    background-image:none; 
+    font-size: 18px;
+    border-radius: 50px 20px;
+    border: none !important;    
+    }
+.inactiveTab {
+    background-color: lightgrey;    
+    background-image:none;
+    font-size: 12px;
+    color:blue; 
+    border-radius: 50px 20px;
+    border: none !important;
+}
+</style>
+<apex:sectionHeader title="Cross Check Bill/Invoice"/>
+<apex:form >
+<apex:pageblock mode="edit">
+    <apex:pageblockbuttons location="top">
+        
+        <apex:commandButton value="Load Bills" action="{!loadBills}"/>
+        <apex:commandButton value="Load Invoices" action="{!loadInvoices}" rendered="{!placement.Internal_Placement__c = NULL}"/>
+        <apex:commandButton value="Load Invoice, Bill & Save" action="{!loadBoth}" rendered="{!placement.Internal_Placement__c = NULL}"/>
+       
+        <apex:commandButton value="Return" action="{!Cancel}"/>
+    </apex:pageblockbuttons>
+    <apex:pageblockSection columns="2">
+        <apex:outputField value="{!placement.Account__c}"/>
+        <apex:outputField value="{!placement.Torc_User__c}"/>
+        <apex:outputField value="{!placement.Account__r.Quickbooks_ID__c}"/>
+        <apex:outputField value="{!placement.Torc_User__r.Quick_Books_vendor_Id__c}"/>
+        <apex:outputField value="{!placement.Account__r.Quickbooks_Customer__c}"/>
+        <apex:outputField value="{!placement.Torc_User__r.Quickbooks_Vendor__c}"/> 
+        <apex:outputField value="{!placement.Total_Price__c}"/>
+        <apex:outputField value="{!placement.Total_To_Pay__c}"/>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="QB Invoice SUM"/>
+            <apex:outputText value="${0, number, ###,##0.00}"><apex:param value="{!invoiceSum}"/></apex:outputText>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="QB Bill SUM"/>
+            <apex:outputText value="${0, number, ###,##0.00}"><apex:param value="{!billSum}"/></apex:outputText>
+        </apex:pageblockSectionItem>
+        <apex:outputField value="{!placement.Main_Opportunity__c}"/>
+    </apex:pageblockSection>
+    
+    <apex:pageblockSection columns="1" title="QB Data">
+    <apex:tabPanel immediate="true">
+    <apex:tab label="Bills" switchType="client">
+    <apex:pageblocktable value="{!lstBills}" var="rec">
+        <apex:column >
+            <apex:facet name="header">Id</apex:facet>
+            <apex:outputText value="{!rec.bill.Id}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Doc No.</apex:facet>
+            <apex:outputText value="{!rec.bill.DocNumber}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Txndate</apex:facet>
+            <apex:outputText value="{!rec.bill.TxnDate}"/>
+        </apex:column>
+        <apex:column >
+            <apex:pageblockTable value="{!rec.Lines}" var="rl">
+                <apex:column style="width:5%;">
+                    <apex:facet name="header">Id</apex:facet>
+                    <apex:outputText value="{!rl.Id}"/>
+                </apex:column>
+                <apex:column style="width:15%;">
+                    <apex:facet name="header">Customer</apex:facet>
+                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.CustomerRef.Name}"/>
+                </apex:column>
+                <apex:column style="width:15%;">
+                    <apex:facet name="header">Category</apex:facet>
+                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.name}"/>
+                </apex:column>
+                <apex:column style="width:50%;">
+                    <apex:facet name="header">Description</apex:facet>
+                    <apex:outputText value="{!rl.Description}"/>
+                </apex:column>
+                <apex:column style="background-color:{!rl.UpdateStyle};width:15%;">
+                    <apex:facet name="header">Amount</apex:facet>
+                    <apex:outputText value="{!rl.Amount}"/>
+                </apex:column>
+            </apex:pageblockTable>  
+        </apex:column>                          
+    </apex:pageblocktable>
+    </apex:tab>
+    <apex:tab label="Invoices"  rendered="{!placement.Internal_Placement__c = NULL}"  switchType="client">
+    
+    <apex:pageblocktable value="{!lstInvoices}" var="rec">
+        <apex:column >
+            <apex:facet name="header">Type</apex:facet>
+            <apex:outputText value="{!rec.Type}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Id</apex:facet>
+            <apex:outputText value="{!rec.invoice.Id}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Doc No.</apex:facet>
+            <apex:outputText value="{!rec.invoice.DocNumber}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Txndate</apex:facet>
+            <apex:outputText value="{!rec.invoice.TxnDate}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">MASTERCRMID</apex:facet>
+            <apex:outputText value="{!rec.invoice.MasterCrmIdVal}"/>
+        </apex:column>
+        <apex:column >
+            <apex:pageblockTable value="{!rec.Lines}" var="rl">
+                <apex:column style="width:3%">
+                    <apex:facet name="header">Row</apex:facet>
+                    <apex:outputText value="{!rl.LineNum}"/>
+                </apex:column>
+                <apex:column style="width:60%">
+                    <apex:facet name="header">Description</apex:facet>
+                    <apex:outputText value="{!rl.Description}"/>
+                </apex:column>
+                <apex:column style="width:7%">
+                    <apex:facet name="header">Unit</apex:facet>
+                    <apex:outputText value="{!rl.SalesItemLineDetail.Qty}"/>
+
+                </apex:column>
+                <apex:column style="width:15%">
+                    <apex:facet name="header">Unit Price</apex:facet>
+                    <apex:outputText value="{!rl.SalesItemLineDetail.UnitPrice}"/>
+                </apex:column>
+                <apex:column style="width:15%">
+                    <apex:facet name="header">Total Amount</apex:facet>
+                    <apex:outputText value="{!rl.Amount}"/>
+                </apex:column>
+            </apex:pageblockTable>  
+        </apex:column>                          
+    </apex:pageblocktable>
+    </apex:tab>
+    </apex:tabPanel>
+    </apex:pageblockSection>
+</apex:pageblock>
+<c:WaitPopup />
+</apex:form>
+</apex:page>

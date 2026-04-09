@@ -1,0 +1,175 @@
+<template>
+    
+    <button class="pt-fab" onclick={openWalkthrough} title="ProTrack Process Guide">
+        <span class="pt-fab-icon">▶</span>
+        <span class="pt-fab-label">Process Guide</span>
+    </button>
+
+    
+    <template if:true={isOpen}>
+        <div class="pt-overlay">
+
+            
+            <div class={slidePanelCls}>
+
+                
+                <div class="pt-progress-bar">
+                    <div class="pt-progress-fill" style={progressStyle}></div>
+                </div>
+
+                
+                <div class="pt-slide-header">
+                    <div class="pt-header-left">
+                        <span class="pt-logo">◎ ProTrack</span>
+                        <span class={phaseTagCls}>{currentPhaseLabel}</span>
+                    </div>
+                    <div class="pt-header-right">
+                        <span class="pt-slide-counter">{slideIndexDisplay} / {totalSlides}</span>
+                        <button class="pt-close-btn" onclick={closeWalkthrough}>✕</button>
+                    </div>
+                </div>
+
+                
+                <template if:true={isIntroSlide}>
+                    <div class="pt-slide pt-slide-intro">
+                        <div class="pt-intro-eyebrow">Delivery Process Guide</div>
+                        <h1 class="pt-intro-title">ProTrack<br/>Delivery Process</h1>
+                        <p class="pt-intro-sub">A step-by-step walkthrough of how delivery works in ProTrack — from business case to production release, across every team role.</p>
+                        <div class="pt-intro-roles">
+                            <span class="pt-role-chip pt-exec">Executive</span>
+                            <span class="pt-role-chip pt-po">Product Owner</span>
+                            <span class="pt-role-chip pt-ba">Business Analyst</span>
+                            <span class="pt-role-chip pt-dev">Engineer</span>
+                            <span class="pt-role-chip pt-biz">Business</span>
+                            <span class="pt-role-chip pt-sys">System</span>
+                        </div>
+                        <div class="pt-intro-phases">
+                            <span class="pt-ph ph1">1 · Initiation</span>
+                            <span class="pt-arrow-sep">→</span>
+                            <span class="pt-ph ph2">2 · Planning</span>
+                            <span class="pt-arrow-sep">→</span>
+                            <span class="pt-ph ph3">3 · Execution</span>
+                            <span class="pt-arrow-sep">→</span>
+                            <span class="pt-ph ph4">4 · Monitoring</span>
+                            <span class="pt-arrow-sep">→</span>
+                            <span class="pt-ph ph5">5 · Closure</span>
+                        </div>
+                        <p class="pt-intro-hint">Press <strong>Next →</strong> to begin</p>
+                    </div>
+                </template>
+
+                
+                <template if:true={isStepSlide}>
+                    <div class={slideCls}>
+
+                        
+                        <div class="pt-step-meta">
+                            <span class={stepRoleCls}>{currentStep.roleLabel}</span>
+                            <span class="pt-step-id">{currentStep.id}</span>
+                            <span class={stepPhaseDotCls}></span>
+                            <span class="pt-phase-name">{currentStep.phaseName}</span>
+                        </div>
+
+                        
+                        <div class="pt-step-hero">
+                            <div class="pt-step-icon-wrap">
+                                <span class="pt-step-icon">{currentStep.icon}</span>
+                            </div>
+                            <h2 class="pt-step-title">{currentStep.title}</h2>
+                        </div>
+
+                        
+                        <p class="pt-step-body">{currentStep.body}</p>
+
+                        
+                        <div class="pt-step-obj-row">
+                            <span class="pt-obj-label">SF Objects</span>
+                            <span class="pt-obj-value">{currentStep.obj}</span>
+                        </div>
+
+                        
+                        <div class="pt-connector">
+                            <template for:each={connectorDots} for:item="dot">
+                                <div key={dot.key} class={dot.cls}></div>
+                            </template>
+                        </div>
+
+                    </div>
+                </template>
+
+                
+                <template if:true={isTransitionSlide}>
+                    <div class="pt-slide pt-slide-transition">
+                        <div class={transitionColorCls}>
+                            <div class="pt-tr-from">{transitionFrom} ✓</div>
+                            <div class="pt-tr-arrow">↓</div>
+                            <div class="pt-tr-phase-num">Phase {transitionNextPhase}</div>
+                            <div class="pt-tr-to">{transitionTo}</div>
+                            <p class="pt-tr-summary">{transitionSummary}</p>
+                        </div>
+                    </div>
+                </template>
+
+                
+                <template if:true={isSwimlaneSlide}>
+                    <div class="pt-slide pt-slide-swimlane">
+                        <div class="pt-swimlane-header">
+                            <span class="pt-sw-eyebrow">Complete View</span>
+                            <h2 class="pt-sw-title">Full Lifecycle Swimlane</h2>
+                            <p class="pt-sw-sub">All roles · All phases · End-to-end flow</p>
+                        </div>
+                        <div class="pt-swimlane-scroll">
+                            
+                            <div class="pt-sw-phases">
+                                <div class="pt-sw-phase-spacer"></div>
+                                <div class="pt-sw-phase ph1">Initiation</div>
+                                <div class="pt-sw-phase ph2">Planning</div>
+                                <div class="pt-sw-phase ph3">Execution</div>
+                                <div class="pt-sw-phase ph4">Monitoring</div>
+                                <div class="pt-sw-phase ph5">Closure</div>
+                            </div>
+                            
+                            <template for:each={swimlaneRows} for:item="row">
+                                <div key={row.role} class="pt-sw-lane">
+                                    <div class={row.labelCls}>{row.roleLabel}</div>
+                                    <div class="pt-sw-lane-body">
+                                        <template for:each={row.steps} for:item="step">
+                                            <div key={step.id} class={step.cellCls}>
+                                                <div class="pt-sw-card">
+                                                    <span class="pt-sw-icon">{step.icon}</span>
+                                                    <span class="pt-sw-card-label">{step.shortLabel}</span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="pt-sw-footer-note">
+                            Every step above was covered in this process guide. Tap any step card to revisit it.
+                        </div>
+                    </div>
+                </template>
+
+                
+                <div class="pt-nav-footer">
+                    <button class="pt-nav-btn pt-nav-back" onclick={prevSlide} disabled={isFirstSlide}>
+                        ← Back
+                    </button>
+                    <div class="pt-dot-track">
+                        <template for:each={dotItems} for:item="dot">
+                            <div key={dot.key} class={dot.cls} data-index={dot.index} onclick={handleDotClick}></div>
+                        </template>
+                    </div>
+                    <button class={nextBtnCls} onclick={nextSlide}>
+                        {nextLabel} →
+                    </button>
+                </div>
+
+            </div>
+
+            
+            <div class="pt-backdrop" onclick={closeWalkthrough}></div>
+        </div>
+    </template>
+</template>

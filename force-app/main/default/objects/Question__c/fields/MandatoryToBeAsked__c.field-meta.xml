@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MandatoryToBeAsked__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Copied from the related Question Template during Job Setup. Controls whether a Question is required to be Selected. Mandatory questions may not be deselected or removed by a user</description>
+    <inlineHelpText>When checked, this Question is required to be displayed and answered at the Validation Stage.</inlineHelpText>
+    <label>Mandatory to be Asked</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

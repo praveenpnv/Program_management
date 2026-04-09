@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stage__c</fullName>
+    <description>Copied from the related Question Template during Job Setup. Controls whether the question should appear during the Validation or Internal Interview Stage (eg. ATS modal).</description>
+    <label>Stage</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Internal Interview</fullName>
+                <default>false</default>
+                <label>Internal Interview</label>
+            </value>
+            <value>
+                <fullName>Application</fullName>
+                <default>false</default>
+                <label>Application</label>
+            </value>
+            <value>
+                <fullName>Client Interview</fullName>
+                <default>false</default>
+                <label>Client Interview</label>
+            </value>
+            <value>
+                <fullName>Closing Report</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Closing Report</label>
+            </value>
+            <value>
+                <fullName>Intake</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Intake</label>
+            </value>
+            <value>
+                <fullName>Offer</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Offer</label>
+            </value>
+            <value>
+                <fullName>Proposed to Client</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Proposed to Client</label>
+            </value>
+            <value>
+                <fullName>Send Out</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Send Out</label>
+            </value>
+            <value>
+                <fullName>Submittal</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Submittal</label>
+            </value>
+            <value>
+                <fullName>Testing</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Testing</label>
+            </value>
+            <value>
+                <fullName>Validation</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Validation</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

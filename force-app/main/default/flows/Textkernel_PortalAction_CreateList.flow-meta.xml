@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <description>Convert result ids stored in &apos;SearchResultIds_c&apos; from comma separated string to the array of strings.</description>
+        <name>ConvertStringToArray</name>
+        <label>Convert String To Array</label>
+        <locationX>182</locationX>
+        <locationY>194</locationY>
+        <actionName>ConvertStringToList</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>IfArrayIsNotEmpty</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>inputStrings</name>
+            <value>
+                <elementReference>$Record.Textkernel1__SearchResultIds__c</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>ConvertStringToList</nameSegment>
+        <outputParameters>
+            <assignToReference>RecordIds</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
+    <apiVersion>57.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>AddNewItemToArray</name>
+        <label>Add new Textkernel ListItem record to array of ListItem&apos;s</label>
+        <locationX>138</locationX>
+        <locationY>794</locationY>
+        <assignmentItems>
+            <assignToReference>ListItems</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>NewListItemRecord</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>IterateOverRecordIds</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <description>Fill in new Textkernel ListItem record fields.</description>
+        <name>FillInNewListItemRecord</name>
+        <label>Fill in new Textkernel ListItem record</label>
+        <locationX>138</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>NewListItemRecord.TextkernelList__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ListRecordId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NewListItemRecord.Memo__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>IterateOverRecordIds</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AddNewItemToArray</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>IfArrayIsNotEmpty</name>
+        <label>If Array is not Empty</label>
+        <locationX>182</locationX>
+        <locationY>314</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>ArrayIsNotEmpty</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RecordIds</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>CreateListRecord</targetReference>
+            </connector>
+            <label>Array is not empty</label>
+        </rules>
+    </decisions>
+    <description>This is the sample of the Flow that creates Textkernel List.</description>
+    <interviewLabel>Textkernel - Portal action - Create Textkernel List {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Textkernel - Portal action - Create Textkernel List</label>
+    <loops>
+        <name>IterateOverRecordIds</name>
+        <label>Iterate over selected record Ids array</label>
+        <locationX>50</locationX>
+        <locationY>554</locationY>
+        <collectionReference>RecordIds</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>FillInNewListItemRecord</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>InsertListItems</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>CreateListRecord</name>
+        <label>Insert Textkernel List record</label>
+        <locationX>50</locationX>
+        <locationY>434</locationY>
+        <assignRecordIdToReference>ListRecordId</assignRecordIdToReference>
+        <connector>
+            <targetReference>IterateOverRecordIds</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <stringValue>List created by Flow</stringValue>
+            </value>
+        </inputAssignments>
+        <object>TextkernelList__c</object>
+    </recordCreates>
+    <recordCreates>
+        <name>InsertListItems</name>
+        <label>Insert Textkernel ListItem&apos;s</label>
+        <locationX>50</locationX>
+        <locationY>1010</locationY>
+        <inputReference>ListItems</inputReference>
+    </recordCreates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>ConvertStringToArray</targetReference>
+        </connector>
+        <flowRunAsUser>TriggeringUser</flowRunAsUser>
+        <object>Textkernel1__PortalAction__e</object>
+        <triggerType>PlatformEvent</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>ListItems</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>TextkernelListItem__c</objectType>
+    </variables>
+    <variables>
+        <description>Id of new List record</description>
+        <name>ListRecordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>NewListItemRecord</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>TextkernelListItem__c</objectType>
+    </variables>
+    <variables>
+        <description>Array of record ids that were selected in Textkernel Portal</description>
+        <name>RecordIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

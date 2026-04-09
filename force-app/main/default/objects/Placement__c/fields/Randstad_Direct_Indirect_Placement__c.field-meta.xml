@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Randstad_Direct_Indirect_Placement__c</fullName>
+    <formula>OR(
+NOT(ISPICKVAL(Latest_Opportunity__r.Invoice_To_Randstad_Account__c,&apos;&apos;)),
+Latest_Opportunity__r.Invoice_to_Randstad__c ,
+Account__r.Name =&apos;Randstad North America Inc&apos;,
+Account__r.Name =&apos;Randstad Sourceright Ltd&apos;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>RD Direct</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

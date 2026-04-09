@@ -1,0 +1,32 @@
+<template>
+    <template if:true={noFilesFound}>
+        <div class="banner">
+            <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small"></lightning-icon>
+            <span>No files found for category: {fileCategory}</span>
+            <lightning-button label="Upload Resume" title="Download action" icon-name="utility:upload" onclick={openModal}  class="slds-m-left_x-small"></lightning-button>
+
+        </div>
+    </template>
+     <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-text-heading_medium">Upload Files</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <c-file-upload record-id={recordId}></c-file-upload>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal}>Close</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

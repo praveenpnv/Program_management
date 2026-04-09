@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Insurance_requirement__c</fullName>
+    <label>Insurance requirement</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>YES - I understand the minimum insurance requirements listed above are required during the agreement / assignment period. I am willing to obtain this insurance if I am engaged on a project.</fullName>
+                <default>false</default>
+                <label>YES - I understand the minimum insurance requirements listed above are required during the agreement / assignment period. I am willing to obtain this insurance if I am engaged on a project.</label>
+            </value>
+            <value>
+                <fullName>NO -  I do not agree to the insurance requirements.</fullName>
+                <default>false</default>
+                <label>NO -  I do not agree to the insurance requirements.</label>
+            </value>
+            <value>
+                <fullName>Unsure, I need to better understand the cost to determine if I am willing to obtain this insurance. (If you select this response you will need to be prepared to obtain insurance and provide a COI to complete phase 2.)</fullName>
+                <default>false</default>
+                <label>Unsure, I need to better understand the cost to determine if I am willing to obtain this insurance. (If you select this response you will need to be prepared to obtain insurance and provide a COI to complete phase 2.)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

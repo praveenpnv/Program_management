@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Drug_Health_Screen_Requirement__c</fullName>
+    <label>Drug/Health Screen Requirement</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>5 Panel</fullName>
+                <default>false</default>
+                <label>5 Panel</label>
+            </value>
+            <value>
+                <fullName>6 Panel</fullName>
+                <default>false</default>
+                <label>6 Panel</label>
+            </value>
+            <value>
+                <fullName>7 Panel</fullName>
+                <default>false</default>
+                <label>7 Panel</label>
+            </value>
+            <value>
+                <fullName>8 Panel</fullName>
+                <default>false</default>
+                <label>8 Panel</label>
+            </value>
+            <value>
+                <fullName>9 Panel</fullName>
+                <default>false</default>
+                <label>9 Panel</label>
+            </value>
+            <value>
+                <fullName>10 Panel</fullName>
+                <default>false</default>
+                <label>10 Panel</label>
+            </value>
+            <value>
+                <fullName>Urine</fullName>
+                <default>false</default>
+                <label>Urine</label>
+            </value>
+            <value>
+                <fullName>Hair</fullName>
+                <default>false</default>
+                <label>Hair</label>
+            </value>
+            <value>
+                <fullName>Flu Shot</fullName>
+                <default>false</default>
+                <label>Flu Shot</label>
+            </value>
+            <value>
+                <fullName>Physical</fullName>
+                <default>false</default>
+                <label>Physical</label>
+            </value>
+            <value>
+                <fullName>See Additional Notes</fullName>
+                <default>false</default>
+                <label>See Additional Notes</label>
+            </value>
+            <value>
+                <fullName>Other Safety/Occupation Health Screening</fullName>
+                <default>false</default>
+                <label>Other Safety/Occupation Health Screening</label>
+            </value>
+            <value>
+                <fullName>None</fullName>
+                <default>false</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>None so these will need to be mapped</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>None so these will need to be mapped</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>5</visibleLines>
+</CustomField>

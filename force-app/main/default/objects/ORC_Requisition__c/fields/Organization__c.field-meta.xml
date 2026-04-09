@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Organization__c</fullName>
+    <defaultValue>&quot;Randstad India Private Limited&quot;</defaultValue>
+    <description>Parent Organization for Job. Default is &quot;Randstad India Private Limited&quot;</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Parent Organization for Job. Default is &quot;Randstad India Private Limited&quot;</inlineHelpText>
+    <label>Organization</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Randstad_Customer_Gen_template_CO__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Randstad Customer Gen template(CO)</label>
+    <referenceTo>dfsle__GenTemplate__c</referenceTo>
+    <relationshipLabel>Docusign Defaults (Randstad Customer Gen template(CO))</relationshipLabel>
+    <relationshipName>Docusign_Defaults5</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

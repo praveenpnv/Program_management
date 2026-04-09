@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Use_Flow_for_API_Call__c</fullName>
+    <defaultValue>false</defaultValue>
+    <label>Use Flow for API Call</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

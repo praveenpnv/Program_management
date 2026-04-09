@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>First_Accepted_At__c</fullName>
+    <label>First Accepted At</label>
+    <summarizedField>Torc_Match__c.Accepted_At__c</summarizedField>
+    <summaryForeignKey>Torc_Match__c.Torc_Job_Opportunity__c</summaryForeignKey>
+    <summaryOperation>min</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

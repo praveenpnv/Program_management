@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>KnockOut__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Controls whether a UI warning appears when a boolean Question is answered No/False</description>
+    <inlineHelpText>A warning will appear if the Answer is &quot;No&quot;</inlineHelpText>
+    <label>Knock Out</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

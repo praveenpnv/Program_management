@@ -1,0 +1,308 @@
+<apex:page standardController="Opportunity" extensions="OpportunityDocusigngenRedirect" title="Redirect to Docusign">
+    <style>
+        .dateFormat{display:none}
+        .tooltip {
+          position: relative;
+          display: inline-block;
+          border-bottom: 1px dotted black;
+        }
+        
+        .tooltip .tooltiptext {
+          visibility: hidden;
+          width: 420px;
+          background-color: #fefdb9;
+          color: black;
+          text-align: center;
+          padding: 5px 0;
+          border-radius: 6px;
+          border:1px solid orange;
+         
+          /* Position the tooltip text - see examples below! */
+          position: absolute;
+          z-index: 1;
+        }
+        
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+        }
+    </style>
+    <apex:sectionHeader title="{!IF(IsExtension,'CHANGE ORDER ENGAGEMENT DOCUMENT','CUSTOMER ENGAGEMENT DOCUMENT')}" subtitle="{!opportunity.Name}"/>
+    <apex:form rendered="{!editableSigningDate}">
+        <div class="pbError">
+            Agreement date is not set on Account :<b><a href="/{!opp.AccountId}">{!opp.Account.Name}</a></b>. Please contact <b>Mike Cardillo</b> to update or click on <b><apex:commandLink action="{!SendChatter}" value="this link"/></b> to send chatter to Mike.
+        </div>
+    </apex:form>
+    <apex:form rendered="{!errorMessage<>''}">&nbsp;&nbsp; <b><a href="/{!opp.Id}">Back>></a></b>.
+        <div class="pbError">
+            {!errorMessage}
+        </div>
+    </apex:form>
+    <apex:form id="frm" rendered="{!AND(NOT(editableSigningDate),errorMessage='')}">
+        <apex:actionfunction name="setupInvoicingContact" id="setupInvoicingContact" action="{!setupInvoicingContact}" rerender="frm"/>
+        <apex:actionfunction name="setupSignerContact" id="setupSignerContact" action="{!setupSignerContact}" rerender="frm"/>
+        <apex:pageBlock title="CUSTOMER ENGAGEMENT DOCUMENT" mode="edit">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Launch Docusign" action="{!reDirectNow}"/>
+                <apex:commandButton value="Save & return to Opportunity" action="{!SaveAndBack}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockButtons>
+            <div class="pbError" id="errorDiv_ep">
+                    <apex:messages />
+            </div>
+            <apex:pageblockSection Columns="1" >
+                <apex:pageblocksectionItem rendered="{!NOT(isRandstad)}">
+                    <apex:outputPanel >
+                    This Engagement Document is effective as of the date of last signature below (the “Effective Date”) and is governed by the terms and conditions of the Talent Sourcing Agreement entered into by and 
+                    between Torc LLC and <b>{!Opp.Account.Name}</b> (“Customer”) dated 
+                    
+                    <div class="tooltip"><apex:inputfield value="{!Opp.Account.Agreement_Date__c}" rendered="{!editableSigningDate}"/>
+                    <apex:outputfield value="{!Opp.Account.Agreement_Date__c}" rendered="{!NOT(editableSigningDate)}"/>
+                      <span class="tooltiptext">Customer Signing Date. Its coming from Account.</span>
+                    </div>
+                    (the “Agreement”). In the event of any inconsistency between this Engagement Document and the Agreement, the terms of this Engagement Document shall control.    
+                    </apex:outputPanel>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem rendered="{!(isRandstad)}">
+                    <apex:outputPanel >
+                    This Engagement Document is effective as of the date of last signature below (the “Effective Date”) and is governed by the terms and conditions of the Talent Sourcing Agreement dated 
+                    <div class="tooltip"><apex:inputfield value="{!Opp.Account.Agreement_Date__c}" rendered="{!editableSigningDate}"/>
+                    <apex:outputfield value="{!Opp.Account.Agreement_Date__c}" rendered="{!NOT(editableSigningDate)}"/>
+                      <span class="tooltiptext">Customer Signing Date. Its coming from Account.</span>
+                    </div>
+                      (the “Agreement”) entered into by and between Torc, LLC (“Torc”) and Randstad Digital, LLC (formerly known as Randstad Technologies, LLC) (“Randstad” or “Customer”).  Capitalized terms used herein but not otherwise defined herein shall have the meanings ascribed to such terms in the Agreement.  In the event of any inconsistency between this Engagement Document and the Agreement, the terms of this Engagement Document shall control with respect to the subject matter of the conflict as it pertains to this Engagement Document and this Engagement Document only.  This Engagement Document sets forth the details about the placement of Talent Members.
+                    </apex:outputPanel>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            <div style="background-color:#f7eecf;padding:5px 5px 5px 20px">
+                    <h3>General Description of Engagement:</h3>
+                    <div class="tooltip"><img src="{!$Resource.qmark}" style="height:15px;width:15px"/>
+                        <span class="tooltiptext">
+                            Enter a clear and concise description for the engagement. This description will be seen by the customer signatory and anyone viewing the engagement document.
+                        </span>
+                    </div>
+            </div>
+            <apex:pageblockSection Columns="1" title="General Description of Engagement:" showHeader="false">
+            
+                <apex:pageblocksectionItem >
+                    <apex:inputfield value="{!Opp.Engagement_Description__c}" style="width:100%"/>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            
+            <div style="background-color:#f7eecf;padding:5px 5px 5px 20px">
+                    <h3>Pricing:</h3>
+                    <div class="tooltip"><img src="{!$Resource.qmark}" style="height:15px;width:15px"/>
+                        <span class="tooltiptext">
+                            Pricing is defaulted based on your product lineItem.   If you need to make changes, return to the opportunity and update your lineItem.
+                        </span>
+                    </div>
+            </div>
+            <apex:pageblockSection Columns="1" title="Pricing:" showHeader="false">
+                <apex:pageblockSectionItem rendered="{!isRandstad}">
+                    <apex:inputfield value="{!Opp.Docusign_Pricing_Description__c}" style="width:100%"/>
+                </apex:pageblockSectionItem>
+            
+                <apex:outputPanel style="width:125%">
+                <apex:pageblocktable value="{!opp.OpportunityLineItems}" var="var" rendered="{!NOT(isRandstad)}">
+                    <apex:column headerValue="Resource Type">
+                        <apex:outputText value="{!var.Product_Category__c+', '+ var.Talent_Name__c}"/>
+                    </apex:column>
+                    <apex:column value="{!var.Engagement_Start_Date__c}" headerValue="Start Date"/>
+                    <apex:column value="{!var.Engagement_Duration_weeks__c}" headerValue="Weeks"/>
+                    <apex:column value="{!var.Time_Commitment_Text__c}"  headerValue="Workload*"/>
+                    <apex:column value="{!var.Weekly_Bill_Rate__c}"  headerValue="Weekly Bill Rate"/>
+                    <apex:column >
+                        <apex:facet name="header">
+                            Total Fees
+                        </apex:facet>
+                        <apex:facet name="footer">
+                            <apex:outputField value="{!opp.Amount}"/>    
+                        </apex:facet>
+                    <apex:outputField value="{!var.TotalPrice}"/>
+                    </apex:column>
+                </apex:pageblocktable>
+                
+                <apex:pageblocktable value="{!opp.OpportunityLineItems}" var="var" rendered="{!(isRandstad)}">
+                    <apex:column headerValue="Role/Position">
+                        <apex:inputText value="{!var.Role__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Named Talent Member, if applicable">
+                        <apex:outputText value="{!var.Talent_Name__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Estimated Engagement Term">
+                        <apex:outputText value="{!var.Terms_Randstad__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Work Location">
+                        <apex:inputTextArea value="{!var.Work_Location__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Estimated Hours">
+                        <apex:outputText value="{!var.Total_Hours__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Work Schedule">
+                        <apex:inputTextarea value="{!var.Work_Schedule__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Hourly Bill Rate">
+                        <apex:outputText value="{!var.Customer_Hourly_Bill_Rate__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">
+                            Estimated Total Fees
+                        </apex:facet>
+                        <apex:facet name="footer">
+                            <apex:outputField value="{!opp.Amount}"/>    
+                        </apex:facet>
+                    <apex:outputField value="{!var.TotalPrice}"/>
+                    </apex:column>
+                </apex:pageblocktable>
+                <br/>
+                <apex:outputPanel rendered="{!NOT(isRandstad)}">
+                    *Half-time Dedicated Resources expected to work the equivalent of &nbsp;<apex:outputField value="{!opp.Half_Time_Value__c}"/> hours per week. Full-time Dedicated Resources expected to work the equivalent of 40.0 hours per week. 
+                    <br/><br/>
+                    <apex:outputField value="{!act.Docusign_Pricing_Description__c}" style="width:100%"/>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!(isRandstad)}">
+                    *Full-time Dedicated Resources expected to work the equivalent of 40 hours per week and shall do so as requested by Customer
+                    <br/><br/>
+                </apex:outputPanel>
+                
+                </apex:outputPanel>
+            </apex:pageblockSection>
+            
+            <apex:outputPanel rendered="{!NOT(isRandstad)}">
+                <div style="background-color:#f7eecf;padding:5px 5px 5px 20px">
+                        <h3>Term:</h3>
+                        <div class="tooltip"><img src="{!$Resource.qmark}" style="height:15px;width:15px"/>
+                            <span class="tooltiptext">
+                                The term is defaulted based on the number of weeks and start date of your product lineItem.   If you need to make changes, return to the opportunity and update your lineItem.
+                            </span>
+                        </div>
+                </div>
+                <apex:pageblockSection Columns="1" title="Term:" showHeader="false">
+                    <apex:pageblocksectionItem >
+                        <apex:outputText value="{!Terms}" escape="false"/>
+                    </apex:pageblocksectionItem>
+                </apex:pageblockSection>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!(isRandstad)}">
+                <div style="background-color:#f7eecf;padding:5px 5px 5px 20px">
+                        <h3>Compensation and Payment:</h3>
+                </div>
+                <apex:pageblockSection Columns="1" title="Compensation and Payment:" showHeader="false">
+                    <apex:pageblocksectionItem >
+                        <apex:inputTextArea value="{!opp.Docusign_Compensation_and_Payment__c}"  style="width:100%"/>
+                    </apex:pageblocksectionItem>
+                </apex:pageblockSection>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!NOT(isRandstad)}">
+                <div style="background-color:#f7eecf;padding:5px 5px 5px 20px">
+                        <h3>Additional specifications:</h3>
+                        <div class="tooltip"><img src="{!$Resource.qmark}" style="height:15px;width:15px"/>
+                            <span class="tooltiptext">
+                                Use this area for any additional requirements that may be required for this engagement.   If not additional requirements are needed, leave this area blank.
+                            </span>
+                        </div>
+                </div>
+                <apex:pageblockSection Columns="1" title="Additional specifications:"  showHeader="false">
+                    <apex:pageblocksectionItem >
+                        <apex:inputfield value="{!Opp.Docusign_Additional_Assumptions__c}"  style="width:100%"/>
+                    </apex:pageblocksectionItem>
+                </apex:pageblockSection>
+            </apex:outputPanel>
+            
+            <div style="background-color:#f7eecf;padding:5px 5px 5px 20px">
+                    <h3>Engagement Information:</h3>
+                    <div class="tooltip"><img src="{!$Resource.qmark}" style="height:15px;width:15px"/>
+                        <span class="tooltiptext">
+                           Provide information related to engagement
+                        </span>
+                    </div>
+            </div>
+            <apex:pageblockSection Columns="1" title="Engagement Information:" id="ecpbs"  showHeader="false">
+                <apex:pageblocksectionItem >
+                    <span class="helpButtonOn" id="Opportunity.1-_help">Point Of Contact
+                    <img src="/img/s.gif" alt="" class="helpOrb" title=""/>
+                    <script>
+                        sfdcPage.setHelp('Opportunity.1', 'Enter the customer contact name responsible for the developer.  This is the person Torc would contact for escalations, concerns, updated, or performance input of the developer.');
+                    </script>
+                    </span>
+                    <apex:inPutField value="{!Opp.Supervisor__c}"/>
+                </apex:pageblocksectionItem>
+                
+                <apex:pageblocksectionItem rendered="{!(isRandstad)}">
+                    <span class="helpButtonOn" id="Opportunity.1-_help">Point Of Contact(Torc)
+                    <img src="/img/s.gif" alt="" class="helpOrb" title=""/>
+                    <script>
+                        sfdcPage.setHelp('Opportunity.1', 'Enter the Torc person responsible for the developer.');
+                    </script>
+                    </span>
+                    <apex:inPutField value="{!Opp.Torc_POC__c}"/>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem rendered="{!NOT(isRandstad)}">
+                    <span class="helpButtonOn" id="Opportunity.2-_help">Invoice Contact
+                    <img src="/img/s.gif" alt="" class="helpOrb" title=""/>
+                    <script>
+                        sfdcPage.setHelp('Opportunity.2', 'Enter the customer contact responsbile for invoices.');
+                    </script>
+                    </span>
+                    
+                    <apex:outputPanel >
+                        <apex:inputfield value="{!Opp.Invoicing_Contact__c}" onChange="setupInvoicingContact();"/>
+                        &nbsp;&nbsp;<apex:commandLink value="Clear" action="{!clearInvoicingContact}" reRender="ecpbs"/>
+                    </apex:outputPanel>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem rendered="{!NOT(isRandstad)}">
+                    <span class="helpButtonOn" id="Opportunity.3-_help">Invoice Email Address
+                    <img src="/img/s.gif" alt="" class="helpOrb" title=""/>
+                    <script>
+                        sfdcPage.setHelp('Opportunity.3', 'Enter the email address to where Torc will submit invoices.   Use a comma to enter more than one email address.  For example:  email1@test.com,email2@test.com');
+                    </script>
+                    </span>
+                    
+                    <apex:inPutfield value="{!Opp.Email_Address_for_Invoices__c}"  style="width:600px"/>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem rendered="{!AND(Opp.Account.Notice_Address__c<>'',Opp.Account.Notice_Address__c<>NULL)}">
+                    <apex:outputLabel value="Notice Address"/>
+                    <apex:outPutfield value="{!Opp.Account.Notice_Address__c}"/>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem >
+                    <apex:outputPanel >
+                        <apex:outputPanel rendered="{!NOT(isRandstad)}">
+                            <apex:outputField value="{!act.Docusign_Additional_Agreement__c}" style="width:100%"/>
+                        </apex:outputPanel>
+                        <br/><br/>
+                        Accepted and agreed to by the authorized representative of each party as of the date of last signature below:
+                    </apex:outputPanel>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            
+            <div style="background-color:#f7eecf;padding:5px 5px 5px 20px">
+                    <h3>Engagement Signer:</h3>
+                    <div class="tooltip"><img src="{!$Resource.qmark}" style="height:15px;width:15px"/>
+                        <span class="tooltiptext">
+                            Enter the customer contact name responsbile for signature of the Docusign.
+                        </span>
+                    </div>
+            </div>
+            <apex:pageblockSection Columns="1" title="Engagement Signer:" id="espbs"  showHeader="false">
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Engagement Signer"/>
+                    <apex:outputPanel >
+                        <apex:inputfield value="{!Opp.Engagement_Signatory__c}" onchange="setupSignerContact();"/>
+                        &nbsp;&nbsp;<apex:commandLink value="Clear" action="{!clearSignerContact}" reRender="espbs"/>
+                    </apex:outputPanel>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Contact Name"/>
+                    <apex:outputLabel value="{!engagementSigner.Name}"/>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Email Address:"/>
+                    <apex:outputLabel value="{!engagementSigner.Email}"/>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<masterLabel>ATS Mandatory Popup</masterLabel>
+	<apiVersion>60.0</apiVersion>
+	<description>Component is used to identify unfilled mandatory fields and show them in screen so user can fill it</description>
+	<isExposed>true</isExposed>
+	<targets>
+		<target>lightning__FlowScreen</target>
+	</targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="objectApiName" type="String" />
+            <property name="fieldSetName" type="String" />
+            <property name="recordId" type="String" />
+            <property name="mode" type="String" default="edit" />
+        </targetConfig>
+    </targetConfigs>	
+</LightningComponentBundle>

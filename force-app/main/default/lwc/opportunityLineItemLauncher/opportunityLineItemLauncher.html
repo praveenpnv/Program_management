@@ -1,0 +1,108 @@
+<template>
+    <div class="slds-grid slds-grid_align-end">
+        <lightning-button label="Add Jobs" onclick={openModal} disabled={isOppCreateable} class="slds-p-top_medium" ></lightning-button>
+        <lightning-button label="Create Jobs" variant="brand" onclick={openCreateJobModal} disabled={isJobCreateable} class="slds-p-around_medium">
+        </lightning-button>
+    </div>
+   
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <lightning-button-icon icon-name="utility:close" variant="bare-inverse" alternative-text="Close"
+                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                    onclick={closeModal}>
+                </lightning-button-icon>
+                <div class="slds-modal__header">
+                    <h1 class="slds-modal__title slds-hyphenate" tabindex="-1">Create Opportunity Line Item</h1>
+                </div>
+                <lightning-spinner if:true={isLoading} alternative-text="Creating jobs..." size="medium"></lightning-spinner>
+                <lightning-record-edit-form object-api-name="OpportunityLineItem" onsuccess={handleSuccess} onsubmit={handleSubmit}
+                     onerror={handleError} class="slds-modal__content ">
+                    <template if:true={hideFormMessages}>
+                        <lightning-messages></lightning-messages>
+                    </template>
+
+                    <!-- Hidden fields -->
+                    <lightning-input-field field-name="OpportunityId" value={recordId} class="slds-hide">
+                    </lightning-input-field>
+                    <lightning-input-field field-name="PricebookEntryId" value={pricebookEntryId} class="slds-hide">
+                    </lightning-input-field>
+                    <lightning-input-field field-name="UnitPrice" value={salesPrice} class="slds-hide">
+                    </lightning-input-field>
+                    <lightning-input-field field-name="Quantity" value={quantity} class="slds-hide">
+                    </lightning-input-field>
+
+                    <!-- Two-column layout for visible fields -->
+                    <div class="slds-grid slds-wrap slds-gutters slds-p-around_medium">
+                        <div key={field.fieldName}
+                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small">
+                            <lightning-record-picker label="Job Function" placeholder="Search Job Function..."
+                                object-api-name="JobFunction__c" onchange={handleJobFunctionChange} required>
+                            </lightning-record-picker>
+                        </div>
+                
+                        <template for:each={fields} for:item="field" for:index="index">
+                            
+                            <template if:true={field.isJobType}>
+                                <div key={field.fieldName} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small">
+                                    <lightning-combobox                               
+                                        label="Job Type"
+                                        value={oliJobType}                                       
+                                        options={jobTypeOptions}
+                                        onchange={handleJobTypeChange}
+                                        required={field.isRequired}
+                                        disabled={isJobTypeDisabled}>
+                                    </lightning-combobox>
+                                </div>
+                            </template>
+                            
+                                <template if:true={field.isServiceLine}>
+                                    <div key={field.fieldName} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small">
+                                        <lightning-combobox                               
+                                            label="Service line"
+                                            value = {oppServiceLine}                               
+                                            options={oppServiceLineOptions}
+                                            onchange={handleServiceLineChange}
+                                            required={field.isRequired}
+                                            disabled={isServiceLineDisabled}>
+                                        </lightning-combobox>
+                                    </div>
+                                </template>
+                                <template if:true={field.isSubServiceLine}>
+                                    <div key={field.fieldName} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small">
+                                        <lightning-combobox                               
+                                            label="Sub Service line"
+                                            value = {oppSubServiceLine}                               
+                                            options={oppSubServiceLineOptions}
+                                            onchange={handleSubServiceLineChange}
+                                            required={field.isRequired}
+                                            disabled={isSubServiceLineDisabled}>
+                                        </lightning-combobox>
+                                    </div>
+                                </template>
+                            
+                            <template if:true={field.showField}>
+                                <div key={field.fieldName} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                    <lightning-input-field field-name={field.fieldName} required={field.isRequired}></lightning-input-field>
+                                </div>
+                            </template>
+                        </template>
+
+                    </div>
+                    <div class="slds-modal__footer">
+                        <div class="slds-m-top_medium">
+                            <lightning-button type="submit" label="Save" variant="brand" class="slds-m-right_small">
+                            </lightning-button>
+                            <lightning-button label="Cancel" onclick={closeModal}></lightning-button>
+                        </div>
+                    </div>
+
+                </lightning-record-edit-form>
+
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <c-opportunity-line-item-table record-id={recordId}></c-opportunity-line-item-table>
+</template>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Requisition_Type__c</fullName>
+    <defaultValue>&quot;Standard&quot;</defaultValue>
+    <description>Type of Requisition Record. Default Value = &quot;Standard&quot;</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Type of Requisition Record. Default Value = &quot;Standard&quot;</inlineHelpText>
+    <label>Requisition Type</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

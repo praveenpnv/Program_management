@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mandatory__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Controls whether a Question is required to be displayed and answered at the Prescreening Stage. Mandatory questions may not be deselected by a user during Job Setup. Pre-set by the global core</description>
+    <inlineHelpText>When checked, this Question is required to be displayed and answered at the Prescreening Stage.</inlineHelpText>
+    <label>Mandatory</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

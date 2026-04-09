@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Fee__c</fullName>
+    <label>Total Fee</label>
+    <summarizedField>Trolley_Invoice__c.Fee__c</summarizedField>
+    <summaryFilterItems>
+        <field>Trolley_Invoice__c.Cover_Fee__c</field>
+        <operation>equals</operation>
+        <value>True</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Trolley_Invoice__c.Trolley_Batch__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

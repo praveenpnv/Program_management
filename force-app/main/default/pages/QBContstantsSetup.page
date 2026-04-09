@@ -1,0 +1,189 @@
+<apex:page controller="QBContstantsSetup">
+    <apex:form >
+        <apex:pageBlock title="QB Constants" mode="edit">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Save" action="{!save}"/>
+            </apex:pageblockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Payment Terms"/>
+                    <apex:outputPanel >
+                        <table>
+                        <apex:repeat value="{!QBCOn.paymentTerms}" var="rec">
+                            <tr>
+                                <td><apex:inputText value="{!rec.name}"/></td>
+                                <td><apex:inputText value="{!rec.value}"/></td>
+                            </tr>    
+                        </apex:repeat>  
+                        </table>  
+                    </apex:outputPanel>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Internal Bill Category"/>
+                    <apex:outputPanel >
+                        <table>
+                        <apex:repeat value="{!QBCOn.internalBillCategory}" var="rec">
+                            <tr>
+                                <td><apex:inputText value="{!rec.name}"/></td>
+                                <td><apex:inputText value="{!rec.value}"/></td>
+                            </tr>    
+                        </apex:repeat>  
+                        </table>  
+                    </apex:outputPanel>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Internal Bill Customer"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.InternalBillCustomerRef.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.InternalBillCustomerRef.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Vendor's Company Name"/>
+                    <apex:inputText value="{!QBCOn.VendorCompanyName}"/>
+                </apex:pageblockSectionItem>
+                
+                
+                 <apex:pageblockSectionItem >
+                    <apex:outputlabel value="CRM ID Field ID"/>
+                    <apex:inputText value="{!QBCOn.CRMIDDefinitionID}"/>
+                </apex:pageblockSectionItem>
+                 <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Master CRM ID Field ID"/>
+                    <apex:inputText value="{!QBCOn.MASTERCRMIDDefinitionId}"/>
+                </apex:pageblockSectionItem>
+                 <apex:pageblockSectionItem >
+                    <apex:outputlabel value="PO Number Field ID"/>
+                    <apex:inputText value="{!QBCOn.PONumberDefinitionId}"/>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Invoice Item Name"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.InvoiceItemRef.Name}"/></td>
+                                <td><apex:outputLabel value="Name" style="font-weight:bold"/></td>
+                            </tr> 
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.InvoiceItemRef.value}"/></td>
+                                <td><apex:outputLabel value="Value" style="font-weight:bold"/></td>
+                            </tr>    
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Bill Item Name(vendor Bill)"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.BillItemRef.Name}"/></td>
+                                <td><apex:outputLabel value="Name" style="font-weight:bold"/></td>
+                            </tr> 
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.BillItemRef.value}"/></td>
+                                <td><apex:outputLabel value="Value" style="font-weight:bold"/></td>
+                            </tr>    
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Customer Memo(Invoice)"/>
+                    <apex:inputTextarea value="{!QBCOn.CustomerMemo}" rows="10" style="width:200px"/>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Account To Mark Bills Paid and Cover Charges Expense(Payment Account)"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.CheckPayment.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.CheckPayment.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Cover Charges Expense Account Ref(Line Item Category)"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.ExpenseAccountRef.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.ExpenseAccountRef.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Cover Charges Expense Entity Ref(Payee)"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.ExpenseEntityRef.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.ExpenseEntityRef.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                
+                
+                
+                
+                
+                
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Qubika Payment Account"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.QubikaExpensePaymentAccountRef.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.QubikaExpensePaymentAccountRef.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="Qubika Line Item Category"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.QubikaExpenseLineItemCategoryRef.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.QubikaExpenseLineItemCategoryRef.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="RD Invoice category"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.rdInvoicecategory.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.rdInvoicecategory.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                
+                <apex:pageblockSectionItem >
+                    <apex:outputlabel value="RD Bill category"/>
+                    <apex:outputPanel >
+                    <table>
+                            <tr>
+                                <td><apex:inputText value="{!QBCOn.rdBillcategory.Name}"/></td>
+                                <td><apex:inputText value="{!QBCOn.rdBillcategory.value}"/></td>
+                            </tr> 
+                        </table>  
+                    </apex:outPutPanel>
+                </apex:pageblockSectionItem>
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

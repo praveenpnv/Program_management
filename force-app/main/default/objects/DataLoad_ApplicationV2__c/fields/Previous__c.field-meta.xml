@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Previous__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Previous</label>
+    <referenceTo>DataLoad_ApplicationV2__c</referenceTo>
+    <relationshipLabel>DataLoad ApplicationV2</relationshipLabel>
+    <relationshipName>DataLoad_ApplicationV2</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

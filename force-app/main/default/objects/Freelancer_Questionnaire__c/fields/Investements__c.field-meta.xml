@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Investements__c</fullName>
+    <label>Investments</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Business Insurance</fullName>
+                <default>false</default>
+                <label>Business Insurance</label>
+            </value>
+            <value>
+                <fullName>Equipment or Software</fullName>
+                <default>false</default>
+                <label>Equipment or Software</label>
+            </value>
+            <value>
+                <fullName>Office Space or Co-working Space</fullName>
+                <default>false</default>
+                <label>Office Space or Co-working Space</label>
+            </value>
+            <value>
+                <fullName>Marketing, Accounting or Legal Services</fullName>
+                <default>false</default>
+                <label>Marketing, Accounting or Legal Services</label>
+            </value>
+            <value>
+                <fullName>Continuing Education</fullName>
+                <default>false</default>
+                <label>Continuing Education</label>
+            </value>
+            <value>
+                <fullName>Website</fullName>
+                <default>false</default>
+                <label>Website</label>
+            </value>
+            <value>
+                <fullName>I have not made any business investments</fullName>
+                <default>false</default>
+                <label>I have not made any business investments</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>6</visibleLines>
+</CustomField>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <label>Category</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Capitalized Software Development Costs</fullName>
+                <default>false</default>
+                <label>Capitalized Software Development Costs</label>
+            </value>
+            <value>
+                <fullName>Advertising &amp; marketing</fullName>
+                <default>false</default>
+                <label>Advertising &amp; marketing</label>
+            </value>
+            <value>
+                <fullName>Legal &amp; accounting services</fullName>
+                <default>false</default>
+                <label>Legal &amp; accounting services</label>
+            </value>
+            <value>
+                <fullName>Recruiting:Community</fullName>
+                <default>false</default>
+                <label>Recruiting:Community</label>
+            </value>
+            <value>
+                <fullName>Sales &amp; Business Development</fullName>
+                <default>false</default>
+                <label>Sales &amp; Business Development</label>
+            </value>
+            <value>
+                <fullName>Product Support</fullName>
+                <default>false</default>
+                <label>Product Support</label>
+            </value>
+            <value>
+                <fullName>Product Development</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Product Development</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

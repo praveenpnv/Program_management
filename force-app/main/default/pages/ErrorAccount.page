@@ -1,0 +1,6 @@
+<apex:page standardController="Account">
+<apex:sectionHeader title="Error"/>
+        <div class="pbError">
+            Please select MSA Contact on Account. <b><a href="/{!Account.Id}">Return>></a></b>.
+        </div>
+</apex:page>

@@ -1,0 +1,12 @@
+.banner {
+    background-color: #ffcc00;
+    color: #000;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+.banner lightning-icon {
+    margin-right: 8px;
+}

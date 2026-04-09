@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sprint__c</fullName>
+    <description>Sprint name or number (e.g. Sprint 1, PI 3.1). Applicable when project Methodology is Scrum or SAFe.</description>
+    <externalId>false</externalId>
+    <label>Sprint</label>
+    <length>80</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

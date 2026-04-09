@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Previous_Feedback__c</fullName>
+    <externalId>false</externalId>
+    <formula>HYPERLINK(
+&apos;https://torc.lightning.force.com/lightning/r/Report/00OUP0000017GCL2A2/view?fv0=&apos;+ Torc_User__c ,&apos;Past Feedback&apos;
+
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Previous Feedback</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

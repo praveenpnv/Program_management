@@ -1,0 +1,200 @@
+<template>
+    <div class="rdm-bd" onclick={handleBdClick}>
+        <div class="rdm-modal" onclick={stop}>
+
+            
+            <div class="rdm-hdr">
+                <div class="rdm-hdr-left">
+                    <span class="rdm-type-badge">Requirement</span>
+                    <span class="rdm-id">{requirement.Name}</span>
+                </div>
+                <div class="rdm-hdr-right">
+                    <button class="rdm-nav-btn" onclick={handleNav} title="Open Salesforce record">
+                        <lightning-icon icon-name="utility:open" size="small"></lightning-icon>
+                    </button>
+                    <button class="rdm-close" onclick={handleClose}>&#x2715;</button>
+                </div>
+            </div>
+
+            <div class="rdm-layout">
+                
+                <div class="rdm-main">
+                    
+                    <template if:false={isEditing}>
+                        <div class="rdm-title-row">
+                            <h2 class="rdm-title">{requirement.Name}</h2>
+                            <button class="rdm-edit-btn" onclick={handleEditToggle} title="Edit">
+                                <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                            </button>
+                        </div>
+                    </template>
+                    <template if:true={isEditing}>
+                        <div class="rdm-edit-block">
+                            <input class="rdm-edit-input rdm-edit-title" type="text" data-field="Name"
+                                   value={editTitle} onchange={handleEditField} placeholder="Requirement title" />
+                            <textarea class="rdm-edit-ta" data-field="Description__c"
+                                      onchange={handleEditField} rows="3"
+                                      placeholder="Description">{editDesc}</textarea>
+                            <div class="rdm-edit-row">
+                                <div class="rdm-edit-group">
+                                    <label class="rdm-edit-lbl">Priority</label>
+                                    <select class="rdm-edit-select" data-field="Priority__c" onchange={handleEditField}>
+                                        <option value="Critical" selected={editPriCrit}>Critical</option>
+                                        <option value="High"     selected={editPriHigh}>High</option>
+                                        <option value="Medium"   selected={editPriMed}>Medium</option>
+                                        <option value="Low"      selected={editPriLow}>Low</option>
+                                    </select>
+                                </div>
+                                <div class="rdm-edit-group">
+                                    <label class="rdm-edit-lbl">Category</label>
+                                    <select class="rdm-edit-select" data-field="Category__c" onchange={handleEditField}>
+                                        <option value="New Request"    selected={editCatNew}>New Request</option>
+                                        <option value="Change Request" selected={editCatCR}>Change Request</option>
+                                    </select>
+                                </div>
+                                <div class="rdm-edit-group">
+                                    <label class="rdm-edit-lbl">Requestor</label>
+                                    <input class="rdm-edit-input" type="text" data-field="Requestor__c"
+                                           value={requirement.Requestor__c} onchange={handleEditField} />
+                                </div>
+                            </div>
+                            <div class="rdm-edit-actions">
+                                <button class="rdm-save-btn" onclick={handleEditSave} disabled={isSaving}>
+                                    <template if:false={isSaving}>Save</template>
+                                    <template if:true={isSaving}>Saving…</template>
+                                </button>
+                                <button class="rdm-cancel-btn" onclick={handleEditCancel}>Cancel</button>
+                            </div>
+                        </div>
+                    </template>
+
+                    
+                    <div class="rdm-path-row">
+                        <div class="rdm-path">
+                            <template for:each={statusOptions} for:item="opt">
+                                <button key={opt.status} class={opt.cls}
+                                        value={opt.status}
+                                        onclick={handleStatusChange}
+                                        disabled={opt.isCurrent}>
+                                    <template if:true={opt.isDone}><span>&#10003;</span></template>
+                                    <template if:false={opt.isDone}>{opt.label}</template>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    
+                    <template if:true={canApprove}>
+                        <button class="rdm-approve-btn" onclick={handleApprove}>
+                            &#10003; Approve &amp; Create Story
+                        </button>
+                    </template>
+
+                    
+                    <template if:true={hasLinkedStory}>
+                        <div class="rdm-linked-item rdm-linked-story">
+                            <lightning-icon icon-name="utility:kanban" size="xx-small"></lightning-icon>
+                            <span class="rdm-linked-label">Linked Story:</span>
+                            <button class="rdm-linked-btn" value={linkedStoryId} onclick={handleStoryOpen}>
+                                {linkedStoryName}
+                            </button>
+                            <span class={linkedStoryCls}>{linkedStoryStatus}</span>
+                        </div>
+                    </template>
+
+                    
+                    <template if:true={requirement.Description__c}>
+                        <div class="rdm-section">
+                            <div class="rdm-section-title">Description</div>
+                            <p class="rdm-text">{requirement.Description__c}</p>
+                        </div>
+                    </template>
+
+                    
+                    <div class="rdm-section">
+                        <div class="rdm-section-title">Activity</div>
+
+                        <div class="rdm-comment-input-wrap">
+                            <div class="rdm-avatar">{userInitials}</div>
+                            <div class="rdm-comment-editor">
+                                <textarea class="rdm-comment-ta"
+                                          placeholder="Add a comment or update…"
+                                          value={commentDraft}
+                                          onchange={handleCommentChange}
+                                          rows="3"></textarea>
+                                <div class="rdm-comment-actions">
+                                    <button class="rdm-comment-save" onclick={handleAddComment} disabled={isSavingComment}>
+                                        <template if:false={isSavingComment}>Save</template>
+                                        <template if:true={isSavingComment}>Saving…</template>
+                                    </button>
+                                    <button class="rdm-comment-cancel" onclick={handleCancelComment}>Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rdm-activity-list">
+                            <template if:true={isLoadingActivity}>
+                                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                            </template>
+                            <template for:each={activityItems} for:item="act">
+                                <div key={act.id} class="rdm-activity-item">
+                                    <div class="rdm-av">{act.initials}</div>
+                                    <div class="rdm-activity-body">
+                                        <div class="rdm-activity-who">
+                                            <span class="rdm-act-name">{act.who}</span>
+                                            <span class="rdm-act-time">{act.when}</span>
+                                        </div>
+                                        <p class="rdm-act-text">{act.body}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={noActivity}>
+                                <p class="rdm-no-activity">No activity yet. Add a comment above.</p>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="rdm-sidebar">
+                    <div class="rdm-field-group">
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Status</span>
+                            <span class={statusCls}>{requirement.Status__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Priority</span>
+                            <span class={priCls}>{requirement.Priority__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Category</span>
+                            <span class="rdm-val">{requirement.Category__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Requestor</span>
+                            <span class="rdm-val">{requirement.Requestor__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Assigned To</span>
+                            <span class="rdm-val">{assignedName}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Feature</span>
+                            <span class="rdm-val">{featureName}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Story Created</span>
+                            <template if:true={requirement.Auto_Story_Created__c}>
+                                <span class="rdm-badge rdm-green">&#10003; Yes</span>
+                            </template>
+                            <template if:false={requirement.Auto_Story_Created__c}>
+                                <span class="rdm-badge rdm-grey">Not yet</span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</template>

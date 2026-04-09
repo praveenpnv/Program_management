@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Manager__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Generic manager — can be AM or SM. Lookup filter to restrict based on Role/Profile (Account Manager / Sales Manager).</description>
+    <label>Member</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Team_Member</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

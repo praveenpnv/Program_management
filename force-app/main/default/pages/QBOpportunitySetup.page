@@ -1,0 +1,777 @@
+<apex:page Controller="QBOpportunitySetup" action="{!pageToken}" title="Quickbooks Setup" showHeader="false" sidebar="false">
+<style>
+.UCls
+{
+    background-color:'yellow';
+}
+
+.DCls
+{
+    background-color:'#f9c7c7';
+}
+.ICls
+{
+    background-color:'#aff5af';
+}
+.NCls
+{
+    background-color:'white';
+}
+
+.rich-tabhdr-side-cell {border-top:none;}   
+.rich-tabhdr-side-border {background-image:none;}
+
+.tabPanel {
+   border: none !important;
+   }
+
+.activeTab {
+    background-color: lightblue;    
+    background-image:none; 
+    font-size: 18px;
+    border-radius: 50px 20px;
+    border: none !important;    
+    }
+.inactiveTab {
+    background-color: lightgrey;    
+    background-image:none;
+    font-size: 12px;
+    color:blue; 
+    border-radius: 50px 20px;
+    border: none !important;
+}
+</style>
+<script>
+    function checkuncheckAll(chk, className)
+    {
+        var v = document.getElementsByClassName(className);
+        for(var i in v)
+            v[i].checked = chk;
+    }
+    function confirmQBOperation()
+    {
+        if (confirm("It will modify/delete/create data in Quickbooks. Are you sure?") == true) 
+        {
+            showDisable();   
+            return true;
+        }
+        return false;
+    }
+</script>
+
+<apex:sectionHeader title="Setup Data In Quickbooks"/>
+<apex:form >
+<apex:actionFunction name="SearchVendor" id="SearchVendor" action="{!SearchVendor}" rerender="searchpanel" oncomplete="hideDisable();"/>
+<apex:actionFunction name="cleanupVandors" id="cleanupVandors" action="{!cleanupVandors}" rerender="searchpanel" oncomplete="hidememberSerach();hideDisable();"/>
+<apex:pageblock mode="edit" title="Select Opportunity" rendered="{!(noRecord)}">
+    <apex:pageblockbuttons location="top">
+        <apex:commandButton value="Next" action="{!RecordSelected}"/>
+    </apex:pageblockbuttons>
+    <div class="pbError" id="errorDiv_ep">
+        <apex:messages />
+     </div>
+    <apex:pageblockSection columns="1">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Select Opportunity"/>
+            <apex:inputField value="{!DummyObj.Opportunity__c}"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Select Member"/>
+            <apex:inputField value="{!DummyObj.Internal_Placement__c}"/>
+        </apex:pageblockSectionItem>
+    </apex:pageblockSection>
+
+</apex:pageblock>
+<apex:pageblock title="Parent Information" rendered="{!NOT(noRecord)}" mode="Edit">
+    <apex:pageblockbuttons >
+        <apex:commandButton value="Refresh" action="{!setupWithRecord}" onclick="showDisable();"/>
+        <apex:commandButton value="Save Invoice Email" action="{!SaveOpportunityChanges}" rendered="{!OperationOn=='OPP'}" onclick="showDisable();"/>
+        <apex:commandButton value="Uncheck Bill Created" action="{!UncheckBill}" rendered="{!AND(OperationOn=='OPP',OPP.Bills_Created__c=TRUE)}" onclick="showDisable();"/>
+        <apex:commandButton value="Uncheck Invoice Created" action="{!Uncheckinvoice}" rendered="{!AND(OperationOn=='OPP',OPP.Invoices_Created__c=TRUE)}" onclick="showDisable();"/>
+        <apex:commandButton value="{!IF(skipnonQBvendors,'Stop Bills If Any vendor Not Mapped','Continue bills with only mapped vendors')}" action="{!toggleskipnonQBvendors}" onclick="showDisable();"/>
+    </apex:pageblockbuttons>    
+    <apex:pageBlockSection columns="1" rendered="false">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Contine BillS Which only mapped vendors?"/>
+            <apex:outputPanel >
+                <apex:inputCheckbox value="{!skipnonQBvendors}"/>
+            </apex:outputPanel>
+        </apex:pageblockSectionItem>
+    </apex:pageBlockSection>
+    <apex:pageBlockSection columns="2" rendered="{!operationon='OPP'}">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Opportunity Name"/>
+            <apex:outputLink value="/{!opp.id}">{!Opp.Name}</apex:outputLink>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Main Customer"/>
+            <apex:outputField value="{!opp.AccountId}"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Invoicing Customer"/>
+            <apex:outputLink value="/{!act.id}">{!act.Name}</apex:outputLink>
+        </apex:pageblockSectionItem>
+        <apex:outputField value="{!opp.Amount}"/>    
+        <apex:outputField value="{!opp.Total_Payment__c}"/>
+        <apex:outputField value="{!opp.PO_Required__c}"/>
+        <apex:outputField value="{!opp.PO_Number__c}"/>
+        <apex:outputField value="{!act.Invoice_Group_Type__c}"/>
+        <apex:outputField value="{!opp.Invoicing_Period__c}"/>
+        <apex:outputField value="{!opp.Invoicing_Unit__c}"/>
+        <apex:outputField value="{!opp.First_Invoice__c}"/>
+        <apex:outputField value="{!opp.Use_Pay_Rate_To_Invoice__c}"/>
+        <apex:outputField value="{!opp.Invoices_Created__c}"/>
+        <apex:outputField value="{!opp.Bills_Created__c}"/>
+        <apex:inputField value="{!opp.Email_Address_for_Invoices__c}"/>
+        
+    </apex:pageBlockSection>  
+    <apex:pageBlockSection columns="2" rendered="{!operationon='INTERNAL'}">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Name"/>
+            <apex:outputLink value="/{!InternalPlacement.id}">{!InternalPlacement.Name}</apex:outputLink>
+        </apex:pageblockSectionItem>
+        <apex:outputField value="{!InternalPlacement.Torc_User__c}"/>
+        <apex:outputField value="{!InternalPlacement.Engagement_Start_Date__c}"/>
+        <apex:outputField value="{!InternalPlacement.Engagement_End_Date__c}"/>
+        <apex:outputField value="{!InternalPlacement.Weekly_Talent_Rate__c}"/>
+    </apex:pageBlockSection> 
+    <apex:pageBlockSection columns="2" rendered="{!operationon='VACATION'}">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Name"/>
+            <apex:outputLink value="/{!vacation.id}">{!vacation.Name}</apex:outputLink>
+        </apex:pageblockSectionItem>
+        <apex:outputField value="{!vacation.Opportunity__c}"/>
+        <apex:outputField value="{!vacation.Internal_Placement__c}"/>        
+        <apex:pageblockSectionItem rendered="{!vacation.Opportunity__c<>NULL}">
+            <apex:outputLabel value="Main Customer"/>
+            <apex:outputField value="{!vacation.Opportunity__r.AccountId}"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Invoicing Customer"/>
+            <apex:outputLink value="/{!act.id}">{!act.Name}</apex:outputLink>
+        </apex:pageblockSectionItem>
+        <apex:outputField value="{!vacation.Torc_User__c}"/>
+        <apex:outputField value="{!vacation.Engagement_Start_Date__c}"/>
+        <apex:outputField value="{!vacation.Engagement_End_Date__c}"/>
+        <apex:outputField value="{!vacation.Weekly_Talent_Rate__c}"/>
+        <apex:outputField value="{!vacation.Weekly_Bill_Rate__c}"/>
+        <apex:outputField value="{!vacation.Shift_To_Date__c}"/>
+        <apex:outputField value="{!vacation.Shift_To_End_Date__c}"/>
+    </apex:pageBlockSection>    
+    <apex:pageBlockSection columns="1"  rendered="{!operationon='OPP'}">
+        <apex:pageblockTable value="{!opp.OpportunityLineItems}" var="rec">
+            <apex:column value="{!rec.Engagement_Start_Date__c}"/>
+            <apex:column value="{!rec.Engagement_End_Date__c}"/>
+            <apex:column value="{!rec.Engagement_Duration_weeks__c}"/>
+            <apex:column value="{!rec.Weekly_Bill_Rate__c}" rendered="{!invoicingUnit<>'Hour'}"/>
+            <apex:column value="{!rec.Customer_Hourly_Bill_Rate__c}" rendered="{!invoicingUnit ='Hour'}"/>
+            <apex:column value="{!rec.Hours_Week__c}" rendered="{!invoicingUnit = 'Hour'}"/>
+            <apex:column value="{!rec.Weekly_Talent_Rate__c}"/>
+            <apex:column value="{!rec.Talent_Username__c}"/>
+            <apex:column value="{!rec.TotalPrice}"/>
+            <apex:column value="{!rec.Total_Payment__c}"/>
+        </apex:pageblockTable>
+    </apex:pageBlockSection>
+    <div class="pbError" id="errorDiv_ep">
+        <apex:messages />
+     </div>
+     <apex:tabPanel switchType="client" headerClass="tabPanel" activeTabClass="activeTab" inactiveTabClass="inactiveTab">
+     <apex:tab label="Create/Map Account/Vendor" switchtype="client">
+         <apex:outputPanel style="text-align:right"><div style="width:100%;">
+             <apex:CommandButton onclick="showDisable();" action="{!updatAccount}" value="Update Account in QB" rendered="{!STEP <> 'ACT'}"/>
+         </div></apex:outputPanel>
+         <apex:pageblockSection >
+            <apex:outputField value="{!act.BillingStreet}"/>
+            <apex:outputField value="{!act.BillingCity}"/>
+            <apex:outputField value="{!act.BillingState}"/>    
+            <apex:outputField value="{!act.BillingCountry}"/>    
+            <apex:outputField value="{!act.BillingPostalCode}"/>
+            <apex:outputField value="{!act.Payment_Terms__c}"/>    
+        </apex:pageBlockSection>
+            <apex:pageblocksection columns="1" Title="Create/Map Account to QuickBooks">
+                <apex:outputField value="{!act.Quickbooks_ID__c}" rendered="{!STEP <> 'ACT'}"/>
+                <apex:outputField value="{!act.Quickbooks_Customer__c}" rendered="{!STEP <> 'ACT'}"/>        
+                 <apex:outputPanel rendered="{!STEP = 'ACT'}">
+                     <apex:outputPanel >
+                         <table style="width:100%"><tr>
+                         <td style="width:40%">
+                             <font style="font-weight:bold">Search Customer</font> &nbsp;&nbsp;
+                             <apex:inputText value="{!searchText}" id="custSearch" style="width:200px"/>&nbsp;&nbsp; 
+                             <apex:commandButton value="Search" onclick="showDisable();" action="{!Search}"/>&nbsp;&nbsp; 
+                         </td>
+                         <td style="text-align:right;">    
+                             <apex:commandButton value="Map Selected" onclick="showDisable();" action="{!MapAccountToExtsingQBCustomer}" rendered="{!customers.Size>0}"/>&nbsp;
+                             <apex:commandButton value="Create" onclick="showDisable();" action="{!CreateAccountInQB}"/>&nbsp;&nbsp; 
+                            <apex:inputText id="QBCustomeridToUpdate" style="display:none" value="{!QBCustomeridToUpdate}"/>
+                        </td></tr></table>
+                        
+                        <script>
+                            function setQBCustomerIdVal(id)
+                            {
+                                document.getElementById("{!$Component.QBCustomeridToUpdate}").value=id;
+                            }
+                        </script>
+                    </apex:outputPanel>
+                    <apex:pageblockTable value="{!customers}" var="cust" rendered="{!customers.Size>0}">
+                        <apex:column >
+                            <apex:facet name="header">Select</apex:facet>
+                            <input type="radio" id="html" name="fav_language" onclick="setQBCustomerIdVal('{!cust.id}');"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">ID</apex:facet>
+                            <apex:outputText value="{!cust.id}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Name</apex:facet>
+                            <apex:outputText value="{!cust.DisplayName}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Term</apex:facet>
+                            <apex:outputText value="{!cust.SalesTermRef.Name}"/>
+                        </apex:column>
+                    </apex:pageblockTable>  
+                    <apex:outputPanel rendered="{!customers.Size=0}">
+                        No rows to display.
+                    </apex:outputPanel>                             
+             </apex:outputPanel>
+         </apex:pageblocksection>
+         <apex:pageblocksection columns="1" title="Create/Map Vendor to QuickBooks">
+             <apex:outputPanel rendered="{!OR(Step = 'VEN',Step = 'INV')}">
+                <apex:pageblocktable value="{!torcuserList}" var="rec">
+                    <apex:column >
+                        <apex:facet name="header">UserName</apex:facet>
+                        <apex:outputText value="{!rec.Name}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Given Name</apex:facet>
+                        <apex:outputText value="{!rec.given_name__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Family Name</apex:facet>
+                        <apex:outputText value="{!rec.family_Name__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">QB Vandor Name</apex:facet>
+                        <apex:outputText value="{!rec.Quickbooks_Vendor__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">QB ID</apex:facet>
+                        <apex:outputText value="{!rec.Quick_Books_vendor_Id__c}"/>
+                        <apex:outputPanel rendered="{!rec.Quick_Books_vendor_Id__c=NULL}">
+                            <input type="button" class="btn" value="Map Now" onclick="showMemberSearch('{!rec.given_name__c}','{!rec.family_name__c}','{!rec.id}');"/>
+                        </apex:outputPanel>
+                    </apex:column>
+                </apex:pageblocktable>     
+             </apex:outputPanel>
+         </apex:pageblockSection>  
+     </apex:tab>
+     <apex:tab Label="Invoices"  rendered="{!OR(operationon="OPP",AND(OperationOn="VACATION", vacation.Opportunity__c<>NULL))}">
+        <apex:pageblocksection columns="1">
+            <apex:outputPanel rendered="{!OR(Step = 'INV',Step = 'VEN')}">
+                 
+                 <apex:tabPanel switchType="client"  headerClass="tabPanel" activeTabClass="activeTab" inactiveTabClass="inactiveTab">
+                 <apex:tab label="Fresh Invoices">
+                     <!--
+                     <apex:outputPanel style="text-align:right">
+                         <div style="width:100%;">
+                             <apex:commandButton value="Create New Invoices in QuickBooks" action="{!CreateInvoiceInQB}" onclick="showDisable();" rendered="{!AND(NOT(opp.Invoices_Created__c))}"/>
+                         </div>
+                    </apex:outputPanel>
+                    -->
+                    <apex:pageblocktable value="{!Invoices}" var="rec">
+                        <apex:column >
+                            <apex:facet name="header">Txn Date</apex:facet>
+                            <apex:outputText value="{!rec.TxnDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">MASTERCRMID</apex:facet>
+                            <apex:outputText value="{!rec.MasterCrmIdVal}"/>
+                        </apex:column>
+                         
+                        <apex:column >
+                            <apex:facet name="header">
+                                 Line Items
+                            </apex:facet>
+                            <apex:facet name="footer">
+                                 <apex:outputText value="Total Fresh Invoiced Amount :{0, number, ###,##0.00}"><apex:param value="{!totalInvoiceAmount}"/></apex:outputText>
+                            </apex:facet>
+                            <apex:pageblocktable value="{!rec.Line}" var="li">
+                                <apex:column style="width:25%">
+                                    <apex:facet name="header">Detail Type</apex:facet>
+                                    <apex:outputText value="{!li.DetailType}"/>
+                                </apex:column>
+                                <apex:column style="width:35%">
+                                    <apex:facet name="header">Description</apex:facet>
+                                    <apex:outputText value="{!li.Description}"/>
+                                </apex:column>
+                                <apex:column style="width:15%">
+                                    <apex:facet name="header">Unit Price</apex:facet>
+                                    <apex:outputText value="{!li.SalesItemLineDetail.UnitPrice}"/>
+                                </apex:column>
+                                <apex:column style="width:10%">
+                                    <apex:facet name="header">QTY</apex:facet>
+                                    <apex:outputText value="{!li.SalesItemLineDetail.Qty}"/>
+                                </apex:column>
+                                
+                                <apex:column style="width:15%">
+                                    <apex:facet name="header">Amount</apex:facet>
+                                    <apex:outputText value="{!li.Amount}"/>
+                                </apex:column>
+                            </apex:pageblocktable>
+                        </apex:column>
+                    </apex:pageblocktable>
+                  </apex:tab>  
+                  <apex:tab label="Merged/Existing Invoices">
+                      <apex:outputpanel rendered="{!mismatchedInvoicingEmail<>''}" style="    font-size: 20px;color: red;">
+                          Mismatched Invoicing Email:{!mismatchedInvoicingEmail}
+                      </apex:outputpanel>
+                      <apex:outputPanel style="text-align:right">
+                         <div style="width:100%;">
+                             <apex:inputcheckbox value="{!loadAllinvoices}"/> <apex:outputLabel value="Load All" />&nbsp;&nbsp;&nbsp;&nbsp;
+                             <apex:commandButton value="Uncheck Past Invoices" action="{!uncheckPastInvoices}" onclick="showDisable();" rendered="{!ShowUpdateInvoice}"/>
+                             <apex:commandButton value="Load Existing Invoices" action="{!SearchExistingInvoices}" onclick="showDisable();"/>
+                             <apex:commandButton value="Create/Update/Delete Invoices in QuickBooks" action="{!UpsertInvoiceinQB}" onclick="return confirmQBOperation();" rendered="{!ShowUpdateInvoice}"/>
+                             <apex:outputLabel value="Latest Doc Number is {!Latestinvoicenumber}" rendered="{!ShowUpdateInvoice}"/>
+                         </div>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!ExistingInvoices.Size=0}">
+                        No rows to display.
+                    </apex:outputPanel>  
+                    <apex:pageblocktable value="{!ExistingInvoices}" var="rec" rendered="{!ExistingInvoices.Size>0}">
+                        <apex:column rendered="{!ShowUpdateInvoice}">
+                            <apex:inputcheckBox value="{!rec.selectedRow}" id="chk" styleClass="invs"/>
+                            <apex:facet name="header"> <input type="checkbox" onClick="checkuncheckAll(this.checked,'invs');"/></apex:facet>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Txndate</apex:facet>
+                            <apex:outputText value="{!rec.TxnDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">EmailStatus</apex:facet>
+                            <apex:outputText value="{!rec.EmailStatus}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Bill Email</apex:facet>
+                            <apex:outputText value="{!rec.BillEmail.Address}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">MASTERCRMID</apex:facet>
+                            <apex:outputText value="{!rec.MasterCrmIdVal}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Id</apex:facet>
+                            <apex:outputText value="{!rec.Id}"/>
+                        </apex:column>
+                        <apex:column style="background-color:{!rec.UpdateStyle}">
+                            <apex:facet name="header">Doc Number</apex:facet>
+                            <apex:outputText value="{!rec.DocNumber}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                 Line Items
+                            </apex:facet>
+                            <apex:facet name="footer">
+                                 <apex:outputText value="Total Existing Invoiced Amount :{0, number, ###,##0.00}"><apex:param value="{!ExistingInvoiceSum}"/></apex:outputText>
+                            </apex:facet>
+                            <apex:pageblocktable value="{!rec.SalesLine}" var="li">
+                                <apex:column style="width:4%;">
+                                    <apex:facet name="header">Id</apex:facet>
+                                    <apex:outputText value="{!li.Id}"/>
+                                </apex:column>
+                                <apex:column style="width:3%;">
+                                    <apex:facet name="header">Line Num</apex:facet>
+                                    <apex:outputText value="{!li.LineNum}"/>
+                                </apex:column>
+                                <apex:column style="width:15%;" >
+                                    <apex:facet name="header">Detail Type</apex:facet>
+                                    <apex:outputText value="{!li.DetailType}"/>
+                                </apex:column>
+                                <apex:column style="width:33%;">
+                                    <apex:facet name="header">Description</apex:facet>
+                                    <apex:outputText value="{!li.Description}"/>
+                                </apex:column>
+                                <apex:column style="width:16%;">
+                                    <apex:facet name="header">Unit Price</apex:facet>
+                                    <apex:outputText value="{!li.SalesItemLineDetail.UnitPrice}"/>
+                                </apex:column>
+                                <apex:column style="width:10%;background-color:{!li.UpdateStyle}">
+                                    <apex:facet name="header">QTY</apex:facet>
+                                    <apex:outputText value="{!li.SalesItemLineDetail.Qty}"/>
+                                </apex:column>
+                                <apex:column style="width:18%;">
+                                    <apex:facet name="header">Amount</apex:facet>
+                                    <apex:outputText value="{!li.Amount}"/>
+                                </apex:column>
+                            </apex:pageblocktable>
+                        </apex:column>
+                    </apex:pageblocktable>
+                  </apex:tab>  
+                  </apex:tabPanel>
+             </apex:outputPanel>   
+        </apex:pageblockSection>
+    </apex:tab>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <apex:tab label="Bills">    
+        <apex:pageblocksection columns="1">
+            <apex:outputPanel rendered="{!Step = 'INV'}">
+                 <apex:tabPanel switchType="client"  headerClass="tabPanel" activeTabClass="activeTab" inactiveTabClass="inactiveTab">
+                 <apex:tab title="New Bills" label="Fresh Bills">
+                    <apex:pageblocktable value="{!Bills}" var="rec">
+                        <apex:column >
+                            <apex:facet name="header">Txndate</apex:facet>
+                            <apex:outputText value="{!rec.TxnDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Due Date</apex:facet>
+                            <apex:outputText value="{!rec.Duedate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">MAster ID</apex:facet>
+                            <apex:outputText value="{!rec.PrivateNote}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Talent</apex:facet>
+                            <apex:outputText value="{!rec.VendorRef.Name}"/> - <apex:outputText value="{!rec.VendorRef.Value}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="footer">
+                                 <apex:outputText value="Total Fresh Bill Amount :{0, number, ###,##0.00}"><apex:param value="{!totalMemberPayment}"/></apex:outputText>
+                            </apex:facet>
+                            <apex:pageblockTable value="{!rec.Line}" var="rl">
+                                <apex:column >
+                                    <apex:facet name="header">Detail Type</apex:facet>
+                                    <apex:outputText value="{!rl.DetailType}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Category</apex:facet>
+                                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.name}"/>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <apex:facet name="header">Description</apex:facet>
+                                    <apex:outputText value="{!rl.Description}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Amount</apex:facet>
+                                    <apex:outputText value="{!rl.Amount}"/>
+                                </apex:column>
+                            </apex:pageblockTable>  
+                        </apex:column>  
+                    </apex:pageblocktable>
+                    </apex:tab>  
+                    
+                   <apex:tab label="Merged/Existing Bills">
+                      <apex:outputPanel style="text-align:right">
+                         <div style="width:100%;">
+                             <apex:inputcheckbox value="{!loadAllBills}"/> <apex:outputLabel value="Load All"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                             <apex:commandButton value="Uncheck Past Bills" action="{!uncheckPastBills}" onclick="showDisable();" rendered="{!ShowUpdateBills}"/>
+                             <apex:commandButton value="Load Existing Bills"  action="{!SearchExistingBills}" onclick="showDisable();"/>
+                             <apex:commandButton value="Create/Update/Delete Bills in QuickBooks" action="{!UpsertBillsinQB}" onclick="return confirmQBOperation();" rendered="{!ShowUpdateBills}"/>
+                         </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!ExistingBills.Size=0}">
+                        No rows to display.
+                    </apex:outputPanel>  
+                    <apex:pageblocktable value="{!ExistingBills}" var="rec" rendered="{!ExistingBills.Size > 0}">
+                        <apex:column rendered="{!ShowUpdateBills}">
+                            <apex:inputcheckBox value="{!rec.selectedRow}" id="chk" styleClass="bills"/>
+                            <apex:facet name="header"> <input type="checkbox" onClick="checkuncheckAll(this.checked,'bills');"/></apex:facet>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Txndate</apex:facet>
+                            <apex:outputText value="{!rec.TxnDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Due Date</apex:facet>
+                            <apex:outputText value="{!rec.Duedate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Talent</apex:facet>
+                            <apex:outputText value="{!rec.VendorRef.Name}"/> - <apex:outputText value="{!rec.VendorRef.Value}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Id</apex:facet>
+                            <apex:outputText value="{!rec.Id}"/>
+                        </apex:column>
+                        <apex:column style="background-color:{!rec.UpdateStyle}">
+                            <apex:facet name="header">Doc Number</apex:facet>
+                            <apex:outputText value="{!IF(Rec.DocNumber='[BILL_NUMBER_SFDC]',' ',rec.DocNumber)}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="footer">
+                                 <apex:outputText value="Total Existing Bill Amount :{0, number, ###,##0.00}"><apex:param value="{!ExistingBillSum}"/></apex:outputText>
+                            </apex:facet>
+                            <apex:pageblockTable value="{!rec.Line}" var="rl">
+                                <apex:column style="width:5%;">
+                                    <apex:facet name="header">Id</apex:facet>
+                                    <apex:outputText value="{!rl.Id}"/>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <apex:facet name="header">Detail Type</apex:facet>
+                                    <apex:outputText value="{!rl.DetailType}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Category</apex:facet>
+                                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.name}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Description</apex:facet>
+                                    <apex:outputText value="{!rl.Description}"/>
+                                </apex:column>                         
+                                <apex:column style="background-color:{!rl.UpdateStyle}">
+                                    <apex:facet name="header">Amount</apex:facet>
+                                    <apex:outputText value="{!rl.Amount}"/>
+                                </apex:column>
+                            </apex:pageblockTable>  
+                        </apex:column>  
+                    </apex:pageblocktable>                    
+                    </apex:tab>  
+             </apex:tabPanel>
+         </apex:outputPanel>   
+    </apex:pageblockSection>
+    </apex:tab>
+    
+    
+    
+    
+    <apex:tab label="Referral Payments" rendered="{!OR(OperationOn='OPP' , operationon='INTERNAL')}">    
+        <apex:pageblocksection columns="1">
+            <apex:outputPanel rendered="{!Step = 'INV'}">
+                 <apex:tabPanel switchType="client"  headerClass="tabPanel" activeTabClass="activeTab" inactiveTabClass="inactiveTab">
+                 <apex:tab title="New Bills" label="Fresh Referral Payments">
+                    <apex:pageblocktable value="{!Localreferralbills}" var="rec">
+                        <apex:column >
+                            <apex:facet name="header">Txndate</apex:facet>
+                            <apex:outputText value="{!rec.TxnDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Due Date</apex:facet>
+                            <apex:outputText value="{!rec.Duedate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">MAster ID</apex:facet>
+                            <apex:outputText value="{!rec.PrivateNote}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Talent</apex:facet>
+                            <apex:outputText value="{!rec.VendorRef.Name}"/> - <apex:outputText value="{!rec.VendorRef.Value}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="footer">
+                                 <apex:outputText value="Total Fresh Bill Amount :{0, number, ###,##0.00}"><apex:param value="{!totalMemberPayment}"/></apex:outputText>
+                            </apex:facet>
+                            <apex:pageblockTable value="{!rec.Line}" var="rl">
+                                <apex:column >
+                                    <apex:facet name="header">Detail Type</apex:facet>
+                                    <apex:outputText value="{!rl.DetailType}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Category</apex:facet>
+                                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.name}"/>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <apex:facet name="header">Description</apex:facet>
+                                    <apex:outputText value="{!rl.Description}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Amount</apex:facet>
+                                    <apex:outputText value="{!rl.Amount}"/>
+                                </apex:column>
+                            </apex:pageblockTable>  
+                        </apex:column>  
+                    </apex:pageblocktable>
+                    </apex:tab>  
+                    
+                   <apex:tab label="Merged/Existing Referral Payments">
+                      <apex:outputPanel style="text-align:right">
+                         <div style="width:100%;">
+                             <apex:commandButton value="Load Existing Referral payments"  action="{!SearchExistingLocalreferralBills}" onclick="showDisable();"/>
+                             <apex:commandButton value="Create/Update/Delete Referral payments in QuickBooks" action="{!UpsertLocalreferralBillsinQB}" rendered="{!existinglocalReferralBills.Size>0}" onclick="return confirmQBOperation();"/>
+                             
+                         </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!existinglocalReferralBills.Size=0}">
+                        No rows to display.
+                    </apex:outputPanel>  
+                    <apex:pageblocktable value="{!existinglocalReferralBills}" var="rec" rendered="{!existinglocalReferralBills.Size > 0}">
+                        <apex:column >
+                            <apex:inputcheckBox value="{!rec.selectedRow}" id="chk" styleClass="rbills"/>
+                            <apex:facet name="header"> <input type="checkbox" onClick="checkuncheckAll(this.checked,'rbills');"/></apex:facet>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Txndate</apex:facet>
+                            <apex:outputText value="{!rec.TxnDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Due Date</apex:facet>
+                            <apex:outputText value="{!rec.Duedate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Talent</apex:facet>
+                            <apex:outputText value="{!rec.VendorRef.Name}"/> - <apex:outputText value="{!rec.VendorRef.Value}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Id</apex:facet>
+                            <apex:outputText value="{!rec.Id}"/>
+                        </apex:column>
+                        <apex:column style="background-color:{!rec.UpdateStyle}">
+                            <apex:facet name="header">Doc Number</apex:facet>
+                            <apex:outputText value="{!IF(Rec.DocNumber='[BILL_NUMBER_SFDC]',' ',rec.DocNumber)}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="footer">
+                                 <apex:outputText value="Total Existing Referral Amount :{0, number, ###,##0.00}"><apex:param value="{!ExistingLocalreferralBillSum}"/></apex:outputText>
+                            </apex:facet>
+                            <apex:pageblockTable value="{!rec.Line}" var="rl">
+                                <apex:column style="width:5%;">
+                                    <apex:facet name="header">Id</apex:facet>
+                                    <apex:outputText value="{!rl.Id}"/>
+                                </apex:column>
+                                
+                                <apex:column >
+                                    <apex:facet name="header">Detail Type</apex:facet>
+                                    <apex:outputText value="{!rl.DetailType}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Category</apex:facet>
+                                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.name}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Description</apex:facet>
+                                    <apex:outputText value="{!rl.Description}"/>
+                                </apex:column>                         
+                                <apex:column style="background-color:{!rl.UpdateStyle}">
+                                    <apex:facet name="header">Amount</apex:facet>
+                                    <apex:outputText value="{!rl.Amount}"/>
+                                </apex:column>
+                            </apex:pageblockTable>  
+                        </apex:column>  
+                    </apex:pageblocktable>                    
+                    </apex:tab>  
+             </apex:tabPanel>
+         </apex:outputPanel>   
+    </apex:pageblockSection>
+    </apex:tab>
+    
+    
+    
+    
+    </apex:tabPanel>     
+</apex:pageblock>
+<script>
+    function showMemberSearch(fn,ln,id)
+    {
+        document.getElementById('tstpopup5').style.display='';
+        document.getElementById('{!$COMPONENT.fnSearch}').value=fn;
+        document.getElementById('{!$COMPONENT.lnSearch}').value=ln;
+        document.getElementById('{!$COMPONENT.TorcmemberidToUpdate}').value=id;
+    }
+    function isVendorMapPeffect()
+    {
+        if(document.getElementById("{!$Component.QBvendoridToUpdate}").value=='')
+        {
+            alert('Please select vendor first.');
+            return false;
+        }
+        showDisable();
+        return true;
+    }
+    function hidememberSerach()
+    {
+        document.getElementById('tstpopup5').style.display='none';
+    }
+</script>
+
+<div id="tstpopup5" style="display:none">
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.75; z-index: 1000; background-color: black;">
+        &nbsp;
+    </div>
+    <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 10% 10%;text-align: right;">  
+        <apex:outputPanel id="searchpanel">
+        <table style="width:100%;background-color: white;"><tr>
+        <td style="width:95%; font-weight:bold;font-size:16px;text-align:left;padding:15px;font-family: Roboto;" id="tdShowMore">
+            Vendor Search In Quick Books...
+        </td>
+        <td>          
+        <input type="Button" style="font-size:14px;font-family: Roboto;" Class="btn" value="X" onclick="showDisable();cleanupVandors();"/><br/>
+        </td></tr><tr>
+        <td colspan="2" style="padding:15px">
+        <div style="line-height:1.5;text-align:left; max-height:500px;overflow:scroll;font-size:15px;padding:18px;background-color:;vertical-align:top;border: 1px solid #d3dae6;border-radius: 15px 0px 15px 15px;flex-grow: 1;" id="showmoretext">
+            <table style="width:100%">
+                <tr style="">
+                    <td>
+                       <font style="font-weight:bold">Given Name</font><br/>
+                       <apex:inputText value="{!fnSearch}" id="fnSearch"/>
+                    </td>
+                    <td>
+                       <font style="font-weight:bold">Family Name</font><br/>
+                       <apex:inputText value="{!lnSearch}" id="lnSearch"/>
+                    </td>
+                    <td>
+                        <apex:inputText value="{!QBvendoridToUpdate}" id="QBvendoridToUpdate" style="display:none"/>
+                        <apex:inputText id="TorcmemberidToUpdate" style="display:none" value="{!TorcmemberidToUpdate}"/><br/>
+                        <input type="button" value="Search" class="btn" onclick="showDisable();SearchVendor();"/>&nbsp;&nbsp; 
+                        <apex:commandButton value="Map Selected" onclick="return isVendorMapPeffect();" action="{!MapMemberToExtsingQBVendor}"  rendered="{!vendors.size>0}"/>&nbsp;&nbsp; 
+                        <apex:commandButton value="Create" action="{!CreateQBVendor}" onclick="showDisable();"/>
+                    </td>   
+               </tr>
+               <tr>
+                   <td colspan="3">
+                           <div style="line-height:1.5;text-align:left; max-height:300px;overflow:scroll;font-size:15px;padding:18px;background-color:;vertical-align:top;border: 1px solid #d3dae6;border-radius: 15px 15px 15px 15px;flex-grow: 1;" id="showmoretext">                           
+                            <apex:outputPanel >
+                                <apex:pageblock >
+                                    
+                                    <script>
+                                        function setQBVendorIdVal(id)
+                                        {
+                                            document.getElementById("{!$Component.QBvendoridToUpdate}").value=id;
+                                        }
+                                    </script>
+                                    <apex:pageblockTable value="{!vendors}" var="cust"  rendered="{!vendors.size>0}">
+                                        <apex:column >
+                                            <apex:facet name="header">Select</apex:facet>
+                                            <input type="radio" id="html" name="fav_language1" onclick="setQBVendorIdVal('{!cust.id}');"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header">ID</apex:facet>
+                                            <apex:outputText value="{!cust.id}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header">Name</apex:facet>
+                                            <apex:outputText value="{!cust.DisplayName}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header">Email</apex:facet>
+                                            <apex:outputText value="{!cust.PrimaryEmailAddr.Address}"/>
+                                        </apex:column>
+                                    </apex:pageblockTable> 
+                                    <apex:outputPanel rendered="{!vendors.size=0}">
+                                        No rows to display.
+                                    </apex:outputPanel>
+                                </apex:pageblock>
+                             </apex:outputPanel>
+                           </div>
+                   </td>
+               </tr>     
+           </table>    
+        </div>
+        </td></tr></table>
+        </apex:outputPanel>
+    </div>            
+</div>
+<c:WaitPopup />
+</apex:form>
+</apex:page>

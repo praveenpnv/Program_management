@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Situation__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(AND(Placement__r.First_Working_Day__c&lt;= Last_Day_Of_Month__c,Placement__r.Last_Working_Day__c&gt;=(Date(year(End_Date__c),Month(End_Date__c),1))),
+    IF(AND(Placement__r.First_Working_Day__c&gt;=(Date(year(End_Date__c),Month(End_Date__c),1)),Placement__r.Last_Working_Day__c&lt;= Last_Day_Of_Month__c),
+        &apos;TEMPORARY&apos;,
+        IF(AND(Placement__r.First_Working_Day__c&gt;=(Date(year(End_Date__c),Month(End_Date__c),1)),Placement__r.First_Working_Day__c&lt;= Last_Day_Of_Month__c),
+            &apos;NEW&apos;,
+            IF(AND(Placement__r.Last_Working_Day__c&gt;=(Date(year(End_Date__c),Month(End_Date__c),1)),Placement__r.Last_Working_Day__c&lt;= Last_Day_Of_Month__c),
+                &apos;CHURN&apos;,
+                &apos;CONTINUE&apos;
+            )
+        )
+    ),
+    &apos;INACTIVE&apos;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Situation</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

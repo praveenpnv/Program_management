@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>RowNum__c</columns>
+    <columns>File_ID__c</columns>
+    <columns>Title__c</columns>
+    <columns>Type__c</columns>
+    <columns>Candidate_ID__c</columns>
+    <columns>CandidateEmail__c</columns>
+    <columns>Date_Added__c</columns>
+    <columns>Distribution__c</columns>
+    <columns>S3_File_Url__c</columns>
+    <columns>Exists__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Records</label>
+</ListView>

@@ -1,0 +1,16 @@
+<template>
+
+   
+    <!--<c-combo-box type-attributes={typeAttributes}  data-inputable="true"></c-combo-box>-->
+   <lightning-combobox
+        value={editedValue}
+        options={typeAttributes.options}
+        name={typeAttributes.fieldName}
+        variant="label-hidden"
+        data-inputable="true"
+        context={typeAttributes.context}>
+                       
+    </lightning-combobox>
+
+   
+</template>

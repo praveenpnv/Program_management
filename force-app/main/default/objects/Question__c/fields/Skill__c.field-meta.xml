@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Skill__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Set during Job Setup by the system. Ensures Skill Variables are resolved using the correct, related Skill</description>
+    <label>Skill</label>
+    <referenceTo>TR1__Skills__c</referenceTo>
+    <relationshipLabel>Questions</relationshipLabel>
+    <relationshipName>Questions</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

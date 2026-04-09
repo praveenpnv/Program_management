@@ -1,0 +1,515 @@
+<template>
+    <div class="pp-shell">
+
+        <div class="pp-body">
+            <aside class="pp-sidebar">
+                <nav class="pp-nav">
+                    <template for:each={navItems} for:item="nav">
+                        <button key={nav.id} class={nav.cls} value={nav.id} onclick={handleNavClick}>
+                            <lightning-icon icon-name={nav.icon} size="x-small"></lightning-icon>
+                            {nav.label}
+                        </button>
+                    </template>
+                </nav>
+            </aside>
+
+            <main class="pp-main">
+
+                <template if:true={isLoading}>
+                    <div class="pp-loading-overlay">
+                        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <div>
+
+                    <template if:true={showDashboard}>
+                        <c-project-dashboard-view
+                            metrics={metrics}
+                            recent-projects={recentProjects}
+                            onviewprojects={handleGoToProjects}
+                            onopen={handleOpenProjectEvent}
+                            onreleaseopen={handleDashboardReleaseOpen}>
+                        </c-project-dashboard-view>
+                    </template>
+
+                    <template if:true={showProgrammes}>
+                        <!-- <div class="pp-prog-header">
+                            <button class="pp-btn pp-btn-primary" onclick={handleNewProgramme}>+ New Programme</button>
+                            <button class="pp-btn pp-btn-secondary" onclick={handleNewProject}>+ New Project</button>
+                        </div> -->
+                        <c-executive-program-view
+                            programs={programList}
+                            projects={projectList}
+                            onopen={handleOpenProjectEvent}>
+                        </c-executive-program-view>
+                    </template>
+
+                    <template if:true={showProjectList}>
+                        <c-project-list-view
+                            projects={projectList}
+                            onopen={handleOpenProjectEvent}
+                            onnewproject={handleNewProject}>
+                        </c-project-list-view>
+                    </template>
+
+                    <template if:true={showProjectDetail}>
+                        <c-project-detail-view
+                            initial-tab={_initialTab}
+                            project={selectedProject}
+                            features={featureList}
+                            stories={requestList}
+                            requirements={requirementList}
+                            releases={releaseList}
+                            onupdatestage={handleUpdateStage}
+                            onstoryopen={handleStoryOpen}
+                            onreqopen={handleReqOpen}
+                            onfeatureopen={handleFeatureOpen}
+                            onreleaseopen={handleReleaseOpen}
+                            onapprovereq={handleApproveReq}
+                            onstatuschange={handleStatusChange}
+                            onaddrelease={handleAddRelease}
+                            onnewfeature={handleNewFeature}
+                            onnewstory={handleNewRequest}
+                            onnewrequirement={handleNewRequirement}
+                            onnewchangerequest={handleNewChangeRequest}
+                            onreqstatuschange={handleReqStatusChange}
+                            onprojectupdated={handleProjectUpdated}>
+                        </c-project-detail-view>
+                    </template>
+
+                    <template if:true={showQABoard}>
+                        <c-qa-board-view
+                            stories={qaBoardRequests}
+                            onstatuschange={handleStatusChange}
+                            onstoryopen={handleStoryOpen}>
+                        </c-qa-board-view>
+                    </template>
+
+                    <template if:true={showReleaseBoard}>
+                        <c-release-board-view
+                            stories={releaseBoardRequests}
+                            onstatuschange={handleReleaseBoardStatusChange}
+                            onstoryopen={handleStoryOpen}>
+                        </c-release-board-view>
+                    </template>
+
+                    <template if:true={showSupportBoard}>
+                        <c-support-board-view
+                            stories={supportBoardRequests}
+                            onstatuschange={handleStatusChange}
+                            onstoryopen={handleStoryOpen}>
+                        </c-support-board-view>
+                    </template>
+
+                </div>
+            </main>
+        </div>
+
+        <template if:true={activeStory}>
+            <c-story-detail-modal
+                story={activeStory}
+                onclose={handleCloseModals}
+                onstatuschange={handleStatusChange}
+                onreqopen={handleReqOpenFromModal}
+                onstorylink={handleStoryLinkFromReq}
+                onnavigate={handleNavigate}
+                onstoryupdated={handleStoryUpdated}>
+            </c-story-detail-modal>
+        </template>
+
+        <template if:true={activeRequirement}>
+            <c-requirement-detail-modal
+                requirement={activeRequirement}
+                onclose={handleCloseModals}
+                onapprove={handleModalApprove}
+                onstorylink={handleStoryLinkFromReq}
+                onnavigate={handleNavigate}
+                onstatuschange={handleReqStatusChange}
+                onrequirementupdated={handleReqUpdated}>
+            </c-requirement-detail-modal>
+        </template>
+
+        <template if:true={activeFeatureId}>
+            <c-feature-detail-modal
+                feature-id={activeFeatureId}
+                onclose={handleCloseModals}
+                onstoryopen={handleStoryOpen}
+                onreqopen={handleReqOpen}
+                onnavigate={handleNavigate}>
+            </c-feature-detail-modal>
+        </template>
+
+        <template if:true={showReleaseModal}>
+            <c-release-detail-modal
+                release={activeRelease}
+                project-id={selectedProjectId}
+                features={featureList}
+                stories={requestList}
+                onclose={handleCloseModals}
+                onsave={handleReleaseSave}
+                onnavigate={handleNavigate}>
+            </c-release-detail-modal>
+        </template>
+
+        <!-- Create / New Record modal -->
+        <template if:true={showCreateModal}>
+            <div class="pp-modal-bd" onclick={handleCloseCreate}>
+                <div class="pp-modal" onclick={stopProp}>
+                    <div class="pp-modal-hdr">
+                        <h3 class="pp-modal-title">{createModalTitle}</h3>
+                        <button class="pp-modal-close" onclick={handleCloseCreate}>&#x2715;</button>
+                    </div>
+                    <div class="pp-modal-body">
+
+                        <!-- ── NEW PROJECT ───────────────────────────────────── -->
+                        <template if:true={isCreateProject}>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Project Name *</label>
+                                    <input class="pp-input" type="text" data-field="name" onchange={handleCreateInput} placeholder="e.g. Popp AI"/>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Project Type</label>
+                                    <select class="pp-select" data-field="projectType" onchange={handleCreateInput}>
+                                        <option value="Major Projects" selected>Major Projects</option>
+                                        <option value="Technical Support">Technical Support</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Program</label>
+                                    <select class="pp-select" data-field="programId" onchange={handleCreateInput}>
+                                        <option value="">— None —</option>
+                                        <template for:each={programOptions} for:item="prog">
+                                            <option key={prog.id} value={prog.id}>{prog.name}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                            <template if:true={isTechSupportCreate}>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Parent Project *</label>
+                                    <select class="pp-select" data-field="parentProjectId" onchange={handleCreateInput}>
+                                        <option value="">— Select parent project —</option>
+                                        <template for:each={projectOptions} for:item="p">
+                                            <option key={p.id} value={p.id}>{p.name}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </template>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Status</label>
+                                    <select class="pp-select" data-field="status" onchange={handleCreateInput}>
+                                        <option value="Not Started" selected>Not Started</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="On going">On going</option>
+                                        <option value="On Hold">On Hold</option>
+                                        <option value="Continues">Continues</option>
+                                        <option value="Delivered">Delivered</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Priority</label>
+                                    <select class="pp-select" data-field="priority" onchange={handleCreateInput}>
+                                        <option value="P1">P1 – Critical</option>
+                                        <option value="P2">P2 – High</option>
+                                        <option value="P3" selected>P3 – Medium</option>
+                                        <option value="P4">P4 – Low</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">RAG Status</label>
+                                    <select class="pp-select" data-field="ragStatus" onchange={handleCreateInput}>
+                                        <option value="Green" selected>Green</option>
+                                        <option value="Amber">Amber</option>
+                                        <option value="Red">Red</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Start Date</label>
+                                    <input class="pp-input" type="date" data-field="startDate" onchange={handleCreateInput}/>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Target Completion</label>
+                                    <input class="pp-input" type="date" data-field="targetDate" onchange={handleCreateInput}/>
+                                </div>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Technical Owner</label>
+                                    <c-user-lookup label="" placeholder="Search technical owner…"
+                                        value={createTechOwner}
+                                        onselect={handleCreateTechOwnerSelect}
+                                        onclear={handleCreateTechOwnerClear}>
+                                    </c-user-lookup>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Functional Owner</label>
+                                    <c-user-lookup label="" placeholder="Search functional owner…"
+                                        value={createFuncOwner}
+                                        onselect={handleCreateFuncOwnerSelect}
+                                        onclear={handleCreateFuncOwnerClear}>
+                                    </c-user-lookup>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Business Owner</label>
+                                    <c-user-lookup label="" placeholder="Search business owner…"
+                                        value={createBizOwner}
+                                        onselect={handleCreateBizOwnerSelect}
+                                        onclear={handleCreateBizOwnerClear}>
+                                    </c-user-lookup>
+                                </div>
+                            </div>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Description</label>
+                                <textarea class="pp-textarea" data-field="description" onchange={handleCreateInput} rows="3"></textarea>
+                            </div>
+                        </template>
+
+                        <!-- ── NEW PROGRAMME ─────────────────────────────────── -->
+                        <template if:true={isCreateProgramme}>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Programme Name *</label>
+                                    <input class="pp-input" type="text" data-field="name" onchange={handleCreateInput} placeholder="e.g. Digital Transformation 2026"/>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Type</label>
+                                    <select class="pp-select" data-field="type" onchange={handleCreateInput}>
+                                        <option value="Acceleration">Acceleration</option>
+                                        <option value="Business Expansion">Business Expansion</option>
+                                        <option value="Major Projects" selected>Major Projects</option>
+                                        <option value="Run">Run</option>
+                                        <option value="Sanitization">Sanitization</option>
+                                        <option value="Stabilization">Stabilization</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Status</label>
+                                    <select class="pp-select" data-field="status" onchange={handleCreateInput}>
+                                        <option value="Not Started" selected>Not Started</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="On going">On going</option>
+                                        <option value="On Hold">On Hold</option>
+                                        <option value="Continues">Continues</option>
+                                        <option value="Delivered">Delivered</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Priority</label>
+                                    <select class="pp-select" data-field="priority" onchange={handleCreateInput}>
+                                        <option value="P1">P1 – Critical</option>
+                                        <option value="P2" selected>P2 – High</option>
+                                        <option value="P3">P3 – Medium</option>
+                                        <option value="P4">P4 – Low</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">RAG Status</label>
+                                    <select class="pp-select" data-field="ragStatus" onchange={handleCreateInput}>
+                                        <option value="Green" selected>Green</option>
+                                        <option value="Amber">Amber</option>
+                                        <option value="Red">Red</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Start Date</label>
+                                    <input class="pp-input" type="date" data-field="startDate" onchange={handleCreateInput}/>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">End Date</label>
+                                    <input class="pp-input" type="date" data-field="endDate" onchange={handleCreateInput}/>
+                                </div>
+                            </div>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Description</label>
+                                <textarea class="pp-textarea" data-field="description" onchange={handleCreateInput} rows="3"></textarea>
+                            </div>
+                        </template>
+
+                        <!-- ── NEW FEATURE ───────────────────────────────────── -->
+                        <template if:true={isCreateFeature}>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Feature Name *</label>
+                                <input class="pp-input" type="text" data-field="name" onchange={handleCreateInput}/>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Priority</label>
+                                    <select class="pp-select" data-field="priority" onchange={handleCreateInput}>
+                                        <option value="Critical">Critical</option>
+                                        <option value="High">High</option>
+                                        <option value="Medium" selected>Medium</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Status</label>
+                                    <select class="pp-select" data-field="status" onchange={handleCreateInput}>
+                                        <option value="Planning" selected>Planning</option>
+                                        <option value="Active">Active</option>
+                                        <option value="In Development">In Development</option>
+                                        <option value="Completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Description</label>
+                                <textarea class="pp-textarea" data-field="description" onchange={handleCreateInput} rows="3"></textarea>
+                            </div>
+                        </template>
+
+                        <!-- ── NEW REQUEST (was Story) ────────────────────────── -->
+                        <template if:true={isCreateRequest}>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Request Title *</label>
+                                <input class="pp-input" type="text" data-field="name" onchange={handleCreateInput}/>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Type</label>
+                                    <select class="pp-select" data-field="storyType" onchange={handleCreateInput}>
+                                        <option value="Request" selected>Request</option>
+                                        <option value="Bug Fix">Bug Fix</option>
+                                        <option value="Task">Task</option>
+                                        <option value="Enhancement">Enhancement</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Priority</label>
+                                    <select class="pp-select" data-field="priority" onchange={handleCreateInput}>
+                                        <option value="P1">P1 – Critical</option>
+                                        <option value="P2">P2 – High</option>
+                                        <option value="P3" selected>P3 – Medium</option>
+                                        <option value="P4">P4 – Low</option>
+                                    </select>
+                                </div>
+                                <!-- <div class="pp-form-group">
+                                    <label class="pp-lbl">Points</label>
+                                    <input class="pp-input" type="number" min="0" data-field="storyPoints" onchange={handleCreateInput}/>
+                                </div> -->
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Feature</label>
+                                    <select class="pp-select" data-field="featureId" onchange={handleCreateInput}>
+                                        <option value="">— None —</option>
+                                        <template for:each={featureOptions} for:item="f">
+                                            <option key={f.Id} value={f.Id}>{f.Name}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <!-- <div class="pp-form-group">
+                                    <label class="pp-lbl">Sprint</label>
+                                    <input class="pp-input" type="text" data-field="sprint" onchange={handleCreateInput} placeholder="e.g. Sprint 3"/>
+                                </div> -->
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Assigned Developer</label>
+                                    <c-user-lookup label="" placeholder="Search developer…"
+                                        value={createAssignedUser}
+                                        onselect={handleCreateAssignedSelect}
+                                        onclear={handleCreateAssignedClear}>
+                                    </c-user-lookup>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">QA Assignee</label>
+                                    <c-user-lookup label="" placeholder="Search QA engineer…"
+                                        value={createQaUser}
+                                        onselect={handleCreateQaSelect}
+                                        onclear={handleCreateQaClear}>
+                                    </c-user-lookup>
+                                </div>
+                            </div>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Business Description</label>
+                                <textarea class="pp-textarea" data-field="businessDescription" onchange={handleCreateInput} rows="2"></textarea>
+                            </div>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Technical Description</label>
+                                <textarea class="pp-textarea" data-field="description" onchange={handleCreateInput} rows="2"></textarea>
+                            </div>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Acceptance Criteria</label>
+                                <textarea class="pp-textarea" data-field="acceptanceCriteria" onchange={handleCreateInput} rows="2"></textarea>
+                            </div>
+                        </template>
+
+                        <!-- ── NEW REQUIREMENT ───────────────────────────────── -->
+                        <template if:true={isCreateRequirement}>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Title *</label>
+                                <input class="pp-input" type="text" data-field="name" onchange={handleCreateInput}/>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Category</label>
+                                    <select class="pp-select" data-field="category" onchange={handleCreateInput}>
+                                        <option value="New Request" selected={isNewRequest}>New Request</option>
+                                        <option value="Change Request" selected={isChangeRequestCreate}>Change Request</option>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Priority</label>
+                                    <select class="pp-select" data-field="priority" onchange={handleCreateInput}>
+                                        <option value="High">High</option>
+                                        <option value="Medium" selected>Medium</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="pp-form-row">
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Feature</label>
+                                    <select class="pp-select" data-field="featureId" onchange={handleCreateInput}>
+                                        <option value="">— None —</option>
+                                        <template for:each={featureOptions} for:item="f">
+                                            <option key={f.Id} value={f.Id}>{f.Name}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Requestor</label>
+                                    <c-user-lookup label="" placeholder="Search user…"
+                                        value={createRequestorUser}
+                                        onselect={handleCreateRequestorSelect}
+                                        onclear={handleCreateRequestorClear}>
+                                    </c-user-lookup>
+                                </div>
+                            </div>
+                            <div class="pp-form-group">
+                                <label class="pp-lbl">Description</label>
+                                <textarea class="pp-textarea" data-field="description" onchange={handleCreateInput} rows="3"></textarea>
+                            </div>
+                            <template if:true={isChangeRequestCreate}>
+                                <div class="pp-form-group">
+                                    <label class="pp-lbl">Impact *</label>
+                                    <textarea class="pp-textarea" data-field="impact" onchange={handleCreateInput} rows="2" placeholder="Describe the business/technical impact of this change"></textarea>
+                                </div>
+                            </template>
+                        </template>
+
+                    </div>
+                    <div class="pp-modal-ftr">
+                        <button class="pp-btn pp-btn-secondary" onclick={handleCloseCreate}>Cancel</button>
+                        <button class="pp-btn pp-btn-primary" onclick={handleSaveCreate} disabled={isSaving}>
+                            <template if:false={isSaving}>Save</template>
+                            <template if:true={isSaving}>Saving...</template>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <c-protrack-walkthrough></c-protrack-walkthrough>
+
+    </div>
+</template>

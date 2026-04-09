@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Onboarding_Status__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( NOT(ISNULL(Termination_Date__c)) ,&apos;1.Terminated&apos;,
+IF(AND (
+Docusign_Status__c =&apos;Completed&apos;,
+Trolley_Status__c =&apos;active&apos;
+),&apos;2.Completed&apos;,&apos;3.Inactive&apos;))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Onboarding Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

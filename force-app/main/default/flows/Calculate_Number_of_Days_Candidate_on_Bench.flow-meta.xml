@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Bench_Start_date</name>
+        <label>Assign Bench Start date</label>
+        <locationX>50</locationX>
+        <locationY>395</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Bench_Start_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Today</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>To_check_if_the_contact_was_previously_not_on_the_bench</name>
+        <label>To check if the contact was previously not on the bench</label>
+        <locationX>182</locationX>
+        <locationY>287</locationY>
+        <defaultConnectorLabel>Already on Bench</defaultConnectorLabel>
+        <rules>
+            <name>contact_was_previously_not_on_the_bench</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Consultant_Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Bench</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Consultant_Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Bench</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Bench_Start_date</targetReference>
+            </connector>
+            <label>contact was previously not on the bench</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>NumberofDaysonBench</name>
+        <dataType>Number</dataType>
+        <expression>TODAY() - {!$Record.Bench_Start_Date__c}</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>Today</name>
+        <dataType>Date</dataType>
+        <expression>Today()</expression>
+    </formulas>
+    <interviewLabel>Calculate Number of Days Candidate on Bench {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Calculate Number of Days Candidate on Bench</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>To_check_if_the_contact_was_previously_not_on_the_bench</targetReference>
+        </connector>
+        <filterFormula>AND(
+    TEXT({!$Record.Consultant_Status__c}) = &quot;Bench&quot;,
+    {!$Setup.Active_Trigger_Flow_VR__c.Contact_Flow__c} = TRUE
+)</filterFormula>
+        <object>Contact</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

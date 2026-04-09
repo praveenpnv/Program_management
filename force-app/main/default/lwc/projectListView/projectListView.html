@@ -1,0 +1,61 @@
+<template>
+    <div class="plv-wrap">
+        <div class="plv-header">
+            <div>
+                <h1 class="plv-title">Projects</h1>
+                <span class="plv-count">{projectCount} project(s)</span>
+            </div>
+            <button class="plv-new-btn" onclick={handleNew}>+ New Project</button>
+        </div>
+        <div class="plv-grid">
+            <template for:each={projectItems} for:item="proj">
+                <div key={proj.id} class={proj.cardCls}>
+                    <div class="plv-card-top">
+                        <div class="plv-card-top-left">
+                            <span class={proj.statusCls}>{proj.status}</span>
+                            <template if:true={proj.priority}>
+                                <span class={proj.priCls}>{proj.priority}</span>
+                            </template>
+                            <template if:true={proj.projectType}>
+                                <span class={proj.typeCls}>{proj.projectType}</span>
+                            </template>
+                        </div>
+                        <span class={proj.ragCls}>{proj.ragDot} {proj.ragStatus}</span>
+                    </div>
+                    <h3 class="plv-card-name">{proj.name}</h3>
+                    <template if:true={proj.programName}>
+                        <p class="plv-prog-label">&#9654; {proj.programName}</p>
+                    </template>
+                    <template if:true={proj.description}>
+                        <p class="plv-card-desc">{proj.description}</p>
+                    </template>
+                    <div class="plv-owner-chips">
+                        <template if:true={proj.technicalOwnerName}>
+                            <span class="plv-chip plv-chip-tech">{proj.technicalOwnerName}</span>
+                        </template>
+                        <template if:true={proj.functionalOwnerName}>
+                            <span class="plv-chip plv-chip-func">{proj.functionalOwnerName}</span>
+                        </template>
+                        <template if:true={proj.businessOwnerName}>
+                            <span class="plv-chip plv-chip-biz">{proj.businessOwnerName}</span>
+                        </template>
+                    </div>
+                    <div class="plv-card-footer">
+                        <span class="plv-stage">&#9654; {proj.stage}</span>
+                        <template if:true={proj.ownerName}>
+                            <span class="plv-owner">&#128100; {proj.ownerName}</span>
+                        </template>
+                    </div>
+                    <div class="plv-card-actions">
+                        <button class="plv-open-btn" value={proj.id} onclick={handleOpen}>Open Project</button>
+                    </div>
+                </div>
+            </template>
+            <template if:false={hasProjects}>
+                <div class="plv-empty">
+                    <p>No projects yet. Click + New Project to get started.</p>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

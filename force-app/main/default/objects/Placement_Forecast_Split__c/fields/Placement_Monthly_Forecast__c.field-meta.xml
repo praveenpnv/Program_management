@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Placement_Monthly_Forecast__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Placement Monthly Forecast</label>
+    <referenceTo>Placement_Monthly_Forecast__c</referenceTo>
+    <relationshipLabel>Placement Forecast Splits</relationshipLabel>
+    <relationshipName>Placement_Forecast_Splits</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

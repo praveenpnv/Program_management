@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Region_Type__c</fullName>
+    <label>Region Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>State</fullName>
+                <default>false</default>
+                <label>State</label>
+            </value>
+            <value>
+                <fullName>County</fullName>
+                <default>false</default>
+                <label>County</label>
+            </value>
+            <value>
+                <fullName>City</fullName>
+                <default>false</default>
+                <label>City</label>
+            </value>
+            <value>
+                <fullName>Metropolitan Area</fullName>
+                <default>false</default>
+                <label>Metropolitan Area</label>
+            </value>
+            <value>
+                <fullName>Custom Region</fullName>
+                <default>false</default>
+                <label>Custom Region</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

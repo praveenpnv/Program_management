@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_User_Opco</name>
+        <label>Check User Opco</label>
+        <locationX>182</locationX>
+        <locationY>287</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_User_Opco_Blank</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Owner:User.Opco__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Billing_Entity_Opco_wise</targetReference>
+            </connector>
+            <label>Check User Opco Blank</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Billing Entity Opco wise {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Billing Entity Opco wise</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Billing_Entity_Opco_wise</name>
+        <label>Billing Entity Opco wise</label>
+        <locationX>50</locationX>
+        <locationY>395</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Responsible_Opco__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>France</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>User_Opco__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>France</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Billing_Entity__c</field>
+            <value>
+                <stringValue>RSD SAS France</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_User_Opco</targetReference>
+        </connector>
+        <filterFormula> {!$Setup.Active_Trigger_Flow_VR__c.Job_Flow__c} = TRUE</filterFormula>
+        <object>TR1__Job__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

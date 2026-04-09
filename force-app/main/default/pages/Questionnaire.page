@@ -1,0 +1,381 @@
+<apex:page controller="Questionnaire"  showHeader="false" sidebar="false" title="Freelancer Questionnaire">
+    <style>
+    .custPopup{
+            border-width: 0px;
+            border-style: solid;
+            padding:10px;
+            top: 50%;left: 50%;transform: translate(-50%, -50%);
+            position: fixed;
+            
+            width: 100px;
+            z-index: 9999;
+            display: none; 
+        }
+        .popupBackground{
+        background-color:black;
+            
+            filter: alpha(opacity = 20);
+            position: fixed;
+            opacity: 0.50;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            display: none; 
+        }
+    
+    
+    
+    
+            .table-container {
+            width: 100%;
+            justify-content: center; /* Centers table horizontally */
+            background-color:rgb(204 248 251);
+        }
+
+        .mytable {
+            border-collapse: collapse;
+            width: 60%; /* Adjust width as needed */
+            margin: auto; /* Centers the table */
+            background-color: white;
+        }
+        
+        .mytd {
+            padding: 20px;
+            padding-left: 30px;
+            /*border: 1px solid #ddd;*/
+            font-size:15px;
+            text-align: left; /* Keeps text aligned left */
+        }
+        .myth {
+            padding: 20px;
+            padding-left: 30px;
+            /*border: 1px solid #ddd;*/
+            font-size:15px;
+            text-align: left; /* Keeps text aligned left */
+            text-wrap-mode: wrap;
+            border-top: 20px solid rgb(204 248 251); /* Optional: Thick border on top */
+        }
+        .mytxt{
+                width:90%;
+                height:25px;
+                padding-left: 20px;
+            }
+        
+    </style>
+    <script>
+        function showDisable()
+        {
+            document.getElementById('popupBackground').style.display = 'block';
+            document.getElementById('popupBox').style.display = 'block';
+        }
+        function hideDisable()
+        {
+            document.getElementById('popupBackground').style.display = 'none';
+            document.getElementById('popupBox').style.display = 'none';
+        }
+    </script>
+    <div id="popupBackground" class="popupBackground"></div>
+    <div id="popupBox" class="custPopup">
+        <img src="{!$Resource.waiting}" style="width:90px;height:90px"/>
+    </div>
+
+    <apex:form rendered="{!showSelection}" >
+            <apex:pageBlock >
+            <div class="table-container">
+                
+                <table class="mytable">
+                    <tr><td>
+                        <a href="https://www.torc.dev/newsroom" target="_blank" rel="noreferrer"><img src="https://platform.torc.dev/assets/torc_randstad_banner-Cfp-hyvp.png" alt="My Image" height="100" width="100%"/></a>
+                    </td></tr>
+                    <tr><td class="mytd" style="text-align:center;font-size:30px;height:80vh; vertical-align: top;">
+        <apex:commandButton onclick="showDisable();" value="I live in the United States" action="{!showUSBased}" style="background: #00FFFF;width: 350px;height: 70px;font-size:20px"/> &nbsp;&nbsp;&nbsp;
+        <apex:commandButton onclick="showDisable();" value="I do not live in the United States" action="{!showNonUSBased}" style="background: #00FFFF;width: 350px;height: 70px;font-size:20px"/>
+        </td>
+        </tr></table>
+        
+        </div>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:form rendered="{!NOT(showSelection)}">
+        <apex:actionFunction name="setFormOfBusiness" id="setFormOfBusiness" action="{!setFormOfBusiness}" immediate="true" reRender="opy,opb,opb1,opb2">
+            <apex:param name="a1" id="a1" assignTo="{!valgett}" value=""/>
+            <apex:param name="a" id="a" assignTo="{!fngett}" value=""/>
+            
+        </apex:actionFunction>
+        
+        <apex:pageBlock rendered="{!(isSuccess)}">
+            <div style="font-size: 50px;color: blue;text-align: center;">
+                Thanks for your response.
+            </div>
+        </apex:pageBlock>
+        <script>
+            function hideunhideother(fld,val,chk)
+            {
+                if(fld=="Other")
+                {
+                    if(val)
+                        document.getElementById(chk).style.display="";
+                    else
+                        document.getElementById(chk).style.display="none";    
+                }
+                
+            }
+        </script>
+        <apex:pageBlock rendered="{!NOT(isSuccess)}">
+            <div class="table-container">
+                <table class="mytable">
+                    <tr><td>
+                        <!--<apex:image url="{!$Resource.rdlogo}" alt="My Image" width="100%" height="100"/>-->
+                        
+                        <a href="https://www.torc.dev/newsroom" target="_blank" rel="noreferrer"><img src="https://platform.torc.dev/static/media/torc+randstad_banner.74197efe6b9428b08547.png" alt="My Image" height="100" width="100%"/></a>
+                        
+                    </td></tr>
+                    <tr><td class="mytd" style="text-align:left;font-size:30px">
+                        <apex:outputLabel value="{!header}"/>
+                        <apex:inputField value="{!rec.Questionnaire_Type__c}" style="display:none"/>
+                        </td></tr>
+                    <tr><td class="mytd">
+                        <apex:outputLabel value="This questionnaire is utilized to better understand the freelancer's independent business. This form should be filled out by the freelancer (Independent Contractor) that."/>
+                        <apex:outputLabel style="font-weight:bold" value="Note: We cannot match you with an independent contractor project without this documentation."/>
+                    <apex:outputPanel rendered="{!isUSBased}">
+                        <br/><br/>
+                        This classification review questionnaire represents the first phase in the Independent Contractor/Freelancer process. If classification is approved, and you accept an offer at one of our clients, we will move into the onboarding phase (2).
+                        <br/><br/>
+                        Work as an IC/Freelancer is not permitted until both phase 1 and 2 are completed and approved by the Randstad Digital operations team.
+                        <br/><br/>
+                        It is not the responsibility or privilege of the individual to determine employment classification. It is the responsibility of the contracting entity, Randstad Digital, to make the classification decision in accordance with local laws and regulations.
+
+                    </apex:outputPanel>
+                    
+                    </td></tr>
+                    <apex:outputPanel rendered="{!screen=1}">
+                    <tr><th class="myth"><apex:outputLabel value="Enter your full name."/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.Full_Name__c}"/></td></tr>
+                    <tr><th class="myth"><apex:outputLabel value="Enter your email address."/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.Email__c}"/></td></tr>
+                    <tr><th class="myth"><apex:outputLabel value="Enter your business name, if you do not have a business name please enter 'N/A'."/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.Business_Name__c}"/></td></tr>
+                    <tr><th class="myth"><apex:outputLabel value="What is your country of residence?"/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.Country__c}"/></td></tr>
+                    
+                    <apex:outputPanel rendered="{!isUSBased}">
+                        <tr><th class="myth"><apex:outputLabel value="What is your state of residence?"/></th></tr>
+                        <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.State_of_residence__c}"/></td></tr>
+                        <tr><th class="myth"><apex:outputLabel escape="false" value="What state is your business registered in? <br/><br/>If you are a Sole Proprietor, what state do you file taxes in?"/></th></tr>
+                        <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.State_of_Business__c}"/></td></tr>
+                    </apex:outputPanel>
+                    
+                    
+                    
+                    <tr><th class="myth"><apex:outputLabel value="What is the form of your business?"/></th></tr>
+                    
+                    
+                    <tr><td class="mytd">
+                        <div class="requiredInput"><div class="requiredBlock"></div>                        
+                        <apex:outputPanel id="opx"><apex:outputPanel id="opy">
+                        <table><apex:repeat value="{!formOfBusinesslst.options}" var="opt">
+                            <tr><td>
+                                <apex:outputLabel value="{!opt.OptionTag}" escape="false"/>  {!opt.label}
+                                &nbsp;&nbsp;<apex:inputField value="{!rec[formOfBusinesslst.otherField]}" rendered="{!AND(formOfBusinesslst.otherField<>'',opt.label='Other')}"/>
+                                <br/>                                
+                            </td></tr>    
+                        </apex:repeat></table>     
+                        <apex:outputPanel rendered="{!formOfBusinesslst.errorType<>''}"><div class="errorMsg"><strong>Error:</strong>{!formOfBusinesslst.errorType}</div></apex:outputPanel>
+                        </apex:outputPanel></apex:outputPanel>                        
+                        </div>
+                    </td></tr>
+                    
+                    
+                    
+                    <tr><th class="myth"><apex:outputLabel value="How many clients have you had in the last 12 months?"/></th></tr>
+                    
+                    
+                    <tr><td class="mytd">
+                        <div class="requiredInput"><div class="requiredBlock"></div>  
+                        <apex:outputPanel id="opa"><apex:outputPanel id="opb">                      
+                        <table><apex:repeat value="{!clientCountlst.options}" var="opt">
+                            <tr><td>
+                                <apex:outputLabel value="{!opt.OptionTag}" escape="false"/>  {!opt.label}
+                                &nbsp;&nbsp;<apex:inputField value="{!rec[clientCountlst.otherField]}" rendered="{!AND(clientCountlst.otherField<>'',opt.label='Other')}"/>
+                                <br/>                                
+                            </td></tr>    
+                        </apex:repeat></table>     
+                        <apex:outputPanel rendered="{!clientCountlst.errorType<>''}"><div class="errorMsg"><strong>Error:</strong>{!clientCountlst.errorType}</div></apex:outputPanel>                      
+                        </apex:outputPanel></apex:outputPanel>                        
+                        </div>
+                    </td></tr>
+                    
+                    
+                    <apex:outputPanel rendered="{!isUSBased}">
+                        <tr><th class="myth"><apex:outputLabel value="How many employees or independent contractors do you have working for your business?"/></th></tr>
+
+                        <tr><td class="mytd">
+                            <div class="requiredInput"><div class="requiredBlock"></div>  
+                                <apex:outputPanel id="opa1"><apex:outputPanel id="opb1">                      
+                                <table><apex:repeat value="{!employeeCountlst.options}" var="opt">
+                                    <tr><td>
+                                        <apex:outputLabel value="{!opt.OptionTag}" escape="false"/>  {!opt.label}
+                                        &nbsp;&nbsp;<apex:inputField value="{!rec[employeeCountlst.otherField]}" rendered="{!AND(employeeCountlst.otherField<>'',opt.label='Other')}"/>
+                                        <br/>                                
+                                    </td></tr>    
+                                </apex:repeat></table>     
+                                <apex:outputPanel rendered="{!employeeCountlst.errorType<>''}"><div class="errorMsg"><strong>Error:</strong>{!employeeCountlst.errorType}</div></apex:outputPanel>                      
+                                </apex:outputPanel></apex:outputPanel>                        
+                            </div>
+                        </td></tr>
+                    
+                    
+                    
+                    </apex:outputPanel>
+                    
+                    
+                    
+                    <tr><th class="myth"><apex:outputLabel value="Have you worked as an employee (W2 or international equivalent) for Randstad, Randstad Digital, or Cella in the past?"/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.Worked_As_Employee__c}"/></td></tr>
+                    <tr><th class="myth"  style="border-top:0px"><apex:outputLabel value="If yes, please provide the date, name of client, and job title."/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="false" value="{!rec.Employeement_Detail__c}"/></td></tr>
+                    
+                    <tr><th class="myth"><apex:outputLabel value="How do you market your services? Check all the apply."/></th></tr>
+                    
+                    <tr><td class="mytd">
+                        <div class="requiredInput"><div class="requiredBlock"></div>
+                        <table><apex:repeat value="{!marketServicelst.options}" var="opt">
+                            <tr><td>
+                                <apex:inputCheckbox value="{!opt.chk}"/>
+                            </td>
+                            <td><apex:outputlabel value="{!opt.label}"/> 
+                                &nbsp;&nbsp;<apex:inputField id="hidf1" value="{!rec[marketServicelst.otherField]}" rendered="{!AND(marketServicelst.otherField<>'',opt.label='Other')}"/>
+                            </td></tr>    
+                        </apex:repeat></table>     
+                        <apex:outputPanel rendered="{!marketServicelst.errorType<>''}"><div class="errorMsg"><strong>Error:</strong>{!marketServicelst.errorType}</div></apex:outputPanel>
+                        </div>
+                    </td></tr>
+                    
+                    
+                    
+                    <tr><th class="myth"><apex:outputLabel value="What investments have you made in your business? Check all that apply."/></th></tr>
+                     
+                     <tr><td class="mytd">
+                        <div class="requiredInput"><div class="requiredBlock"></div>
+                        <table><apex:repeat value="{!investmentlst.options}" var="opt">
+                            <tr><td>
+                                <apex:inputCheckbox value="{!opt.chk}"/>
+                            </td>
+                            <td><apex:outputlabel value="{!opt.label}"/> 
+                                &nbsp;&nbsp;<apex:inputField value="{!rec[investmentlst.otherField]}" rendered="{!AND(investmentlst.otherField<>'',opt.label='Other')}"/>
+                            </td></tr>    
+                        </apex:repeat></table>     
+                        <apex:outputPanel rendered="{!investmentlst.errorType<>''}"><div class="errorMsg"><strong>Error:</strong>{!investmentlst.errorType}</div></apex:outputPanel>
+                        </div>
+                    </td></tr>
+                     
+                    
+                    <tr><th class="myth"><apex:outputLabel value="Have you completed all required registrations (tax, social security, etc) for your business in your local area?"/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.completed_all_required_registrations__c}"/></td></tr>
+                    <tr><th class="myth"><apex:outputLabel value="Do you have a business registration number? If yes, please provide below. If no, please enter N/A."/></th></tr>
+                    <tr><td class="mytd"><apex:inputField styleClass="mytxt" required="true" value="{!rec.business_registration_number__c}"/></td></tr>
+                    <apex:outputPanel rendered="{!isUSBased}">
+                        <tr><th class="myth">
+                        
+                        During the term of an assignment with Torc, Randstad Digital or Cella, Independent Contractor shall maintain insurance coverage no less than the following. 
+                        <br/><br/>
+                        Further, you understand that additional insurance limits may be required based upon the Client’s requirements. A copy of a compliant and current COI will be required during phase 2 of the IC/Freelancer onboarding process.
+                        <br/><br/>
+                        - Commercial General Liability Insurance of not less than $1 million for bodily injury and property damage for each occurrence and $2 million in the aggregate;
+                        <br/><br/>
+                        - Professional Liability/Errors and Omissions Insurance of not less than $1 million;
+                        <br/><br/>
+                        - Workers Compensation Insurance in state(s) where services will be provided, at no less than what is required by statute, and 
+                        <br/><br/>
+                        - Employer’s Liability of not less than $1 million; or a signed workers’ compensation waiver and release in a form acceptable to Randstad Digital;
+                        <br/><br/>
+                        - Auto Insurance of not less than $1 million if any Contractor Personnel will be driving in the course of performing Services.
+                        <br/><br/>
+                        - Third Party Crime no less than $250,000. (Also known as Fidelity Bond)
+                        <br/><br/>
+                        Please indicate below if you are willing to obtain insurance as described above if you are placed.
+                        </th></tr>
+                        
+                        
+                        
+                        <tr><td class="mytd">
+                            <div class="requiredInput"><div class="requiredBlock"></div>  
+                                <apex:outputPanel id="opa2"><apex:outputPanel id="opb2">                      
+                                <table><apex:repeat value="{!insuranceNeedlst.options}" var="opt">
+                                    <tr><td>
+                                        <apex:outputLabel value="{!opt.OptionTag}" escape="false"/>  {!opt.label}
+                                        &nbsp;&nbsp;<apex:inputField value="{!rec[insuranceNeedlst.otherField]}" rendered="{!AND(insuranceNeedlst.otherField<>'',opt.label='Other')}"/>
+                                        <br/>                                
+                                    </td></tr>    
+                                </apex:repeat></table>     
+                                <apex:outputPanel rendered="{!insuranceNeedlst.errorType<>''}"><div class="errorMsg"><strong>Error:</strong>{!insuranceNeedlst.errorType}</div></apex:outputPanel>                      
+                                </apex:outputPanel></apex:outputPanel>                        
+                            </div>
+                        </td></tr>
+                        
+                        
+                    </apex:outputPanel>
+                    
+                    
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!screen=2}">
+                    
+                    <tr><th class="myth">
+                        <apex:outputLabel value="Please provide 2 pieces of documentation establishing your independent business."/>  
+                        <br/>
+                        <b>Acceptable documents are as follow.  Upload documents securely</b>
+                    </th></tr>
+                    <tr><td class="mytd"> 
+                        <apex:inputFile value="{!uploadedFile1}" filename="{!fileName1}" contentType="application/pdf" title="Choose first file"  />
+                        <br/>
+                        <apex:outputPanel rendered="{!errorFile1<>''}"><div class="errorMsg"><strong>Error:</strong>{!errorFile1}</div></apex:outputPanel>                      
+                        <br/>
+                        <apex:inputFile value="{!uploadedFile2}" filename="{!fileName2}" contentType="application/pdf"  title="Choose second file" />
+                        <br/>
+                        <apex:outputPanel rendered="{!errorFile2<>''}"><div class="errorMsg"><strong>Error:</strong>{!errorFile2}</div></apex:outputPanel>                      
+                        <br/>
+                        <apex:outputPanel rendered="{!isUSbased}">
+                            <ul>                   
+                            <li>Copy of business license*<br/></li>
+                            <li>Proof of business registration - <b>You will be required to provide a current letter of good standing now, and a  letter of good standing during phase 2 onboarding that reflects the current date at that time.</b><br/></li>
+                            <li>Redacted business tax return<br/></li>
+                            <li>Redacted client invoices from this calendar year<br/></li>
+                            <li>Proof of business investment (examples: receipts from business investments, advertising costs, office space, lease agreement, trade shows, etc)</li>
+                            <li>Copies marketing materials<br/></li>
+                            <li>PDF of Website with Website URL<br/></li>
+                            <li><b>*If you are a Sole Proprietor, your business documents must include at least one of the following.</b><br/></li>
+                            <li>Redacted business tax return showing schedule C income from previous tax year.<br/></li>
+                            <li>Redacted client invoices from current calendar year, or previous tax year.<br/></li>
+                            </ul>
+                         </apex:outputPanel> 
+                         
+                         <apex:outputPanel rendered="{!NOT(isUSbased)}">
+                            <ul>                   
+                            <li>Proof of business registration<br/></li>
+                            <li>Redacted client invoices from this calendar year<br/></li>
+                            <li>Proof of business investment (examples: receipts from business investments, advertising costs, office space, lease agreement, trade shows, etc)<br/></li>
+                            <li> Copies marketing materials <br/></li>
+                            <li>PDF of Website with Website URL</li>
+                            </ul>
+                         </apex:outputPanel> 
+                    </td></tr>
+                    
+                    <tr><th class="myth">
+                        <table><tr><td style="vertical-align:top"><apex:inputField required="true" value="{!rec.Agree_to_terms__c}"/></td><td>By checking the box, you certify and attest that all information provided herein is accurate and true to the best of your knowledge. You acknowledge that we are relying on the information you have provided to properly classify workers providing services to our Clients.</td></tr></table>
+                    </th></tr>
+                    </apex:outputPanel>
+                    <tr><th style="background-color:rgb(204 248 251);padding-top:20px">
+                        
+                        <apex:commandButton id="nxt" value="Next" action="{!next}" style="background: #00FFFF;width: 100px;height: 40px;" onclick="showDisable();" rendered="{!screen=1}"/>
+                        <apex:commandButton id="prev" value="Previous" action="{!previous}" style="background: #00FFFF;width: 100px;height: 40px;" onclick="showDisable();" rendered="{!screen=2}"/>
+                        <apex:commandButton id="submitBtn" value="Submit" action="{!Save}" style="background: #00FFFF;width: 100px;height: 40px;" onclick="showDisable();" rendered="{!screen=2}"/>
+
+                        </th></tr>
+                </table>
+            </div>    
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

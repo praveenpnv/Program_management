@@ -1,0 +1,205 @@
+<apex:page controller="TrolleyPayments" title="Create payments In Trolley" action="{!pageToken}" showHeader="false" sidebar="false">
+<apex:sectionHeader title="Setup Data In Trolley"/>
+<apex:form id="frm">
+<script>
+    function checkuncheckAll(chk, className)
+    {
+        var v = document.getElementsByClassName(className);
+        for(var i in v)
+            v[i].checked = chk;
+        dummyCall();    
+    }
+    function confirmQBOperation()
+    {
+        if (confirm("It will create data in Trolley. Are you sure?") == true) 
+        {
+            showDisable();   
+            return true;
+        }
+        return false;
+    }
+</script>
+<apex:actionFunction action="{!dummyCall}" name="dummyCall" reRender="totCell"/>
+<apex:actionFunction action="{!dummyCall}" name="dummyCall1" reRender="frm" oncomplete="hideDisable();"/>
+<apex:actionFunction action="{!updateTorcuser}" name="updateTorcuser" reRender="frm" oncomplete="hideDisable();">
+   <apex:param assignTo="{!forUpdateId}" value="" Name="forUpdateId" id="forUpdateId"/>
+</apex:actionFunction>
+<apex:pageblock mode="edit">
+    <apex:pageblockbuttons location="top">
+        <apex:commandButton value="Filter" action="{!Filter}" onclick="showDisable();" rendered="{!NOT(showProcessed)}"/>
+        <apex:commandButton value="Next" action="{!Next}" onclick="showDisable();" rendered="{!NOT(showProcessed)}"/>
+        <apex:commandButton value="Back" action="{!Back}" onclick="showDisable();" rendered="{!(showProcessed)}"/>
+        <apex:commandButton value="Create Payments" action="{!CreatePaymentsInTrolleyNew}" onclick="return confirmQBOperation();" rendered="{!(showProcessed)}"/>
+        <apex:commandButton value="Recalculate Totals" action="{!dummyCall}" onclick="showDisable();" rendered="{!AND(lstDataRow.Size<>0,NOT(showProcessed))}"/>
+        <apex:commandButton value="Reload Recipients" action="{!reloadRecipient}" onclick="showDisable();" immediate="true" rendered="{!NOT(showProcessed)}"/>
+    </apex:pageblockbuttons>
+    <div class="pbError" id="errorDiv_ep">
+        <apex:messages />
+     </div>
+    <apex:pageblockSection columns="2" rendered="{!(NOT(showProcessed))}" title="Select Due Date">
+        <apex:pageblockSectionItem ><apex:outputLabel value="From"/><apex:inputField value="{!fromDate.Date__c}" required="true"/></apex:pageblockSectionItem>
+        <apex:pageblockSectionItem ><apex:outputLabel value="To"/><apex:inputField value="{!toDate.Date__c}" required="true"/></apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Show Rows"/>
+            <apex:selectList id="selc" value="{!showRowsType}" size="1" onchange="showDisable();dummyCall1();">
+                 <apex:selectOptions value="{!ShowTypes}"/>
+            </apex:selectList>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Account"/>
+            <apex:selectList id="selc" value="{!showAccounts}" size="1" onchange="showDisable();dummyCall1();">
+                 <apex:selectOptions value="{!showAccountOptions}"/>
+            </apex:selectList>
+        </apex:pageblockSectionItem>
+    </apex:pageblockSection>
+    
+    <apex:pageblockSection rendered="{!(showProcessed)}" columns="1">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Batch Description"/>
+            <apex:inputField value="{!trolleyBatch.Description__c}" style="width:400px"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Total Payment"/>
+            <apex:outputtext value="{!totalPayment}"/>
+        </apex:pageblockSectionItem>
+    </apex:pageblockSection>
+    <apex:pageblockSection columns="1" title="Processed Rows" rendered="{!(showProcessed)}">
+        <apex:outputPanel >
+        <div style="width:120%;height:550px; overflow: scroll">
+        <apex:pageblocktable value="{!processedRows}" var="rec">
+            <apex:column >
+                <apex:facet name="header">Torc User</apex:facet>
+                <apex:outputField value="{!rec.tInv.Torc_User__c}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Recipient Name</apex:facet>
+                <apex:outputText value="{!rec.realName}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Payout Method</apex:facet>
+                <apex:outputText value="{!rec.trolleyuser.Payout_Method__c}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Amount</apex:facet>
+                <apex:outputText value="{!rec.Total}"/>
+            </apex:column>
+            <apex:column >
+                <apex:inputcheckBox value="{!rec.tInv.Cover_Fee__c}" id="chk" styleClass="bills" rendered="{! rec.trolleyuser.Payout_Method__c<>'paypal'}"/>
+                <apex:facet name="header">
+                    <input type="checkbox" onClick="checkuncheckAll(this.checked,'bills');"/>Cover Fee?</apex:facet>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Memo</apex:facet>
+                <apex:inputTextArea value="{!rec.tInv.Memo__c}"/>
+            </apex:column>
+         </apex:pageblocktable>   
+         </div>
+        </apex:outputPanel>
+    </apex:pageblockSection>
+    
+    
+    
+    
+    <apex:pageblockSection columns="1" title="Filter Result" rendered="{!NOT(showProcessed)}">
+        <apex:outputPanel rendered="{!lstDataRow.Size=0}">
+            No rows to display.
+        </apex:outputPanel>  
+        <apex:outputPanel rendered="{!lstDataRow.Size > 0}">
+            <apex:Outputpanel style="font-size:20px">
+                Showing : {!nextStartPosition-1} Rows<apex:Outputpanel rendered="{!NOT(everythingCome)}" style="color:red">
+                &nbsp;&nbsp;More data to process...</apex:outputPanel>
+            </apex:Outputpanel>
+        <div style="width:120%;height:550px; overflow: scroll">
+        <apex:pageblocktable value="{!showableRows}" var="rec">
+            <apex:column >
+                <apex:inputcheckBox value="{!rec.chk}" id="chk" styleClass="bills" rendered="{!NOT(rec.isError)}" onChange="dummyCall();"/>
+                <apex:facet name="header"><input type="checkbox" onClick="checkuncheckAll(this.checked,'bills');"/></apex:facet>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Id</apex:facet>
+                <apex:outputText value="{!rec.bill.Id}" rendered="{!rec.rowType='bill'}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Doc Number</apex:facet>
+                <apex:outputText value="{!rec.bill.DocNumber}" rendered="{!rec.rowType='bill'}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Txndate</apex:facet>
+                <apex:outputText value="{!rec.bill.TxnDate}" rendered="{!rec.rowType='bill'}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Due Date</apex:facet>
+                <apex:outputText value="{!rec.bill.Duedate}" rendered="{!rec.rowType='bill'}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Quickbooks Vendor</apex:facet>
+                <apex:outputPanel rendered="{!rec.rowType='bill'}">
+                    <apex:outputText value="{!rec.bill.VendorRef.Name}"/> - <apex:outputText value="{!rec.bill.VendorRef.Value}"/>
+                </apex:outputPanel>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Account</apex:facet>
+                <apex:outputPanel rendered="{!rec.rowType='bill'}">
+                    <apex:outputText value="{!rec.accountNames}"/>
+                </apex:outputPanel>
+            </apex:column>
+            <apex:column >
+                <apex:outputPanel id="totCell" rendered="{!rec.rowType<>'bill'}"><apex:outputPanel id="totCell1">
+                    <div style="background-color: yellow; width: 100%; font-size: 17px; text-align: right;color:red">
+                    <apex:outputText value="{!rec.total}" style="margin-right: 40px;"/>
+                    </div>
+                </apex:outputPanel></apex:outputPanel>
+                <apex:pageblockTable value="{!rec.bill.Line}" var="rl"  rendered="{!rec.rowType='bill'}">
+                    <apex:column style="width:5%;">
+                        <apex:facet name="header">Id</apex:facet>
+                        <apex:outputText value="{!rl.Id}" style="color:{!IF(rl.Amount<0,'red','black')}"/>
+                    </apex:column>
+                    <apex:column style="width:20%;">
+                        <apex:facet name="header">Customer</apex:facet>
+                        <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.CustomerRef.name}" style="color:{!IF(rl.Amount<0,'red','black')}"/>
+                    </apex:column>
+                    <apex:column style="width:15%;">
+                        <apex:facet name="header">Category</apex:facet>
+                        <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.name}" style="color:{!IF(rl.Amount<0,'red','black')}"/>
+                    </apex:column>
+                    <apex:column style="width:50%;">
+                        <apex:facet name="header">Description</apex:facet>
+                        <apex:outputText value="{!rl.Description}" style="color:{!IF(rl.Amount<0,'red','black')}"/>
+                    </apex:column>
+                    <apex:column style="width:10%;">
+                        <apex:facet name="header">Amount</apex:facet>
+                        <apex:outputText value="{!rl.Amount}" style="color:{!IF(rl.Amount<0,'red','black')}"/>
+                    </apex:column>
+                </apex:pageblockTable>  
+            </apex:column>  
+            <apex:column >
+                <apex:facet name="header">Torc User</apex:facet>
+                <apex:outputLink value="/{!rec.Torcuser.id}" rendered="{!rec.Torcuser<>NULL}">
+                    {!rec.Torcuser.Full_Name__c}
+                </apex:outputLink>
+                <apex:outputPanel rendered="{!AND(rec.Torcuser = NULL,rec.rowType='bill')}">
+                    <apex:inputField value="{!rec.dummy.Torc_User__c}"/>
+                    <a href="#" onclick="showDisable();updateTorcuser('{!rec.bill.id}');">Save</a>
+                </apex:outputPanel>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Trolley Recipient</apex:facet>
+                <apex:outputText value="{!rec.recipient.Name}" rendered="{!rec.recipient<>NULL}"/>
+                <apex:outputText value="{!'('+rec.recipient.Status__c+')'}" rendered="{!AND(rec.recipient<>NULL,rec.recipient.Status__c<>'active')}" style="color:red"/>
+                
+                <apex:outputPanel rendered="{!AND(rec.Torcuser <> NULL,rec.recipient = NULL,rec.rowType='bill')}">
+                    <div style="color:red">Recipient Not Found</div>
+                </apex:outputPanel>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">Existing Payment</apex:facet>
+                <apex:outputText value="{!rec.existingPaymentStatus}" rendered="{!rec.existingPaymentStatus<>''}" style="color:red"/>
+            </apex:column>
+        </apex:pageblocktable>
+        </div>
+        </apex:outputPanel>
+    </apex:pageblockSection>
+</apex:pageblock>
+<c:WaitPopup />
+</apex:form>
+</apex:page>

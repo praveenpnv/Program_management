@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>update to only when a record is created</description>
+    <environments>Default</environments>
+    <interviewLabel>Contact Update Nationality and Language OPCO France {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Contact Update Nationality and Language OPCO France</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <description>set language and nationality as france/french when OPCO is France</description>
+        <name>Update_Language_and_nationality_is_France_when_OPCO_is_france</name>
+        <label>Update Language and nationality is France when OPCO is france</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <inputAssignments>
+            <field>BH_Preferred_Language__c</field>
+            <value>
+                <stringValue>French</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Nationality__c</field>
+            <value>
+                <stringValue>FR</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Language_and_nationality_is_France_when_OPCO_is_france</targetReference>
+        </connector>
+        <filterFormula>AND(
+    TEXT({!$Record.Owner.Opco__c}) = &quot;France&quot;,
+    {!$Setup.Active_Trigger_Flow_VR__c.Contact_Flow__c} = TRUE
+)</filterFormula>
+        <object>Contact</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

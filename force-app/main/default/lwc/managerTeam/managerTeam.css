@@ -1,0 +1,74 @@
+.column-box {
+    min-height: 500px;
+}
+
+.draggable-item {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+}
+
+.draggable-item:hover {
+    background-color: #f3f2f2;
+}
+
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  cursor: grab;
+  transition: all 0.2s ease-in-out;
+}
+
+.user-item:hover {
+  background-color: var(--hover-bg-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.user-item:active {
+  cursor: grabbing;
+}
+
+.user-icon-container {
+  /* This ensures the icon has a consistent space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.user-icon {
+  color: var(--primary-color);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  /* Stacks the name and email vertically */
+}
+
+.user-name {
+  font-weight: 600; /* Bolder for better readability */
+  color: var(--text-color);
+  font-size: 14px;
+  line-height: 1.4; /* Improves vertical spacing */
+}
+
+.user-email {
+  color: var(--secondary-text-color);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Optional: Styling for when an item is being dragged */
+.user-item.is-dragging {
+  opacity: 0.6;
+  border-style: dashed;
+}

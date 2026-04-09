@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Day_Of_Month__c</fullName>
+    <formula>IF(MONTH(End_Date__c)=12, DATE(YEAR(End_Date__c),12,31),DATE( Year(End_Date__c),Month(End_Date__c)+1,1)-1)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Last Day Of Month</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

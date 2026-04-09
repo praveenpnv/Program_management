@@ -1,0 +1,86 @@
+<template>
+    <div class="sbv-wrap">
+        <div class="sbv-header">
+            <div class="sbv-header-left">
+                <h1 class="sbv-title">Support Board</h1>
+                <p class="sbv-sub">Stories from Technical Support projects — track support work and link back to origin projects</p>
+            </div>
+            <div class="sbv-header-right">
+                <span class="sbv-total">{totalCount} stories</span>
+                <input class="sbv-search" type="text" placeholder="Search stories or projects…" onkeyup={handleSearch} />
+            </div>
+        </div>
+        <div class="sbv-kanban">
+            <template for:each={columns} for:item="col">
+                <div key={col.status}
+                     class={col.colCls}
+                     data-status={col.status}
+                     ondragover={handleDragOver}
+                     ondrop={handleDrop}
+                     ondragleave={handleDragLeave}>
+                    <div class="sbv-col-hdr" style={col.hdrStyle}>
+                        <span class="sbv-col-label">{col.label}</span>
+                        <span class="sbv-col-count">{col.count}</span>
+                    </div>
+                    <div class="sbv-col-body">
+                        <template for:each={col.cards} for:item="card">
+                            <div key={card.Id}
+                                 class={card.cardCls}
+                                 draggable="true"
+                                 data-id={card.Id}
+                                 data-status={card.Status__c}
+                                 ondragstart={handleDragStart}
+                                 ondragend={handleDragEnd}>
+                                <div class="sbv-card-top">
+                                    <span class="sbv-type">{card.Story_Type__c}</span>
+                                    <span class={card.priCls}>{card.Priority__c}</span>
+                                </div>
+                                <p class="sbv-card-name">{card.Name}</p>
+                                <template if:true={card.projectName}>
+                                    <div class="sbv-project-row">
+                                        <span class="sbv-proj-label">Project:</span>
+                                        <span class="sbv-proj-name">{card.projectName}</span>
+                                    </div>
+                                </template>
+                                <template if:true={card.originProjectName}>
+                                    <div class="sbv-origin-row">
+                                        <span class="sbv-origin-label">Origin:</span>
+                                        <span class="sbv-origin-name">{card.originProjectName}</span>
+                                    </div>
+                                </template>
+                                <template if:true={card.featureName}>
+                                    <span class="sbv-feat-tag">{card.featureName}</span>
+                                </template>
+                                <div class="sbv-card-people">
+                                    <template if:true={card.assigneeName}>
+                                        <span class="sbv-assignee">Dev: {card.assigneeName}</span>
+                                    </template>
+                                    <template if:true={card.qaAssigneeName}>
+                                        <span class="sbv-qa-inline">{card.qaAssigneeName}</span>
+                                    </template>
+                                    <template if:true={card.Story_Points__c}>
+                                        <span class="sbv-pts">{card.Story_Points__c}pt</span>
+                                    </template>
+                                </div>
+                                <div class="sbv-card-foot">
+                                    <div class="sbv-card-actions">
+                                        <button class="sbv-btn-view" data-id={card.Id} onclick={handleView}>View</button>
+                                        <template if:true={card.canMovePrev}>
+                                            <button class="sbv-arr" data-id={card.Id} data-status={card.prevStatus} onclick={handleArrow}>←</button>
+                                        </template>
+                                        <template if:true={card.canMoveNext}>
+                                            <button class="sbv-arr sbv-arr-next" data-id={card.Id} data-status={card.nextStatus} onclick={handleArrow}>→</button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={col.hasCards}>
+                            <div class="sbv-empty">No stories</div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

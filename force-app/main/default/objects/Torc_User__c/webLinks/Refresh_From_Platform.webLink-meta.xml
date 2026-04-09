@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Refresh_From_Platform</fullName>
+    <availability>online</availability>
+    <displayType>link</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <height>600</height>
+    <linkType>url</linkType>
+    <masterLabel>Refresh From Platform</masterLabel>
+    <openType>sidebar</openType>
+    <protected>false</protected>
+    <url>/apex/torcrecordUpdate?id={!Torc_User__c.External_ID__c}&amp;recid={!Torc_User__c.Id}&amp;obj=user</url>
+</WebLink>

@@ -1,0 +1,33 @@
+<template>
+	<lightning-card title="Current Active Stage Count" icon-name="custom:custom63">
+		<div class="slds-m-around_medium">
+			<template if:true={summary}>
+				<ul class="slds-tree" role="tree">
+					<template for:each={summary} for:item="item">
+						<li key={item.key} class="slds-tree__item" role="treeitem" data-name={item.value}
+							onclick={handleOnselect}>
+							<div class="slds-tree__item-content">
+								<button class="slds-button slds-button_icon slds-m-right_small" aria-hidden="true">
+                                    <lightning-icon icon-name="utility:chevronright" size="xx-small" alternative-text="arrow"></lightning-icon>
+                                </button>
+								<span class="slds-truncate" title="\{item.label + ': ' + item.count}">
+                                    {item.label} ({item.count})
+                                </span>
+								<template if:true={item.showClear}>
+									<span class="slds-m-left_x-small"  onclick={handleClear}>Clear</span>
+
+								</template>
+							</div>
+						</li>
+					</template>
+				</ul>
+			</template>
+			<template if:true={error}>
+				<p>Error: {error.message}</p>
+			</template>
+			<template if:false={summary}>
+				<p>No data found.</p>
+			</template>
+		</div>
+	</lightning-card>
+</template>

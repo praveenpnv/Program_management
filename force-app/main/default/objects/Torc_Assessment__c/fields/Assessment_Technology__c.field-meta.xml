@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Assessment_Technology__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(CONTAINS(testName__c, &apos;React&apos;), &apos;ReactJS&apos;, 
+IF(CONTAINS(testName__c, &apos;react&apos;), &apos;ReactJS&apos;, 
+IF(CONTAINS(testName__c, &apos;Airtable Screenbot&apos;), &apos;ReactJS&apos;, 
+IF(CONTAINS(testName__c, &apos;HR Acuity&apos;), &apos;ReactJS&apos;, 
+IF(CONTAINS(testName__c, &apos;Python&apos;), &apos;Python&apos;,
+IF(CONTAINS(testName__c, &apos;python&apos;), &apos;Python&apos;,
+IF(CONTAINS(testName__c, &apos;Node&apos;), &apos;NodeJS&apos;,
+IF(CONTAINS(testName__c, &apos;Javascript&apos;), &apos;JS&apos;,
+IF(CONTAINS(testName__c, &apos;javascript&apos;), &apos;JS&apos;,
+IF(CONTAINS(testName__c, &apos;Mongo&apos;), &apos;MongoDB&apos;,
+IF(CONTAINS(testName__c, &apos;mongo&apos;), &apos;MongoDB&apos;,
+IF(CONTAINS(testName__c, &apos;Angular&apos;), &apos;AngularJS&apos;,
+IF(CONTAINS(testName__c, &apos;angular&apos;), &apos;AngularJS&apos;,
+IF(CONTAINS(testName__c, &apos;Java&apos;), &apos;Java&apos;,
+IF(CONTAINS(testName__c, &apos;java&apos;), &apos;Java&apos;,
+IF(CONTAINS(testName__c, &apos;Android&apos;), &apos;Android&apos;,
+IF(CONTAINS(testName__c, &apos;.NET&apos;), &apos;.NET&apos;,
+IF(CONTAINS(testName__c, &apos;.Net&apos;), &apos;.NET&apos;,
+IF(CONTAINS(testName__c, &apos;net-assessment-qiixg9u4l3&apos;), &apos;.NET&apos;,
+IF(CONTAINS(testName__c, &apos;Software Engineer&apos;), &apos;.NET&apos;,
+IF(CONTAINS(testName__c, &apos;Ruby&apos;), &apos;Ruby&apos;,
+IF(CONTAINS(testName__c, &apos;Subscribe Take Home Exam&apos;), &apos;Ruby&apos;,
+IF(CONTAINS(testName__c, &apos;Trello Board Clone&apos;), &apos;Ruby&apos;,
+IF(CONTAINS(testName__c, &apos;Subscribe TakeHome+questions&apos;), &apos;Ruby&apos;,
+IF(CONTAINS(testName__c, &apos;Salesforce&apos;), &apos;Salesforce&apos;,
+IF(CONTAINS(testName__c, &apos;Full&apos;), &apos;Full Stack&apos;,
+IF(CONTAINS(testName__c, &apos;PHP&apos;), &apos;PHP&apos;,
+IF(CONTAINS(testName__c, &apos;SFDC&apos;), &apos;Salesforce&apos;,
+IF(CONTAINS(testName__c, &apos;Architect&apos;), &apos;Software Architect&apos;,
+IF(CONTAINS(testName__c, &apos;QA&apos;), &apos;QA&apos;,
+IF(CONTAINS(testName__c, &apos;Flutter&apos;), &apos;Flutter&apos;,
+IF(CONTAINS(testName__c, &apos;iOS&apos;), &apos;iOS&apos;,
+IF(CONTAINS(testName__c, &apos;IOS&apos;), &apos;iOS&apos;,
+IF(CONTAINS(testName__c, &apos;C#&apos;), &apos;C#&apos;,
+IF(CONTAINS(testName__c, &apos;HqO (Phase 1)&apos;), &apos;C#&apos;,
+IF(CONTAINS(testName__c, &apos;Vuejs&apos;), &apos;VueJS&apos;,
+IF(CONTAINS(testName__c, &apos;DevOps&apos;), &apos;DevOps&apos;,
+IF(CONTAINS(testName__c, &apos;DevOps Kubernetes&apos;), &apos;DevOps&apos;,
+
+
+
+&apos;Other&apos;
+
+))))))))))))))))))))))))))))))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Assessment Technology</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

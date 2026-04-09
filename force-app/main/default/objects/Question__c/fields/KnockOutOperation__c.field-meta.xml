@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>KnockOutOperation__c</fullName>
+    <description>Determined by configuration during Job Setup. Part of &quot;Knock Out Conditions&quot;.</description>
+    <externalId>false</externalId>
+    <label>Knock Out Operation</label>
+    <length>30</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

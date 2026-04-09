@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Enabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>When checked, VMS Opportunity creation logic is active. When unchecked, the logic will be skipped.</description>
+    <inlineHelpText>When checked, VMS Opportunity creation logic is active. When unchecked, the logic will be skipped.</inlineHelpText>
+    <label>Is Enabled</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

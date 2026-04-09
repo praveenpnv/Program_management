@@ -1,0 +1,75 @@
+.plv-wrap { width:100%; padding:0; }
+.plv-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+.plv-title { font-size:22px; font-weight:700; color:#0B1E3D; margin:0; }
+.plv-count { font-size:13px; color:#94A3B8; margin-top:2px; }
+.plv-new-btn { background:#0F172A; color:#fff; border:none; padding:9px 18px; border-radius:7px; cursor:pointer; font-size:13px; font-weight:600; }
+.plv-new-btn:hover { background:#1E293B; }
+.plv-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+.plv-card { background:#fff; border-radius:10px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,.08); display:flex; flex-direction:column; gap:8px; border:1px solid #E2E8F0; transition:box-shadow .15s; }
+.plv-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.12); }
+.plv-card-top { display:flex; align-items:center; gap:8px; }
+.plv-rag { display:inline-block; font-size:10px; padding:2px 7px; border-radius:10px; font-weight:700; }
+.plv-rag-green { background:#D1FAE5; color:#065F46; }
+.plv-rag-amber { background:#FEF3C7; color:#92400E; }
+.plv-rag-red   { background:#FEE2E2; color:#991B1B; }
+.plv-rag-grey  { background:#E2E8F0; color:#475569; }
+.plv-meth { font-size:11px; color:#64748B; background:#F1F5F9; padding:2px 7px; border-radius:10px; }
+.plv-type-badge { font-size:10px; font-weight:700; color:#4338CA; background:#EEF2FF; padding:2px 7px; border-radius:10px; }
+.plv-card-name { font-size:16px; font-weight:700; color:#0F172A; margin:0; }
+.plv-card-desc { font-size:13px; color:#64748B; margin:0; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.plv-card-footer { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.plv-stage { font-size:12px; color:#475569; font-weight:500; }
+.plv-owner { font-size:12px; color:#94A3B8; }
+.plv-card-actions { margin-top:4px; }
+.plv-open-btn { width:100%; background:#1D4ED8; color:#fff; border:none; padding:9px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; transition:background .15s; }
+.plv-open-btn:hover { background:#1e40af; }
+.plv-empty { padding:40px; text-align:center; color:#94A3B8; grid-column:1/-1; }
+/* ── Card Header Layout ─────────────────────────────────────────────────────── */
+.plv-card-top-left {
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    flex-wrap: wrap; 
+    flex: 1;
+}
+
+/* ── Status Badges ──────────────────────────────────────────────────────────── */
+.plv-status { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 12px; white-space: nowrap; }
+.plv-status-ongoing { background: #D1FAE5; color: #065F46; }
+.plv-status-notstarted { background: #F1F5F9; color: #475569; }
+.plv-status-pending { background: #FEF3C7; color: #92400E; }
+.plv-status-hold { background: #FEE2E2; color: #991B1B; }
+.plv-status-continues { background: #DBEAFE; color: #1E3A8A; }
+.plv-status-delivered { background: #E0F2FE; color: #0369A1; }
+
+/* ── Priority Badges ────────────────────────────────────────────────────────── */
+.plv-pri { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; }
+.plv-pri-p1 { color: #DC2626; background: #FEF2F2; }
+.plv-pri-p2 { color: #D97706; background: #FFFBEB; }
+.plv-pri-p3 { color: #2563EB; background: #EFF6FF; }
+.plv-pri-p4 { color: #64748B; background: #F8FAFC; }
+
+/* ── Project Type Badges ────────────────────────────────────────────────────── */
+.plv-type { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: #F8FAFC; color: #475569; border: 1px dashed #CBD5E1; }
+
+/* ── Programme Label ────────────────────────────────────────────────────────── */
+.plv-prog-label { font-size: 11px; color: #3B82F6; margin: 0 0 6px; font-weight: 600; }
+
+/* ── Technical/Functional/Business Owner Chips ──────────────────────────────── */
+.plv-owner-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+.plv-chip {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+.plv-chip-tech { background: #DBEAFE; color: #1D4ED8; }
+.plv-chip-func { background: #D1FAE5; color: #065F46; }
+.plv-chip-biz  { background: #F3E8FF; color: #7C3AED; }

@@ -1,0 +1,6 @@
+<apex:page controller="torcrecordUpdate">
+<apex:form >
+        <apex:outputText value="Wait : {!count+1} out of 3" id="counter"/>
+        <apex:actionPoller action="{!incrementCounter}" reRender="counter" interval="5"/>
+    </apex:form>
+</apex:page>

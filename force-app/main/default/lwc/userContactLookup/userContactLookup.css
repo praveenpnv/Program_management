@@ -1,0 +1,18 @@
+.slds-input__icon_right {
+    pointer-events: none;
+}
+.custom-pill {
+  display: inline-block;
+  background: none;    /* No background */
+  border: none;        /* Remove border */
+ }
+
+.custom-pill-link {
+  color: #0070d2;      /* Salesforce link blue */
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.custom-pill-link:hover {
+  text-decoration: underline;
+}

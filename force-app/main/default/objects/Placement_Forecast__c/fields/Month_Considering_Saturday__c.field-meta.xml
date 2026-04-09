@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Month_Considering_Saturday__c</fullName>
+    <formula>IF(MONTH(Week_Ending_Date__c) =MONTH( Week_Start_Date__c),
+
+DATE(YEAR( Week_Start_Date__c),MONTH( Week_Start_Date__c),1),
+DATE(YEAR( Week_Ending_Date__c),MONTH(Week_Ending_Date__c),1)
+
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Month Considering Saturday</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

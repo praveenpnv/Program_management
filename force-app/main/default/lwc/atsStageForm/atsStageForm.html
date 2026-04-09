@@ -1,0 +1,57 @@
+<template>
+
+    <div class="custom-modal__container">
+        <template if:true={isSaving}>
+            <lightning-spinner alternative-text="Processing..." size="medium"></lightning-spinner>
+        </template>
+        
+            <header class="slds-modal__header">
+                <h2 class="slds-text-heading_medium">{appStageName}</h2>
+
+                <c-ats-path-component record-id={recordId} object-api-name={objectApiName} field-name="Substage__c"
+                    app-stage={appStage} onstagechange={handleStageChange} is-read-only={isReadOnly}></c-ats-path-component>
+            </header>
+            <!-- Task Details Component -->
+
+            <div class="custom-modal__content slds-p-around_medium">
+                <!-- FieldSet Form Component -->
+                <template if:true={isSendOut}>
+                    <c-ats-schedule-editor record-id={recordId} app-stage={appStage} is-read-only={isReadOnly}>
+                    </c-ats-schedule-editor>
+                    <c-interview-list-dtl record-id={recordId} app-stage={appStage}></c-interview-list-dtl>
+                    <!--<c-candidate-interview-form application-id={recordId} interview-round={currentSubStage} is-read-only={isReadOnly}>
+                        </c-candidate-interview-form-->
+                </template>
+
+                <template if:false={isSendOut}>
+                    <c-ats-email-modal record-id={recordId} app-stage={appStage} email-page-type={emailPageType} is-read-only={isReadOnly}>
+                    </c-ats-email-modal>
+                </template>
+                <template if:true={isApplication}>
+                    <c-ats-stage-question record-id={recordId} is-read-only={isReadOnly}>
+                    </c-ats-stage-question>
+                </template>
+
+                <c-ats-field-set-form object-api-name={objectApiName} field-set-name={fieldSetName} record-id={recordId}
+                    app-stage-name={appStageName} app-stage={appStage} onsave={handleFieldSetSave} is-read-only={isReadOnly}>
+                </c-ats-field-set-form>
+
+                <c-ats-comments record-id={recordId} subject={appStage} is-read-only={isReadOnly}>
+                </c-ats-comments>
+            </div>
+
+            <div class="slds-modal__footer slds-p-around_medium">
+
+                <div class="slds-grid slds-grid_align-end">
+
+                    <lightning-button data-name="disposition" label="Reject/Unreject" variant="destructive-text"
+                        title="Reject/Unreject" icon-name="utility:block_visitor" onclick={openRejectionModal} disabled={isReadOnly}>
+                    </lightning-button>
+
+                    <lightning-button label="Save" onclick={handleSaveAll} variant="brand" disabled={isReadOnly}></lightning-button>
+
+
+                </div>
+            </div>
+            </div>
+</template>

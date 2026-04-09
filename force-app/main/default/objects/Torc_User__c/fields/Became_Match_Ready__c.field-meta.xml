@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Became_Match_Ready__c</fullName>
+    <formula>IF(
+	 
+AND(
+NOT(ISBLANK(Full_Name__c)),
+NOT(ISBLANK(countryName__c)),
+NOT(ISBLANK(Email__c)),
+NOT(ISBLANK(ratePerHour__c)),
+NOT(ISBLANK(LinkedIn__c)),
+Member_Skill_Count__c &gt; 2
+),
+now(),
+NULL
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Became Match Ready</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

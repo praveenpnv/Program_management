@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Assessment_Available__c</fullName>
+    <formula>OR(
+Skil_Name__c = &apos;Android (Operating System)&apos;,Skil_Name__c = &apos;Angular&apos;,Skil_Name__c = &apos;Artificial Intelligence&apos;,Skil_Name__c = &apos;Back End (Software Engineering)&apos;,Skil_Name__c = &apos;C#&apos;,Skil_Name__c = &apos;C++&apos;,Skil_Name__c = &apos;AWS Certified DevOps Engineer&apos;,Skil_Name__c = &apos;Kubernetes&apos;,Skil_Name__c = &apos;Flutter&apos;,Skil_Name__c = &apos;Full Stack Development&apos;,Skil_Name__c = &apos;IOS Development&apos;,Skil_Name__c = &apos;Java&apos;,Skil_Name__c = &apos;JavaScript&apos;,Skil_Name__c = &apos;MongoDB&apos;,Skil_Name__c = &apos;PHP&apos;,Skil_Name__c = &apos;Python&apos;,Skil_Name__c = &apos;Quality Assurance&apos;,Skil_Name__c = &apos;React Jsx&apos;,Skil_Name__c = &apos;React Native&apos;,Skil_Name__c = &apos;Ruby&apos;,Skil_Name__c = &apos;Salesforce&apos;,Skil_Name__c = &apos;Certified Scrum Master&apos;,Skil_Name__c = &apos;Automation&apos;,Skil_Name__c = &apos;Salesforce Marketing Cloud&apos;,Skil_Name__c = &apos;Software Architecture&apos;,Skil_Name__c = &apos;Software Engineering&apos;,Skil_Name__c = &apos;SQL&apos;,Skil_Name__c = &apos;Vue.js&apos;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Assessment Available</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

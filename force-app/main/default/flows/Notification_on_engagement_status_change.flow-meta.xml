@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Email_If_Status_Change</name>
+        <label>Send Email If Status Change</label>
+        <locationX>799</locationX>
+        <locationY>540</locationY>
+        <actionName>TR1__Closing_Report__c.Closing_Report_Status_Change_Alert</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Closing_Report__c.Closing_Report_Status_Change_Alert</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_Engagement_Status</name>
+        <label>Check Engagement Status</label>
+        <locationX>449</locationX>
+        <locationY>376</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_changed_to_Ready_For_Back_Office</name>
+            <conditionLogic>((1 AND 2) OR (1 AND 3)) AND 4</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status_US__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Ready for Back Office</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status_US__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.User_Opco__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>US</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Email_If_Status_Change</targetReference>
+            </connector>
+            <label>If changed to Ready For Back Office</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Notification on engagement status change {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Notification on engagement status change</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>330</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Check_Engagement_Status</targetReference>
+        </connector>
+        <filterFormula>AND(
+    {!$Setup.Active_Trigger_Flow_VR__c.Placement_Flow__c} = TRUE,
+    {!$Record.RecordType.DeveloperName} &lt;&gt; &apos;Change_Request&apos;,
+    {!$Record.RecordType.DeveloperName} &lt;&gt; &apos;Change_Request_Permanent&apos;
+)</filterFormula>
+        <object>TR1__Closing_Report__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

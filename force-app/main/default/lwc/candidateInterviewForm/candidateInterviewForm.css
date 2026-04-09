@@ -1,0 +1,6 @@
+.custom-header lightning-accordion-section::part(summary) {
+    background-color: #f3f3f3; /* Light grey background */
+    font-weight: bold; /* Optional: makes the text bold */
+    padding: 0.75rem; /* Optional: for padding around the text */
+    border-radius: 0.25rem; /* Optional: for rounded corners */
+}

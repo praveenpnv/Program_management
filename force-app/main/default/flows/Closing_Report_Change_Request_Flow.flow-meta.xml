@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Default Values for Change Request Recordtype</description>
+    <environments>Default</environments>
+    <interviewLabel>Closing Report Change Request Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Closing Report Change Request Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Request_Status</name>
+        <label>Update Request Status</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Request_Status__c</field>
+            <value>
+                <stringValue>Submitted</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Request_Status</targetReference>
+        </connector>
+        <filterFormula>AND(
+    OR(
+        {!$Record.RecordType.DeveloperName} = &quot;Change_Request&quot;,
+        {!$Record.RecordType.DeveloperName} = &quot;Change_Request_Permanent&quot;
+    ),
+    {!$Setup.Active_Trigger_Flow_VR__c.Placement_Flow__c} = TRUE
+)</filterFormula>
+        <object>TR1__Closing_Report__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

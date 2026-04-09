@@ -1,0 +1,20 @@
+<apex:page controller="Qubika" title="Qubika Operations">
+    <apex:sectionHeader title="Qubika Operations" subtitle="All Operations"/>
+    <apex:form >
+    <apex:pageBlock >
+        <apex:pageblockButtons >
+            <apex:commandButton value="Load Payments/Users By CSV" action="{!loadpaymentCSV}" immediate="true"/>
+            <apex:commandButton value="Trolley Setup" action="{!nonTorcTrolleySetup}" immediate="true"/>
+            <apex:commandButton value="Load Users By Spreadsheet" action="{!loadUserGoogle}" immediate="true"/>
+            <apex:commandButton value="Load Payments by Spreadsheet" action="{!loadPaymentGoogle}"/>
+            <apex:commandButton value="Process Payments" action="{!DoPayment}"/>
+        </apex:pageblockButtons>
+        <apex:pageblocksection columns="1">
+            <apex:pageblockSectionItem >
+                <apex:outputLabel value="Opportunity"/>
+                <apex:inputField value="{!dummy.Opportunity__c}" required="true"/>
+            </apex:pageblockSectionItem>
+        </apex:pageblocksection>
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <description>Copied from the related Question Template during Job Setup. Categorizes the Question to help explain its relevant Interview style.</description>
+    <label>Category</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>General</fullName>
+                <default>false</default>
+                <label>General</label>
+            </value>
+            <value>
+                <fullName>Job</fullName>
+                <default>false</default>
+                <label>Job</label>
+            </value>
+            <value>
+                <fullName>Behavior</fullName>
+                <default>false</default>
+                <label>Behavior</label>
+            </value>
+            <value>
+                <fullName>Notes</fullName>
+                <default>false</default>
+                <label>Notes</label>
+            </value>
+            <value>
+                <fullName>Transcript</fullName>
+                <default>false</default>
+                <label>Transcript</label>
+            </value>
+            <value>
+                <fullName>Client Feedback</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Client Feedback</label>
+            </value>
+            <value>
+                <fullName>General Questions</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>General Questions</label>
+            </value>
+            <value>
+                <fullName>Intake General Questions</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Intake General Questions</label>
+            </value>
+            <value>
+                <fullName>Interview Details</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Interview Details</label>
+            </value>
+            <value>
+                <fullName>Interviewer (client)</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Interviewer (client)</label>
+            </value>
+            <value>
+                <fullName>Preference</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Preference</label>
+            </value>
+            <value>
+                <fullName>Skill Log</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Skill Log</label>
+            </value>
+            <value>
+                <fullName>Submission Notes</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Submission Notes</label>
+            </value>
+            <value>
+                <fullName>Talent response</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Talent response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

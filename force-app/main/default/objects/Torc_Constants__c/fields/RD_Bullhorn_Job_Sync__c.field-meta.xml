@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RD_Bullhorn_Job_Sync__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Invoke the API call for creating the RD Bullhorn Job in Torc Platform. If disabled, api call is not made</description>
+    <inlineHelpText>Invoke the API call for creating the RD Bullhorn Job in Torc Platform. If disabled, api call is not made</inlineHelpText>
+    <label>RD Bullhorn Job Sync</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

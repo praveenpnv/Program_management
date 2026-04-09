@@ -1,0 +1,154 @@
+<template>
+    <div class="rdm-bd" onclick={handleBdClick}>
+        <div class="rdm-modal" onclick={stop}>
+
+            
+            <div class="rdm-hdr">
+                <h2 class="rdm-title">{modalTitle}</h2>
+                <div class="rdm-hdr-right">
+                    <template if:true={isEditMode}>
+                        <button class="rdm-cancel-btn" onclick={handleCancelEdit}>Cancel</button>
+                    </template>
+                    <template if:false={isNewMode}>
+                        <template if:false={isEditMode}>
+                            <button class="rdm-edit-btn" onclick={handleStartEdit}>Edit</button>
+                            <button class="rdm-nav-btn" onclick={handleNav} title="Open record">
+                                <lightning-icon icon-name="utility:open" size="small"></lightning-icon>
+                            </button>
+                        </template>
+                    </template>
+                    <button class="rdm-close" onclick={handleClose}>&#x2715;</button>
+                </div>
+            </div>
+
+            
+            <template if:false={isFormMode}>
+                <div class="rdm-body">
+                    <div class="rdm-grid">
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Version</span>
+                            <span class="rdm-val">{release.Version__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Status</span>
+                            <span class="rdm-val">{release.Status__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Stage</span>
+                            <span class="rdm-val">{release.Stage__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Go Live Date</span>
+                            <span class="rdm-val">{release.Go_Live_Date__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Code Freeze</span>
+                            <span class="rdm-val">{release.Code_Freeze_Date__c}</span>
+                        </div>
+                        <div class="rdm-field">
+                            <span class="rdm-lbl">Release Manager</span>
+                            <span class="rdm-val">{release.Release_Manager__c}</span>
+                        </div>
+                    </div>
+                    <template if:true={release.Release_Notes__c}>
+                        <div class="rdm-field rdm-field-full">
+                            <span class="rdm-lbl">Release Notes</span>
+                            <p class="rdm-notes">{release.Release_Notes__c}</p>
+                        </div>
+                    </template>
+                </div>
+                <div class="rdm-ftr">
+                    <button class="rdm-close-btn" onclick={handleClose}>Close</button>
+                </div>
+            </template>
+
+            
+            <template if:true={isFormMode}>
+                <div class="rdm-body">
+                    <div class="rdm-form-grid">
+                        <div class="rdm-form-field">
+                            <label class="rdm-lbl" for="rel-name">Release Name *</label>
+                            <input id="rel-name" class="rdm-input" type="text"
+                                   value={formData.Name}
+                                   data-field="Name"
+                                   onchange={handleInput}
+                                   placeholder="e.g. v2.1.0" />
+                        </div>
+                        <div class="rdm-form-field">
+                            <label class="rdm-lbl" for="rel-ver">Version</label>
+                            <input id="rel-ver" class="rdm-input" type="text"
+                                   value={formData.Version__c}
+                                   data-field="Version__c"
+                                   onchange={handleInput}
+                                   placeholder="e.g. 2.1.0" />
+                        </div>
+                        <div class="rdm-form-field">
+                            <label class="rdm-lbl" for="rel-status">Status</label>
+                            <select id="rel-status" class="rdm-select"
+                                    data-field="Status__c"
+                                    onchange={handleInput}>
+                                <option value="">-- Select --</option>
+                                <option value="Planned">Planned</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Released">Released</option>
+                                <option value="On Hold">On Hold</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="rdm-form-field">
+                            <label class="rdm-lbl" for="rel-stage">Stage</label>
+                            <select id="rel-stage" class="rdm-select"
+                                    data-field="Stage__c"
+                                    onchange={handleInput}>
+                                <option value="">-- Select --</option>
+                                <option value="Planning">Planning</option>
+                                <option value="Development">Development</option>
+                                <option value="Code Freeze">Code Freeze</option>
+                                <option value="UAT">UAT</option>
+                                <option value="Ready for Release">Ready for Release</option>
+                                <option value="Released">Released</option>
+                            </select>
+                        </div>
+                        <div class="rdm-form-field">
+                            <label class="rdm-lbl" for="rel-golive">Go Live Date</label>
+                            <input id="rel-golive" class="rdm-input" type="date"
+                                   value={formData.Go_Live_Date__c}
+                                   data-field="Go_Live_Date__c"
+                                   onchange={handleInput} />
+                        </div>
+                        <div class="rdm-form-field">
+                            <label class="rdm-lbl" for="rel-freeze">Code Freeze Date</label>
+                            <input id="rel-freeze" class="rdm-input" type="date"
+                                   value={formData.Code_Freeze_Date__c}
+                                   data-field="Code_Freeze_Date__c"
+                                   onchange={handleInput} />
+                        </div>
+                        <div class="rdm-form-field rdm-form-full">
+                            <label class="rdm-lbl" for="rel-mgr">Release Manager</label>
+                            <input id="rel-mgr" class="rdm-input" type="text"
+                                   value={formData.Release_Manager__c}
+                                   data-field="Release_Manager__c"
+                                   onchange={handleInput}
+                                   placeholder="Name of release manager" />
+                        </div>
+                        <div class="rdm-form-field rdm-form-full">
+                            <label class="rdm-lbl" for="rel-notes">Release Notes</label>
+                            <textarea id="rel-notes" class="rdm-textarea"
+                                      data-field="Release_Notes__c"
+                                      onchange={handleInput}
+                                      rows="4"
+                                      placeholder="What's included in this release...">{formData.Release_Notes__c}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="rdm-ftr">
+                    <button class="rdm-cancel-btn" onclick={handleCancelEdit}>Cancel</button>
+                    <button class="rdm-save-btn" onclick={handleSave} disabled={isSaving}>
+                        {saveLabel}
+                    </button>
+                </div>
+            </template>
+
+        </div>
+    </div>
+</template>

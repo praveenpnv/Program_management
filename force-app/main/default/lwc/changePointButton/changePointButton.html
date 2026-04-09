@@ -1,0 +1,15 @@
+<template>
+    <div style="background-color: #f5f5f5;">
+        <lightning-card>
+            <div style="padding: 10px; background-color: #f5f5f5;">
+                <h3 slot="title">Request Changepoint ID</h3>
+            </div>
+            <lightning-input label="Invoicing Name*" name="invoicingName" value={invoicingName} onchange={handleInputChange} style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px;"></lightning-input>
+            <lightning-input label="Payment Terms*" name="paymentTerms" value={paymentTerms} onchange={handleInputChange} style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px;"></lightning-input>
+            <lightning-combobox label="Graydon Rating*" name="graydonRating" value={graydonRating} options={graydonRatingOptions} onchange={handleInputChange} style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px;"></lightning-combobox>
+            <lightning-input label="Contact Person (Accounts payable)*" name="contactPerson" value={contactPerson} onchange={handleInputChange} style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px;"></lightning-input>
+            <lightning-textarea label="Comment" name="comment" value={comment} onchange={handleInputChange} style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px;"></lightning-textarea>
+            <lightning-button variant="brand" label="Request Changepoint ID" title="Request ChangePoint ID" style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px;" onclick={handleSendEmail} disabled={isButtonDisabled}></lightning-button>
+        </lightning-card>
+    </div>
+</template>

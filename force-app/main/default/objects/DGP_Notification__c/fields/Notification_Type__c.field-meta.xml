@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Notification_Type__c</fullName>
+    <label>Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Story Done</fullName>
+                <default>false</default>
+                <label>Story Done</label>
+            </value>
+            <value>
+                <fullName>Release Ready</fullName>
+                <default>false</default>
+                <label>Release Ready</label>
+            </value>
+            <value>
+                <fullName>Code Freeze</fullName>
+                <default>false</default>
+                <label>Code Freeze</label>
+            </value>
+            <value>
+                <fullName>Release Published</fullName>
+                <default>false</default>
+                <label>Release Published</label>
+            </value>
+            <value>
+                <fullName>Daily Digest</fullName>
+                <default>false</default>
+                <label>Daily Digest</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

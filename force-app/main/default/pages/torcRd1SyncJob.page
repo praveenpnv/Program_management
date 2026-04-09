@@ -1,0 +1,118 @@
+<apex:page standardController="TR1__Job__c" extensions="torcRd1SyncJob" docType="html-5.0" showHeader="false" sidebar="false" lightningStylesheets="true">
+<style>
+  /* Bigger text overall */
+  .torc-table { font-size: 12px; }
+
+  /* Header: bold + light color band */
+  .torc-table thead th {
+    background: #f3f6fb;            /* soft SLDS-like blue tint */
+    color: #16325c;                  /* Salesforce text color */
+    font-weight: 400;
+    padding: 4px 4px !important;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Roomier rows */
+  .torc-table tbody td {
+    padding: 2px 2px !important;   /* more vertical spacing */
+  }
+  .torc-table tbody tr {
+    border-bottom: 1px solid #eef1f5;
+  }
+
+  /* Nicer step badge */
+  .badge-step {
+    display: inline-block;
+    min-width: 1rem;
+    text-align: center;
+    padding: 0.10rem 0.15rem;
+    border-radius: 999px;
+    background: #ecebea;
+    font-weight: 700;
+  }
+
+  /* Align status icon + text nicely (if you add text later) */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .status .emoji { font-size: 12px; }
+</style>
+
+
+
+<apex:form id="f">
+    <apex:pageBlock >
+        <apex:outputPanel id="progress">
+            <apex:pageMessages id="msg"/>
+                
+<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped slds-m-top_small torc-table" style="width:100%;">
+  <thead>
+    <tr class="slds-text-title_caps">
+      <th scope="col">Step</th>
+      <th scope="col">Status</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <apex:repeat value="{!rows}" var="r">
+      <tr>
+        <!-- STEP -->
+        <td>
+          <span class="badge-step">{!r.step}</span>
+        </td>
+
+        <!-- STATUS (emoji visuals only) -->
+        <td>
+          <apex:outputPanel rendered="{!r.label='DONE'}" layout="none">
+            <span class="emoji">✅</span>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!r.label='PROCESSING'}" layout="none">
+            <span class="emoji">🔄</span>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!r.label='PENDING'}" layout="none">
+            <span class="emoji">⏳</span>
+          </apex:outputPanel>
+        </td>
+
+        <!-- DESCRIPTION -->
+        <td>
+          <apex:outputText value="{!r.Description}"/>
+        </td>
+      </tr>
+    </apex:repeat>
+  </tbody>
+</table>
+
+                
+                
+                
+                
+            </apex:outputPanel>
+            <apex:inputHidden id="doneVal" value="{!done}"/>
+            <apex:outputPanel id="pollerWrap">
+            <apex:actionRegion >
+                <apex:actionPoller interval="5"
+                    enabled="{!NOT(errorCome)}"
+                    action="{!processNow}"
+                    rerender="progress,jobUrlVal,pollerWrap"
+                    oncomplete="checkRedirect();"/>
+            </apex:actionRegion>
+            </apex:outputPanel>
+        </apex:pageBlock>
+        <apex:outputPanel id="jobUrlVal">
+            <script>
+                function checkRedirect()
+                {
+                    if ({!done}) 
+                    {
+                        var url = '{!JobUrl}';
+                        window.location = url; // back to TR1__Job__c detail
+                    }
+                }
+            </script>
+        </apex:outputPanel>
+    </apex:form>
+
+</apex:page>

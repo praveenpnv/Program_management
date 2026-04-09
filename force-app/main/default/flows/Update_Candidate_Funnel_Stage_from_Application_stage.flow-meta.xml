@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>Candidate_Mandate_Fields</name>
+        <label>Candidate Mandate Fields</label>
+        <locationX>314</locationX>
+        <locationY>647</locationY>
+        <customErrorMessages>
+            <errorMessage>{!$Flow.FaultMessage}</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Decision_1</name>
+        <label>Check Funnel</label>
+        <locationX>314</locationX>
+        <locationY>431</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Current_Funnel_Prior_Funnel</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>CurrentFunnel</leftValueReference>
+                <operator>GreaterThan</operator>
+                <rightValue>
+                    <elementReference>PriorFunnel</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Candidate_funnel_stage</targetReference>
+            </connector>
+            <label>Current Funnel &gt; Prior Funnel</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>CandidateStages</name>
+        <dataType>String</dataType>
+        <expression>CASE({!$Record.TR1__Stage__c},
+    &quot;Application&quot;, &apos;New&apos;,
+   &quot;Internal Interview&quot;, &apos;Interview&apos;,
+&quot;Submittal&quot;, &apos;Presentation&apos;,
+&quot;Send Out&quot;,&apos;Presentation&apos;,
+&quot;Offer&quot;, &apos;Offer&apos;,
+&quot;Client Offer&quot;, &apos;Offer&apos;,
+&quot;Closing Report&quot;, &apos;Consultant&apos;,&apos;&apos;
+   )</expression>
+    </formulas>
+    <formulas>
+        <name>CurrentFunnel</name>
+        <dataType>Number</dataType>
+        <expression>   
+    CASE(
+        {!CandidateStages},
+        &quot;New&quot;, 1,
+        &quot;Interview&quot;, 2,
+        &quot;Presentation&quot;, 3,
+        &quot;Offer&quot;, 4,
+        &quot;Consultant&quot;, 5,
+        &quot;Out of Service&quot;, 6,
+        6
+    )</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>PriorFunnel</name>
+        <dataType>Number</dataType>
+        <expression>CASE(
+     {!Get_Candidate.Candidate_funnel_stage__c},
+        &quot;New&quot;, 1,
+        &quot;Interview&quot;, 2,
+        &quot;Presentation&quot;, 3,
+        &quot;Offer&quot;, 4,
+        &quot;Consultant&quot;, 5,
+        &quot;Out of Service&quot;, 6,
+        6
+    )</expression>
+        <scale>2</scale>
+    </formulas>
+    <interviewLabel>Update Candidate Funnel Stage from Application stage {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Update Candidate Funnel Stage from Application stage</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Candidate</name>
+        <label>Get Candidate</label>
+        <locationX>314</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Decision_1</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.TR1__Applicant__r.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Candidate_funnel_stage</name>
+        <label>Update Candidate funnel stage</label>
+        <locationX>50</locationX>
+        <locationY>539</locationY>
+        <faultConnector>
+            <targetReference>Candidate_Mandate_Fields</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.TR1__Applicant__r.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Candidate_funnel_stage__c</field>
+            <value>
+                <elementReference>CandidateStages</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Contact</object>
+    </recordUpdates>
+    <start>
+        <locationX>188</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Candidate</targetReference>
+        </connector>
+        <filterFormula>{!$Setup.Active_Trigger_Flow_VR__c.ApplicationV2_Flow__c} = TRUE
+&amp;&amp; ISCHANGED({!$Record.TR1__Stage__c})</filterFormula>
+        <object>TR1__Application_V2__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

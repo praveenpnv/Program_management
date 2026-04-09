@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RIG_Base_Url__c</fullName>
+    <description>Base Url for RIG used to dynamically generate the URL using Record ID and User ID</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Base Url for RIG used to dynamically generate the URL using Record ID and User ID</inlineHelpText>
+    <label>RIG Base Url</label>
+    <required>false</required>
+    <type>Url</type>
+</CustomField>

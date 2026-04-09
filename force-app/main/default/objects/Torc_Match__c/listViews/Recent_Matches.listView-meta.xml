@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Recent_Matches</fullName>
+    <columns>NAME</columns>
+    <columns>Application_Rate__c</columns>
+    <columns>applicationId__c</columns>
+    <columns>createdAt__c</columns>
+    <columns>updatedAt__c</columns>
+    <columns>creator__c</columns>
+    <columns>Job_Opportunity_Search_Tool__c</columns>
+    <columns>Job_Opportunity_Status__c</columns>
+    <columns>Match_At__c</columns>
+    <columns>status__c</columns>
+    <columns>Torc_User__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Application_Rate__c</field>
+        <operation>greaterThan</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>Job_Opportunity_Status__c</field>
+        <operation>equals</operation>
+        <value>ACTIVE</value>
+    </filters>
+    <filters>
+        <field>creator__c</field>
+        <operation>startsWith</operation>
+        <value>google_106046243320960000362</value>
+    </filters>
+    <label>Recent Matches</label>
+</ListView>

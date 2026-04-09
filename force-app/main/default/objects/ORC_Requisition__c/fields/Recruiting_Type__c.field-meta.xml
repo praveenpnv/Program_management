@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Recruiting_Type__c</fullName>
+    <defaultValue>&quot;Core (Employee)&quot;</defaultValue>
+    <description>Employment Type on the Job. Default is &apos;Core(Employee)&apos;</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Employment Type on the Job. Default is &apos;Core(Employee)&apos;</inlineHelpText>
+    <label>Recruiting Type</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

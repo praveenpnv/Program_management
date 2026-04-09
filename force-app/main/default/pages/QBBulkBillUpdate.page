@@ -1,0 +1,169 @@
+<apex:page Controller="QBBulkBillUpdate" action="{!pageToken}" title="Bulk Bill Update" showHeader="false" sidebar="false">
+<style>
+.dateFormat{
+    display:none;
+    }
+.UCls
+{
+    background-color:'yellow';
+}
+
+.DCls
+{
+    background-color:'#f9c7c7';
+}
+.ICls
+{
+    background-color:'#aff5af';
+}
+.NCls
+{
+    background-color:'white';
+}
+
+.rich-tabhdr-side-cell {border-top:none;}   
+.rich-tabhdr-side-border {background-image:none;}
+
+.tabPanel {
+   border: none !important;
+   }
+
+.activeTab {
+    background-color: lightblue;    
+    background-image:none; 
+    font-size: 18px;
+    border-radius: 50px 20px;
+    border: none !important;    
+    }
+.inactiveTab {
+    background-color: lightgrey;    
+    background-image:none;
+    font-size: 12px;
+    color:blue; 
+    border-radius: 50px 20px;
+    border: none !important;
+}
+</style>
+<script>
+    function checkuncheckAll(chk, className)
+    {
+        var v = document.getElementsByClassName(className);
+        for(var i in v)
+            v[i].checked = chk;
+    }
+    function confirmdelete()
+    {
+        if (confirm("It will delete Bills from Quickbooks. Are you sure?") == true) 
+        {
+            if (confirm("Are you really sure?") == true)  
+            {
+                showDisable();   
+                return true;
+            }    
+        }
+        return false;
+    }
+    function confirmUpdate()
+    {
+        if (confirm("It will Update existing Bills in Quickbooks. Are you sure?") == true) 
+        {
+            showDisable();   
+            return true;
+        }
+        return false;
+    }
+</script>
+<apex:sectionHeader title="Bulk Update"/>
+<apex:form >
+<apex:pageblock mode="edit">
+    <apex:pageblockbuttons location="top">
+        <apex:commandButton value="Filter For Update" action="{!filterForUpdateBill}" onclick="showDisable();"/>
+        <apex:commandButton value="Filter For Delete" action="{!filterForDeleteBill}" onclick="showDisable();"/>
+        <apex:commandButton value="Update Bills" onclick="return confirmUpdate();" action="{!SaveUpdate}" rendered="{!AND(STEP="SAVE",FilterFor="UPDATE",lstDataRow.SIZE>0)}"/>
+        <apex:commandButton value="Delete Bills" onclick="return confirmdelete();" action="{!SaveDelete}" rendered="{!AND(STEP="SAVE",FilterFor="DELETE",lstDataRow.SIZE>0)}"/>
+    </apex:pageblockbuttons>
+    <div class="pbError" id="errorDiv_ep">
+        <apex:messages />
+     </div>
+    <apex:pageblockSection columns="2">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Select Torc user"/>
+            <apex:inputField value="{!fromDate.Torc_User__c}"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem />
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="From Date"/>
+            <apex:inputField value="{!fromDate.Date__c}"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="To Date"/>
+            <apex:inputField value="{!toDate.Date__c}"/>
+        </apex:pageblockSectionItem>
+    </apex:pageblockSection>
+    
+    <apex:pageblockSection columns="1" title="Filter Data">
+
+    <apex:pageblocktable value="{!lstDataRow}" var="rec" rendered="{!AND(STEP="SAVE",lstDataRow.SIZE>0)}">
+        <apex:column headerValue="Select">
+            <apex:inputcheckBox value="{!rec.bill.selectedRow}" id="chk" styleClass="prods" rendered="{!rec.Editable}"/>
+            <apex:facet name="header"> <input type="checkbox" onClick="checkuncheckAll(this.checked,'prods');"/></apex:facet>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Id</apex:facet>
+            <apex:outputText value="{!rec.bill.Id}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Doc No.</apex:facet>
+            <apex:outputText value="{!rec.bill.DocNumber}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Txndate</apex:facet>
+            <apex:outputText value="{!rec.bill.TxnDate}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Due Date</apex:facet>
+            <apex:outputText value="{!rec.bill.duedate}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">User</apex:facet>
+            <apex:outputText value="{!rec.bill.VendorRef.Name} - {!rec.bill.VendorRef.Value}"/>
+        </apex:column>
+
+        <apex:column >
+            <apex:pageblockTable value="{!rec.bill.Line}" var="rl">
+                <apex:column style="width:5%;">
+                    <apex:facet name="header">Id</apex:facet>
+                    <apex:outputText value="{!rl.Id}"/>
+                </apex:column>
+                <apex:column style="width:15%;">
+                    <apex:facet name="header">Customer</apex:facet>
+                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.CustomerRef.Name}"/>
+                </apex:column>
+                <apex:column style="width:15%;">
+                    <apex:facet name="header">Category Name</apex:facet>
+                    <apex:outputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.name}"/>
+                </apex:column>
+                <apex:column style="width:15%;">
+                    <apex:facet name="header">Category Id</apex:facet>
+                    <apex:inputText value="{!rl.AccountBasedExpenseLineDetail.AccountRef.value}"/>
+                </apex:column>
+                <apex:column style="width:50%;">
+                    <apex:facet name="header">Description</apex:facet>
+                    <apex:outputText value="{!rl.Description}" rendered="{!FilterFor='DELETE'}"/>
+                    <apex:inputText value="{!rl.Description}" rendered="{!FilterFor='UPDATE'}"/>
+                </apex:column>
+                <apex:column style="background-color:{!rl.UpdateStyle};width:15%;">
+                    <apex:facet name="header">Amount</apex:facet>
+                    <apex:outputText value="{!rl.Amount}"/>
+                </apex:column>
+            </apex:pageblockTable>  
+        </apex:column>                          
+    </apex:pageblocktable>
+    <apex:Outputpanel rendered="{!AND(STEP='SAVE',lstDataRow.SIZE=0)}" style="font-size: 20px;color: blue;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>No Invoices to display.
+    </apex:Outputpanel>
+    </apex:pageblockSection>
+</apex:pageblock>
+<c:WaitPopup />
+</apex:form>
+</apex:page>

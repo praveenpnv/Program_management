@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <description>Set Flow Label to &quot;TextkernelConvertedCandidates&quot; to ensure Mandatory triggers are not fired.</description>
+        <name>BypassTrigger</name>
+        <label>BypassTrigger</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>TriggerControlFlowHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Update_Candidate_RIG_Sync_Enabled</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>flowLabels</name>
+            <value>
+                <stringValue>TextkernelConvertedCandidates</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>TriggerControlFlowHelper</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <actionCalls>
+        <description>Set Flow Label to &quot;TextkernelConvertedCandidates&quot; to ensure Mandatory triggers are not fired.
+Retry after 15 Minutes in case the first one fails and then after 35 minutes</description>
+        <name>BypassTrigger_Retry</name>
+        <label>BypassTrigger - Retry</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>TriggerControlFlowHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Update_Candidate_RIG_Sync_Enabled_Retry</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>flowLabels</name>
+            <value>
+                <stringValue>TextkernelConvertedCandidates</stringValue>
+            </value>
+        </inputParameters>
+        <nameSegment>TriggerControlFlowHelper</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <description>This is needed to keep the fault path alive, else SFDC removes the fault path.</description>
+        <name>No_Need_for_this_Assignment</name>
+        <label>No Need for this Assignment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>faultMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>V1: Set the Applicant’s Candidate record as RIG Sync Enabled. Execute this logic asynchronously to prevent the Applicant Flow from failing or blocking the save operation due to RIG-related validation errors.
+V2: Add Retry Option after 15 &amp; 35 Minutes. Ignore Error If Lock found in first attempt</description>
+    <environments>Default</environments>
+    <interviewLabel>Application V2:RIG {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Application V2:RIG Data Event Insert</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <description>Set RIG Sync Enabled to &quot;Yes&quot; on Candidate if not already set. There SHOULD be one candidate record.</description>
+        <name>Update_Candidate_RIG_Sync_Enabled</name>
+        <label>Update Candidate - RIG Sync Enabled</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>No_Need_for_this_Assignment</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>RIG_Sync_Required__c</field>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record.TR1__Applicant__r</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <description>Set RIG Sync Enabled to &quot;Yes&quot; on Candidate if not already set. It retries twice</description>
+        <name>Update_Candidate_RIG_Sync_Enabled_Retry</name>
+        <label>Update Candidate - RIG Sync Enabled - Retry</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>RIG_Sync_Required__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>RIG_Sync_Required__c</field>
+            <value>
+                <stringValue>Yes</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record.TR1__Applicant__r</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterFormula>AND (
+  {!$Setup.Active_Trigger_Flow_VR__c.ApplicationV2_Flow__c} = TRUE, /*Flow is enabled for V2*/
+  TEXT({!$Record.TR1__Job__r.User_Opco__c}) = &quot;US&quot;, /*Applies only to Jobs in US*/
+  TEXT({!$Record.TR1__Applicant__r.RIG_Sync_Required__c}) &lt;&gt; &quot;Yes&quot; /*Candidate Not already RIG Sync Enabled*/
+)</filterFormula>
+        <object>TR1__Application_V2__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <name>After_2_Minutes</name>
+            <connector>
+                <targetReference>BypassTrigger</targetReference>
+            </connector>
+            <label>After 2 Minutes</label>
+            <offsetNumber>2</offsetNumber>
+            <offsetUnit>Minutes</offsetUnit>
+            <timeSource>RecordTriggerEvent</timeSource>
+        </scheduledPaths>
+        <scheduledPaths>
+            <name>After_15_Minutes</name>
+            <connector>
+                <targetReference>BypassTrigger_Retry</targetReference>
+            </connector>
+            <label>After 15 Minutes</label>
+            <offsetNumber>15</offsetNumber>
+            <offsetUnit>Minutes</offsetUnit>
+            <timeSource>RecordTriggerEvent</timeSource>
+        </scheduledPaths>
+        <scheduledPaths>
+            <name>After_35_Minutes</name>
+            <connector>
+                <targetReference>BypassTrigger_Retry</targetReference>
+            </connector>
+            <label>After 35 Minutes</label>
+            <offsetNumber>35</offsetNumber>
+            <offsetUnit>Minutes</offsetUnit>
+            <timeSource>RecordTriggerEvent</timeSource>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <description>Fault Message</description>
+        <name>faultMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+</Flow>

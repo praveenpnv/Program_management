@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Exists</fullName>
+    <columns>Status__c</columns>
+    <columns>Error__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Exists__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Exists</label>
+</ListView>

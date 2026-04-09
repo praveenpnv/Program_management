@@ -1,0 +1,33 @@
+.green-text {
+    background-color: green;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    font-size: medium;
+    font-weight: bolder;    
+}
+.yellow-text {
+    background-color: goldenrod;
+    color: black; /* better contrast on yellow */
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    font-size: medium;
+    font-weight: bolder;    
+}
+.red-text {
+    background-color: red;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    font-size: medium;
+    font-weight: bolder;    
+}

@@ -1,0 +1,108 @@
+<template>
+    <lightning-card title="DNB Credit Check">
+        
+        <!-- Initial Step -->
+        <template if:true={isInitialStep}>
+            <div class="slds-p-horizontal_small">
+                <p class="slds-m-bottom_small">
+                    Click the button below to perform a credit check. The system will automatically check for existing DUNS number or search for matching companies.
+                </p>
+            </div>
+            
+            <div slot="footer" class="slds-align_absolute-center">
+                <lightning-button 
+                    label="Close" 
+                    variant="neutral" 
+                    onclick={handleCloseCard} 
+                    class="slds-m-right_small"
+                    data-id="close-button">
+                </lightning-button>
+                <lightning-button 
+                    label="Start Credit Check" 
+                    variant="brand" 
+                    onclick={handleClick}
+                    disabled={isLoading}
+                    data-id="fetch-button">
+                </lightning-button>
+            </div>
+        </template>
+
+        <!-- Searching Step -->
+        <template if:true={isSearchingStep}>
+            <div class="slds-p-horizontal_small">
+                <div class="slds-align_absolute-center slds-m-bottom_medium">
+                    <lightning-spinner 
+                        alternative-text="Searching for companies..." 
+                        size="medium">
+                    </lightning-spinner>
+                </div>
+                <p class="slds-text-align_center slds-text-color_weak">
+                    {searchMessage}
+                </p>
+            </div>
+        </template>
+
+        <!-- Company Selection Step -->
+        <template if:true={isCompanySelectionStep}>
+            <div class="slds-p-horizontal_small">
+                <p class="slds-m-bottom_medium">
+                    {selectionMessage}
+                </p>
+                
+                <template if:true={hasSearchResults}>
+                    <div class="slds-m-bottom_medium" style="height: 300px;">
+                        <lightning-datatable
+                            key-field="id"
+                            data={searchResults}
+                            columns={columns}
+                            onrowselection={handleRowSelection}
+                            max-row-selection="1">
+                        </lightning-datatable>
+                    </div>
+                </template>
+                
+                <template if:false={hasSearchResults}>
+                    <div class="slds-text-align_center slds-m-vertical_large">
+                        <p class="slds-text-color_weak">No companies found matching the search criteria.</p>
+                    </div>
+                </template>
+            </div>
+            
+            <div slot="footer" class="slds-align_absolute-center">
+                <lightning-button 
+                    label="Back" 
+                    variant="neutral" 
+                    onclick={handleBackToInitial} 
+                    class="slds-m-right_small"
+                    disabled={isLoading}>
+                </lightning-button>
+                <lightning-button 
+                    label="Close" 
+                    variant="neutral" 
+                    onclick={handleCloseCard} 
+                    class="slds-m-right_small"
+                    disabled={isLoading}>
+                </lightning-button>
+                <lightning-button 
+                    label="Select & Run Credit Check" 
+                    variant="brand" 
+                    onclick={handleSelectCompany}
+                    disabled={isLoading}
+                    class="slds-m-left_small">
+                </lightning-button>
+            </div>
+        </template>
+
+        <!-- Loading overlay for any step -->
+        <template if:true={isLoading}>
+            <div class="slds-is-relative">
+                <lightning-spinner 
+                    alternative-text="Processing..." 
+                    size="medium"
+                    class="slds-is-fixed">
+                </lightning-spinner>
+            </div>
+        </template>
+        
+    </lightning-card>
+</template>

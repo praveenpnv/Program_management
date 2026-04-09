@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>V1: Async raise a RD Change Event when an Account is updated. Follows the same conditions as insert. Peoplesoft ID = Blank, Account Owner = US and Record Type = Market Account</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>Simple JSON Representation for Account containing Id and Name only.</description>
+        <name>partialJSON</name>
+        <dataType>String</dataType>
+        <expression>&quot;{ &quot; &amp; 
+&quot;\&quot;Id\&quot;: \&quot;&quot; &amp; {!$Record.Id} &amp; &quot;\&quot;, &quot; &amp;
+&quot;\&quot;Name\&quot;: \&quot;&quot; &amp; {!$Record.Name} &amp; &quot;\&quot;&quot; &amp;
+&quot;}&quot;</expression>
+    </formulas>
+    <formulas>
+        <description>User 18 Digit ID</description>
+        <name>user18DigitID</name>
+        <dataType>String</dataType>
+        <expression>CASESAFEID({!$User.Id})</expression>
+    </formulas>
+    <interviewLabel>Account:RIG Data Event - Update {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account:RIG Data Event - Update</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Create RD Event Record</description>
+        <name>Create_Event_Record</name>
+        <label>Create RD Event Record</label>
+        <locationX>308</locationX>
+        <locationY>276</locationY>
+        <inputAssignments>
+            <field>Change_Type__c</field>
+            <value>
+                <stringValue>Update</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Changed_By__c</field>
+            <value>
+                <elementReference>user18DigitID</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Entity__c</field>
+            <value>
+                <stringValue>Account</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Fields__c</field>
+            <value>
+                <elementReference>partialJSON</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Record_Id__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Reference_ID__c</field>
+            <value>
+                <elementReference>$Record.Randstad_ID__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Source__c</field>
+            <value>
+                <elementReference>$Flow.InterviewGuid</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Timestamp__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <object>RD_ChangeEvent__e</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterFormula>AND ( 
+ ISCHANGED({!$Record.LastModifiedDate}),
+ TEXT({!$Record.Owner.Opco__c}) = &quot;US&quot;,
+ ISBLANK({!$Record.PeopleSoft_ID__c}),
+ {!$Setup.Active_Trigger_Flow_VR__c.Account_Flow__c} = TRUE,
+ {!$Record.RecordType.DeveloperName} = &quot;Market_Account&quot;
+)</filterFormula>
+        <object>Account</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>Create_Event_Record</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>This custom setting controls whether the automatic creation of Opportunities for VMS Jobs is enabled. If disabled, the logic that creates Opportunities for VMS Jobs will be skipped. This setting is useful for temporarily turning off automation during testing, deployments, or data loads.</description>
+    <enableFeeds>false</enableFeeds>
+    <label>VMS Opportunity Creation Setting</label>
+    <visibility>Public</visibility>
+</CustomObject>

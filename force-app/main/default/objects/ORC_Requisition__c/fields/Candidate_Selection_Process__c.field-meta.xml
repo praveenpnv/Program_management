@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Candidate_Selection_Process__c</fullName>
+    <defaultValue>&quot;CSP_RD&quot;</defaultValue>
+    <externalId>false</externalId>
+    <inlineHelpText>Internal Code. Default = &quot;CSP_RD&quot;</inlineHelpText>
+    <label>Candidate Selection Process</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

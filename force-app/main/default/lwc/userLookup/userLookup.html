@@ -1,0 +1,72 @@
+<template>
+    <div class="ul-wrap">
+        <label class="ul-label">{label}<template if:true={required}><span class="ul-req"> *</span></template></label>
+
+        
+        <template if:true={hasSelection}>
+            <div class="ul-selected">
+                <template if:true={selectedPhoto}>
+                    <img src={selectedPhoto} class="ul-avatar" alt={selectedName} />
+                </template>
+                <template if:false={selectedPhoto}>
+                    <div class="ul-avatar-fallback">{selectedInitials}</div>
+                </template>
+                <div class="ul-selected-info">
+                    <span class="ul-selected-name">{selectedName}</span>
+                    <template if:true={selectedTitle}>
+                        <span class="ul-selected-title">{selectedTitle}</span>
+                    </template>
+                </div>
+                <template if:false={readonly}>
+                    <button class="ul-clear" onclick={handleClear} title="Remove">✕</button>
+                </template>
+            </div>
+        </template>
+
+        
+        <template if:false={hideInput}>
+            <div class="ul-input-wrap">
+                <input
+                    type="text"
+                    class="ul-input"
+                    placeholder={placeholder}
+                    value={searchTerm}
+                    oninput={handleInput}
+                    onfocus={handleFocus}
+                    onblur={handleBlur}
+                    autocomplete="off" />
+                <template if:true={isSearching}>
+                    <div class="ul-spinner"></div>
+                </template>
+            </div>
+
+            
+            <template if:true={showDropdown}>
+                <div class="ul-dropdown">
+                    <template if:true={hasResults}>
+                        <template for:each={results} for:item="u">
+                            <button key={u.id} class="ul-result" data-id={u.id} onmousedown={handleSelect}>
+                                <template if:true={u.photo}>
+                                    <img src={u.photo} class="ul-res-avatar" alt={u.name} />
+                                </template>
+                                <template if:false={u.photo}>
+                                    <div class="ul-res-avatar-fallback">{u.initials}</div>
+                                </template>
+                                <div class="ul-res-info">
+                                    <span class="ul-res-name">{u.name}</span>
+                                    <span class="ul-res-sub">{u.email}</span>
+                                </div>
+                            </button>
+                        </template>
+                    </template>
+                    <template if:false={hasResults}>
+                        <div class="ul-no-results">
+                            <template if:true={isSearching}>Searching…</template>
+                            <template if:false={isSearching}>No users found</template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

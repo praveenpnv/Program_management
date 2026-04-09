@@ -1,0 +1,36 @@
+<!--<template>
+    <template if:true={stages}>
+        <div class="slds-path">
+            <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                <template for:each={stages} for:item="stage">
+                    <li key={stage.value} class="slds-path__item" role="presentation">
+                        <a aria-selected={stage.isSelected} class="slds-path__link" href="javascript:void(0);" role="option">
+                            <span class="slds-path__stage">
+                                <template if:true={stage.isSelected}>
+                                    <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                </template>
+                                <template if:false={stage.isSelected}>
+                                    <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                                </template>
+                                <span class="slds-assistive-text">{stage.label}</span>
+                            </span>
+                            <span class="slds-path__title">{stage.label}</span>
+                        </a>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </template>
+    <template if:true={error}>
+        <p class="slds-text-color_error">{error}</p>
+    </template>
+</template>-->
+<template>
+<template if:true={dataAvailable}>
+    <lightning-progress-indicator current-step= {currentSubStage} type="path" variant="shade">
+        <template for:each={stages} for:item="step">
+            <lightning-progress-step label={step.label} value={step.value} key={step.label} onstepfocus={handleStageClick} class={isDisabled} ></lightning-progress-step>
+        </template>
+    </lightning-progress-indicator>
+</template> 
+</template>

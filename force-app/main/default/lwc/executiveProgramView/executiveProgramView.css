@@ -1,0 +1,272 @@
+/* ── Tabs ───────────────────────────────────────────────────────────────────── */
+.epv-tabs {
+    display: flex; 
+    gap: 4px; 
+    padding: 0 16px; 
+    background: #1E293B; 
+    border-bottom: none; 
+    overflow-x: auto; 
+    flex-shrink: 0;
+    align-items: center;
+    min-height: 54px;
+    border-radius: 12px 12px 0 0; 
+}
+.epv-tab {
+    background: transparent; 
+    border: 2px solid transparent; 
+    color: #64748B; 
+    font-weight: 700; 
+    font-size: 14px;
+    padding: 10px 20px; 
+    cursor: pointer; 
+    white-space: nowrap; 
+    transition: all .2s ease;
+    border-radius: 4px; 
+}
+.epv-tab:hover { color: #E2E8F0; }
+.epv-tab-active { 
+    color: #FFFFFF !important; /* Bright white text */
+    background-color: #0EA5E9; /* Bright sky blue background matching your screenshot */
+    border: 2px solid #0EA5E9; /* Keeps the box sizing stable */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.epv-wrap { display:flex; flex-direction:column; gap:0; flex:1; min-height:0; overflow:hidden; }
+
+/* ── KPI strip ─────────────────────────────────────────────────────────────── */
+.epv-kpi-strip {
+    display: flex; gap: 0; flex-shrink: 0;
+    background: #fff; 
+    border: 1px solid #E2E8F0; 
+    border-top: none; 
+    border-radius: 0 0 12px 12px; 
+    padding: 0 4px;
+    margin-bottom: 16px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
+}
+.epv-kpi {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:10px 20px; border-right:1px solid #F1F5F9; gap:2px;
+    min-width:100px;
+}
+.epv-kpi:last-child { border-right: none; }
+.epv-kpi-num { font-size:22px; font-weight:800; color:#0F172A; line-height:1; }
+.epv-kpi-lbl { font-size:10px; color:#64748B; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+.epv-kpi-green { color:#16A34A; }
+.epv-kpi-amber { color:#D97706; }
+.epv-kpi-blue  { color:#2563EB; }
+.epv-kpi-red   { color:#DC2626; }
+
+/* ── Toolbar ────────────────────────────────────────────────────────────────── */
+.epv-toolbar {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    flex-wrap:wrap; gap:12px; flex-shrink:0;
+    padding:0 0 12px;
+}
+.epv-title     { font-size:20px; font-weight:800; color:#0F172A; margin:0 0 2px; }
+.epv-subtitle  { font-size:12px; color:#64748B; margin:0; }
+.epv-toolbar-right { display:flex; gap:8px; align-items:center; }
+.epv-search {
+    background:#fff; border:1px solid #CBD5E1; border-radius:8px;
+    padding:7px 12px; font-size:13px; width:200px; color:#0F172A;
+}
+.epv-search:focus { outline:none; border-color:#3B82F6; box-shadow:0 0 0 3px rgba(59,130,246,.15); }
+.epv-filter-select {
+    background:#fff; border:1px solid #CBD5E1; border-radius:8px;
+    padding:7px 10px; font-size:13px; color:#334155; cursor:pointer;
+}
+.epv-filter-select:focus { outline:none; border-color:#3B82F6; }
+
+/* ── Swimlanes container ────────────────────────────────────────────────────── */
+.epv-swimlanes {
+    display:flex; flex-direction:column; gap:16px;
+    overflow-y:auto; flex:1; padding-bottom:24px;
+}
+
+/* ── Individual lane ────────────────────────────────────────────────────────── */
+.epv-lane {
+    background:#fff; border-radius:12px;
+    border:1px solid #E2E8F0;
+    box-shadow:0 1px 4px rgba(0,0,0,.05);
+    overflow:hidden;
+}
+
+.epv-lane-hdr {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 16px; flex-wrap:wrap; gap:8px;
+}
+.epv-lane-hdr-left { display:flex; align-items:center; gap:10px; }
+.epv-lane-type  { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; }
+.epv-lane-count { font-size:11px; opacity:.7; font-weight:600; }
+.epv-lane-hdr-stats { display:flex; gap:6px; flex-wrap:wrap; }
+.epv-lane-stat { font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
+.epv-lane-stat-go   { background:rgba(16,185,129,.15); color:#065F46; }
+.epv-lane-stat-hold { background:rgba(245,158,11,.15);  color:#92400E; }
+.epv-lane-stat-done { background:rgba(59,130,246,.15);  color:#1E40AF; }
+
+/* ── Table ──────────────────────────────────────────────────────────────────── */
+.epv-lane-table { width:100%; }
+
+.epv-tbl-head {
+    display:grid;
+    grid-template-columns: 1fr 70px 110px 50px 200px 110px 140px 60px;
+    background:#F8FAFC; border-top:1px solid #E2E8F0;
+    padding:0 12px;
+}
+.epv-tbl-row {
+    display:grid;
+    grid-template-columns: 1fr 70px 110px 50px 200px 110px 140px 60px;
+    padding:0 12px;
+    border-top:1px solid #F1F5F9;
+    transition:background .1s;
+}
+.epv-tbl-row:hover { background:#F8FAFC; }
+
+.epv-th {
+    font-size:10px; font-weight:700; color:#94A3B8;
+    text-transform:uppercase; letter-spacing:.06em;
+    padding:7px 6px;
+}
+.epv-td {
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+    padding:10px 6px; font-size:12px;
+}
+
+/* ── Cells ──────────────────────────────────────────────────────────────────── */
+.epv-proj-name { font-weight:700; color:#0F172A; font-size:13px; line-height:1.3; }
+.epv-prog-tag  { font-size:10px; color:#64748B; background:#F1F5F9; border-radius:4px; padding:1px 6px; }
+.epv-no-owner  { color:#CBD5E1; font-size:12px; }
+.epv-date         { font-size:12px; color:#334155; }
+.epv-date-overdue { color:#DC2626; font-weight:700; }
+
+/* Progress bar */
+.epv-prog-bar-wrap { display:flex; align-items:center; gap:6px; width:100%; }
+.epv-prog-bar-track {
+    flex:1; background:#E2E8F0; border-radius:20px; height:6px; overflow:hidden;
+}
+.epv-prog-bar-fill {
+    height:100%; background:linear-gradient(90deg,#3B82F6,#0EA5E9); border-radius:20px;
+    transition:width .3s;
+}
+.epv-prog-pct { font-size:10px; color:#64748B; font-weight:700; width:30px; text-align:right; flex-shrink:0; }
+
+/* Open button */
+.epv-open-btn {
+    background:#0F172A; color:#fff; border:none; border-radius:6px;
+    font-size:11px; font-weight:700; padding:5px 12px; cursor:pointer;
+    transition:background .12s;
+    white-space:nowrap;
+}
+.epv-open-btn:hover { background:#1E293B; }
+
+/* Owner chips */
+.epv-owner-chip {
+    font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px;
+    white-space:nowrap;
+}
+.epv-chip-tech { background:#DBEAFE; color:#1D4ED8; }
+.epv-chip-func { background:#D1FAE5; color:#065F46; }
+
+/* Status badges */
+.epv-status { font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+.epv-status-ongoing     { background:#D1FAE5; color:#065F46; }
+.epv-status-notstarted  { background:#F1F5F9; color:#475569; }
+.epv-status-pending     { background:#FEF3C7; color:#92400E; }
+.epv-status-hold        { background:#FEE2E2; color:#991B1B; }
+.epv-status-continues   { background:#DBEAFE; color:#1E3A8A; }
+.epv-status-delivered   { background:#E0F2FE; color:#0369A1; }
+
+/* RAG dots */
+.epv-rag { font-size:16px; line-height:1; }
+.epv-rag-green { color:#16A34A; }
+.epv-rag-amber { color:#D97706; }
+.epv-rag-red   { color:#DC2626; }
+.epv-rag-grey  { color:#94A3B8; }
+
+/* Priority */
+.epv-pri { font-size:10px; font-weight:800; padding:2px 7px; border-radius:6px; }
+.epv-pri-p1 { background:#FEE2E2; color:#991B1B; }
+.epv-pri-p2 { background:#FEF3C7; color:#92400E; }
+.epv-pri-p3 { background:#DBEAFE; color:#1E3A8A; }
+.epv-pri-p4 { background:#F1F5F9; color:#475569; }
+
+.epv-empty { padding:40px; text-align:center; color:#94A3B8; font-size:14px; }
+
+/* ── Stabilization Analytics View ───────────────────────────────────────────── */
+.epv-stab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+    padding: 24px;
+    background: #F8FAFC;
+}
+.epv-stab-card {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.epv-stab-card-hdr {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 16px; margin-bottom: 20px;
+}
+.epv-stab-proj-title {
+    font-size: 16px; font-weight: 800; color: #0F172A; margin: 0;
+    line-height: 1.3;
+}
+.epv-stab-velocity-lbl {
+    font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; 
+    letter-spacing: 0.08em; margin: 0 0 6px;
+}
+.epv-stab-pipeline-title {
+    font-size: 20px; font-weight: 800; color: #0F172A; margin: 0 0 24px;
+}
+
+/* Stats Row */
+.epv-stab-stats {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #F1F5F9;
+}
+.epv-stab-stat {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    flex: 1;
+}
+.epv-stab-divider { width: 1px; height: 35px; background: #E2E8F0; }
+
+.epv-stab-num { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+.epv-stab-lbl { font-size: 11px; font-weight: 600; color: #94A3B8; text-transform: uppercase; }
+
+.epv-text-green { color: #16A34A; }
+.epv-text-blue { color: #2563EB; }
+.epv-text-red { color: #DC2626; }
+.epv-text-dark { color: #334155; }
+
+/* Donut Chart Row */
+.epv-stab-chart-row {
+    display: flex; align-items: center; gap: 32px;
+}
+.epv-donut-ring {
+    width: 130px; height: 130px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.epv-donut-hole {
+    width: 94px; height: 94px; background: #fff; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.04);
+}
+.epv-donut-pct { font-size: 24px; font-weight: 900; color: #0F172A; line-height: 1.1; }
+.epv-donut-lbl { font-size: 10px; font-weight: 700; color: #94A3B8; text-transform: uppercase; }
+
+/* Legend */
+.epv-stab-legend {
+    display: flex; flex-direction: column; gap: 14px;
+}
+.epv-legend-item { display: flex; align-items: center; gap: 10px; }
+.epv-legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.epv-bg-green { background: #16A34A; }
+.epv-bg-blue { background: #2563EB; }
+.epv-bg-red { background: #DC2626; }
+.epv-legend-text { font-size: 14px; color: #475569; font-weight: 500; }

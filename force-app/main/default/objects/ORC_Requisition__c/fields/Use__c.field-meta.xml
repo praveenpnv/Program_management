@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Use__c</fullName>
+    <defaultValue>&quot;Job&quot;</defaultValue>
+    <description>Specifies the name of the entity the Requisition is related to. The default value is &apos;Job&apos;.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Specifies the name of the entity the Requisition is related to. The default value is &apos;Job&apos;.</inlineHelpText>
+    <label>Use</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

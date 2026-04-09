@@ -1,0 +1,19 @@
+.dummy{
+	color : black;
+}
+.custom-modal__container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+			margin: calc(-1* var(--lwc-spacingMedium, 1rem));
+        }
+        .custom-modal__content {
+            flex-grow: 1;
+            overflow-y: auto;
+			margin:calc(-1* var(--lwc-spacingMedium, 1rem));
+        }
+        .custom-modal__footer {
+			padding: var(--lwc-spacingMedium, 1rem);
+            border-top: 1px solid #d8dde6;
+			margin: calc(-1* var(--lwc-spacingMedium, 1rem));
+        }

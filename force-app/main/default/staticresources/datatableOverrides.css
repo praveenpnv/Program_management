@@ -1,0 +1,42 @@
+/* Target the header cells ONLY within the datatable wrapped by .my-unique-datatable-header-style */
+.my-unique-datatable-header-style lightning-datatable thead th .slds-cell-fixed {
+    background-color: var(--lwc-brandAccessible, #0176D3) !important; /* Fallback brand color */
+    color: white !important;
+}
+
+/* Ensure the th itself is styled */
+.my-unique-datatable-header-style lightning-datatable thead th {
+    background-color: var(--lwc-brandAccessible, #0176D3) !important;
+    color: white !important;
+}
+
+/* Also ensure the text inside the header is white */
+.my-unique-datatable-header-style lightning-datatable thead th .slds-truncate {
+    color: white !important;
+}
+
+/* And any header action icons, adjust if your specific icons need different colors */
+.my-unique-datatable-header-style lightning-datatable thead th .slds-th__action-button lightning-primitive-icon svg {
+    fill: white !important;
+}
+
+.my-unique-datatable-header-style lightning-datatable thead th:hover .slds-truncate,
+.my-unique-datatable-header-style lightning-datatable thead th:focus .slds-truncate,
+.my-unique-datatable-header-style lightning-datatable thead th:hover .slds-cell-fixed .slds-truncate,
+.my-unique-datatable-header-style lightning-datatable thead th:focus .slds-cell-fixed .slds-truncate {
+    color: black !important;
+}
+
+/* If there are hover effects you want to override for the background */
+.my-unique-datatable-header-style lightning-datatable thead th:hover .slds-cell-fixed,
+.my-unique-datatable-header-style lightning-datatable thead th:focus .slds-cell-fixed {
+    background-color: var(--lwc-brandAccessible-darker, darken(var(--lwc-brandAccessible), 10%)) !important; /* Example: a slightly darker shade on hover */
+}
+
+/* Removes Liks from Parent data-Opportunity Line*/
+.no-pointer a {
+    pointer-events: none !important;
+    cursor: default !important;
+    text-decoration: none !important;
+    color: inherit !important;
+}

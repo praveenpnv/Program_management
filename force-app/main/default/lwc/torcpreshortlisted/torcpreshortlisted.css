@@ -1,0 +1,53 @@
+.match-card {
+    border: 1px solid #d8dde6;
+    border-radius: 4px;
+    padding: 0.3rem;  /* reduced padding */
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s;
+}
+
+.match-card:hover {
+    box-shadow: 0 0 0 2px #1589ee;
+    border-color: #1589ee;
+    cursor: default!IMPORTANT;
+}
+
+.custom-blue-button {
+    background-color: #0b1e51;
+    color: white;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.custom-blue-button:hover {
+    background-color: #122a6b;
+}
+.scrollbox-force {
+    height: 180px;
+    overflow-y: scroll;
+    scrollbar-width: auto; /* For Firefox */
+}
+
+/* Chrome, Safari, Edge */
+.scrollbox-force::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollbox-force::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.scrollbox-force::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}

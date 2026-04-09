@@ -1,0 +1,32 @@
+<!--
+  @description       : Bullhorn Email Wrapper used for Submittal and Propose to client stages
+  @author            : mhamdaoui@salesforce.com
+  @last modified on  : 07-15-2024
+  @last modified by  : Raga Viswanathan
+  Modifications Log
+  Ver   Date         Author                     Modification
+  1.0   03-07-2022   mhamdaoui@salesforce.com   Initial Version
+  2.0   01-11-2023   gnanavel.pandurangan@randstad.com   update email page type
+-->
+<aura:component controller="EmailModalBHWrapperCtrl">
+    <aura:attribute name="recordId" type="String" access="public"/>
+    <aura:attribute name="appIds" type="String[]" access="private"/>
+    <aura:attribute name="stage" type="String" access="public"/>
+    <aura:attribute name="jobId" type="Id"  description="Job (TR1__Job__c) record Id" access="private"/>
+    <aura:attribute name="conIdsList" type="List" access="private" />
+    <aura:attribute name="jobName" type="String" access="private" />
+    <aura:attribute name="templateId" type="String" access="private" />
+    <aura:attribute name="initialToList" type="String[]" access="private" />
+    <aura:attribute name="defaultResumeAttachment" type="Boolean" default="false" description="to show default resume section" access="private"/>
+    <aura:attribute name="submittalOverlayLib" type="Aura.Component[]" description="holds the massEmail lightning overlay for closing" access="private"/>
+    <aura:attribute name="emailPageType" type="String"  default="SendEmail" access="public" description=" Email Activity Configuration and for Email Folder pre-selection"/>
+    <lightning:messageChannel type="ATSGenericModal__c" aura:id="ATSGenericModal" onMessage="{!c.openModal}" />
+    <!-- LMS used to send information about clicked button to LWC -->
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!-- global component event to refresh the ATS -->
+    <aura:registerEvent name="notifyUpdateEvent" type="TR1:ATS_Application_Update_Event"/>
+
+    <lightning:overlayLibrary aura:id="submittalOverlayLib"/>
+</aura:component>

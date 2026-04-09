@@ -1,0 +1,156 @@
+<apex:page standardController="Opportunity" extensions="OpportunityDocusignMemberRedirect" title="Redirect to Docusign" action="{!chkMovenext}">
+    <apex:sectionHeader title="MEMBER ENGAGEMENT DOCUMENT" subtitle="{!Oli.Talent_Username__c}"/>
+    <apex:form id="frm">
+    <apex:outputPanel rendered="{!loiCount = 0}">
+        <b>Make sure you selected right Talent Username on Opportunity products.</b> <a href="/apex/OpportunityLineItem?oppId={!opp.id}">Update Now</a>
+    </apex:outputPanel>
+    <apex:pageBlock title="MEMBER ENGAGEMENT DOCUMENT" mode="edit" rendered="{!Step=1}">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Next" action="{!moveNext}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockButtons>
+            <div class="pbError" id="errorDiv_ep">
+                    <apex:messages />
+            </div>
+            <apex:pageblockSection Columns="1">
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Select Talent"/>
+                    <apex:selectList size="1" value="{!selectedoli}">
+                        <apex:selectOptions value="{!userList}"/>
+                    </apex:selectList>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            <b><br/><br/>Note - If you are not finding user in above list then Make sure you selected right Talent Username on Opportunity products.</b> <a href="/apex/OpportunityLineItem?oppId={!opp.id}">Update Now</a>
+        </apex:pageblock>
+        
+        
+        
+        <apex:pageBlock title="MEMBER ENGAGEMENT DOCUMENT" mode="edit" rendered="{!Step=2}">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Launch Docusign" action="{!reDirectNow}"/>
+                <apex:commandButton value="Save & return" action="{!SaveAndBack}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+                <apex:commandButton value="Back" action="{!movePrev}" rendered="{!loiCount>1}"/>
+            </apex:pageblockButtons>
+            <div class="pbError" id="errorDiv_ep">
+                    <apex:messages />
+            </div>
+            <apex:pageblockSection Columns="1">
+                <apex:pageblocksectionItem >
+                    <apex:outputPanel >
+                        This Engagement Document is effective as of the date of last signature below (the “Effective Date”) and is governed by the terms and conditions of the Talent Member Agreement located at https://www.torc.dev/talent-agreement/. In the event of any inconsistency between this Engagement Document and the Talent Member Agreement, the terms of this Engagement Document shall control.    
+                    </apex:outputPanel>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            <apex:pageblockSection Columns="1" title="General Description of Engagement:">
+                <apex:pageblocksectionItem >
+                    <apex:inputfield value="{!Opp.Engagement_Description_Talent__c}" style="width:100%"/>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            
+            <apex:pageblockSection Columns="1" title="Fees:">
+                <apex:outputPanel style="width:125%">
+                <apex:pageblocktable value="{!OliList}" var="var">
+                    <apex:column value="{!var.Talent_Name_Formula__c}" headerValue="Resource"/>
+                    <apex:column value="{!var.Engagement_Start_Date__c}" headerValue="Start Date"/>
+                    
+                    <apex:column value="{!var.Engagement_Duration_weeks__c}" headerValue="Weeks" rendered="{!NOT(forSpecialAccount)}"/>
+                    <apex:column value="{!var.Time_Commitment_Text__c}"  headerValue="Workload*" rendered="{!NOT(forSpecialAccount)}"/>                    
+                    <apex:column value="{!var.Weekly_Talent_Rate__c}"  headerValue="Weekly Talent Rate" rendered="{!NOT(forSpecialAccount)}"/>
+                    
+                    <apex:column value="{!var.Total_Hours__c}" headerValue="# of Hours" rendered="{!(forSpecialAccount)}"/>
+                    <apex:column value="{!var.Talent_Hourly_Pay_Rate__c}"  headerValue="Hourly Rate" rendered="{!(forSpecialAccount)}"/>
+                    
+                    
+                    <apex:column value="{!var.Total_Payment__c}"  headerValue="Total"/>
+                </apex:pageblocktable>
+                <br/>
+                <apex:outputPanel rendered="{!NOT(forSpecialAccount)}">
+                    *Half-time Dedicated Resources expected to work the equivalent of &nbsp;<apex:outputText value="{0, number, ###,##0.0}"><apex:param value="{!halfTimeVal}"/></apex:outputText> hours per week. Full-time Dedicated Resources expected to work the equivalent of 40.0 hours per week. 
+                    <br/><br/>
+                    Torc will pay the Talent Member the weekly rates set forth above (the “Fees”) based on the Talent Member’s completion of weekly work logs or other information required by Torc or its Client  as described in Section 4.2 of the Talent Member Agreement.  As described in the Talent Member Agreement, Fees are subject to withholdings of taxes and other amounts as may be required by applicable law. 
+                    <br/><br/>
+                    The Weekly Rate listed in the table above was determined based on the work cadence required by Client.  Work cadence expectations are estimates only and may vary slightly from week to week based on direction given by Client and agreed by Talent Member, though actual cadence should on balance accrue to the average work cadence stated above for the totality of the engagement.  To the extent Talent Member’s actual work cadence does not, on average, accrue to the average work cadence stated above, Talent Member shall promptly notify Torc.  
+                    <br/><br/>
+                    Torc will not pay or reimburse Talent Member for any expenses or other amounts without Torc’s prior written consent.  Client’s communications with Talent Member are not to be interpreted or mistaken for Torc’s consent or Torc’s communications.  
+                    <br/><br/>
+                    In the event Client cancels Talent Member’s participation in this Engagement (or the entire Engagement) within the first two weeks after  the Start Date, Torc will pay Talent Member an amount equal to  50% of the Weekly Rate for two weeks.
+                </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:pageblockSection>
+            <apex:pageblockSection Columns="1" title="Term:">
+                <apex:pageblocksectionItem >
+                   <apex:outputText value="{!terms}" escape="false"/>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            <apex:pageblockSection Columns="1" title="Termination:">
+                <apex:pageblocksectionItem >
+                    Either Party may terminate this agreement upon giving {!opp.account.Default_termination_Notice_Formula__c} days written notice.  Notwithstanding the foregoing, if (a) Talent Member refuses or is unable to perform the Services, or (b) is in material breach of any provision of this agreement, or (c) upon termination by Client of its corresponding engagement document with Torc, Torc may immediately terminate this Engagement Upon any such termination, Talent Member will adhere to Torc or Client’s instructions to provide for a professional transition of services, which may entail a stop-work instruction or an orderly wind-down of services, as determined by Torc and/or Client in their sole discretion.
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+
+            <apex:pageblockSection Columns="1" title="Additional specifications:">
+                <apex:pageblocksectionItem rendered="{!OR(NOT(forSpecialAccount),opp.accountId = '001QF00000uz5IRYAY')}">
+                    <apex:inputfield value="{!Opp.Docusign_Additional_Assumptions_Talent__c}"  style="width:100%"/>
+                </apex:pageblocksectionItem>
+                
+                <apex:outputPanel >
+Please initial each statement below, confirming your acknowledgement and agreement:  
+<br/><br/>
+
+________ Torc has contracted with the Talent Member to provide certain services or deliverables to the
+Torc Client, {!opp.Account.Name}. Talent Member acknowledges and agrees that
+Torc&#39;s Client is an express third party beneficiary of the Talent Member Agreement to the extent of the
+provisions thereof respecting Client’s rights and interests. 
+<br/><br/>
+________ Talent Member’s relationship with Torc and any of its parents, subsidiaries, affiliates or
+successors is that of an Independent Contractor, and nothing in this Agreement should be construed to
+create a partnership, joint venture, agency or employer-employee relationship.
+<br/><br/>
+________  There is no contractual relationship of any nature between Talent Member and Client; Talent
+Member does not have any authority whatsoever to bind Client, by contract or otherwise, and shall not
+represent that Talent Member has any such authority, express, implied or otherwise.
+<br/><br/>
+________ Talent Member acknowledges and agrees that (a) it is not an employee of Torc, Torc&#39;s Client,
+or any of their parents, subsidiaries, affiliates, or successors; and (b) will not be entitled to any of the
+benefits that Torc, Torc&#39;s Client or any of their parents, subsidiaries, affiliates or successors makes
+available to their employees, including without limitation workers&#39; compensation insurance, travel accident
+insurance, medical/dental insurance, life insurance, short-term and/or state disability insurance or
+benefits, long-term disability insurance, holiday pay, sick pay, paid vacation, bonuses, salary continuation
+pay, leaves of absence (paid or unpaid), pension plan benefits, retirement savings plan benefits or lease
+vehicle benefits (and waives the right to receive any such benefits), provided that Talent Member shall be
+permitted to participate in occasional Client team dinners or events upon invitation by Client.
+<br/><br/>
+________ Other than meeting agreed upon deadlines and complying with the applicable acceptance
+criteria for the deliverables or other outcome of the Talent Member Services, Talent Member controls
+when, where, and how they complete the work.
+<br/><br/>
+________ Talent Member has completed all registrations, and obtained any permits or licenses required
+by Talent Member’s local government, and/or local tax authority.
+<br/><br/>
+What is the form of Talent Member’s business?
+<br/><br/>
+<br/><input type="checkbox"/>Limited Liability Company
+<br/><input type="checkbox"/>Business Partnership
+<br/><input type="checkbox"/>Corporation
+<br/><input type="checkbox"/>Sole Proprietor / Independent Freelancer
+<br/><input type="checkbox"/>Other  <input type="text"/>
+<br/><br/>                    
+                </apex:outputPanel>
+            </apex:pageblockSection>
+            No obligations are imposed upon Torc with respect to the Engagement until such time as both the Client and Talent Member have accepted the terms of the Engagement and each have executed their respective Engagement Documents with Torc.  By executing this Talent Engagement Document, Talent Member represents and warrants that Talent Member meets the requirements and specifications set forth in this Talent Member Engagement Document and any associated job requisition document provided to Talent Member. 
+            <br/><br/>
+            Accepted and agreed to by the authorized representative of each party as of the date of last signature below:            
+            <apex:pageblockSection Columns="1" title="Engagement Signer:" id="espbs">
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Contact Name"/>
+                    <apex:outputLabel value="{!engagementSigner.FirstName} {!engagementSigner.LastName}"/>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Email Address:"/>
+                    <apex:outputLabel value="{!engagementSigner.Email}"/>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

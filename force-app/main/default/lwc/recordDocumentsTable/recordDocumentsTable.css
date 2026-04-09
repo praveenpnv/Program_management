@@ -1,0 +1,28 @@
+/* Empty state styling */
+.slds-text-color_weak {
+    color: #706e6b;
+}
+
+/* File upload styling */
+.slds-file-selector__body {
+    display: flex;
+    align-items: center;
+}
+
+.slds-file-selector__text {
+    margin-left: 0.5rem;
+    color: #706e6b;
+}
+
+/* Modal adjustments */
+.slds-modal__container {
+    width: 50%;
+    max-width: 40rem;
+}
+
+/* Loading spinner */
+lightning-spinner {
+    display: block;
+    text-align: center;
+    padding: 2rem;
+}

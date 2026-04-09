@@ -1,0 +1,14 @@
+.disabled-row {
+    background-color: #f9f9f9;
+    /* Light grey background for the row */
+    cursor: not-allowed;
+    /* Show a 'not-allowed' cursor on hover */
+}
+
+/* Optional: Try to make content within disabled rows less prominent */
+.disabled-row .slds-truncate,
+.disabled-row lightning-base-formatted-text {
+    /* Target common cell content wrappers */
+    color: #706e6b;
+    /* Darker grey text, less prominent than slds-text-color_weak by itself */
+}

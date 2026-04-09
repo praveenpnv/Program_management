@@ -1,0 +1,43 @@
+<template>
+    <lightning-card title="Job Setup">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={groupedQuestions}>
+                <lightning-accordion allow-multiple-sections-open>
+                    <template for:each={groupedQuestions} for:item="group">
+                        <lightning-accordion-section
+                            label={group.key}
+                            key={group.key}>
+                            
+                            <!-- Datatable inside accordion section -->
+                            <lightning-datatable
+                                key-field="Id"
+                                data={group.value}
+                                columns={columns}
+                               hide-checkbox-column={isSetupCompleted}
+                                selected-rows={preselectedRows}
+                                draft-values={draftValues}
+                                onrowselection={handleSave}>
+                            </lightning-datatable>
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+
+                <!-- Complete Setup Button -->
+                <template if:false={isSetupCompleted}>
+                    <div class="slds-m-top_medium">
+                        <lightning-button label="Complete Setup" onclick={handleCompleteSetup}></lightning-button>
+                    </div>
+                </template>
+            </template>
+
+            <!-- No Data Available Message -->
+            <template if:false={groupedQuestions}>
+                <p>No questions available for this setup.</p>
+            </template>
+        </template>
+    </lightning-card>
+</template>

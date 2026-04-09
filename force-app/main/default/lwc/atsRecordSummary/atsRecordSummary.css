@@ -1,0 +1,16 @@
+.arrow-list {
+    list-style-type: none; /* Remove default list bullets */
+    padding-left: 1em; /* Add padding to align arrows properly */
+}
+
+.arrow-list li {
+    position: relative;
+    margin-bottom: 0.5em; /* Space between list items */
+}
+
+.arrow-list li:before {
+    content: ">>"; /* Arrow symbol */
+    position: absolute;
+    left: -1em; /* Position the arrow to the left of the list item */
+    color: #1e90ff; /* Color of the arrow */
+}

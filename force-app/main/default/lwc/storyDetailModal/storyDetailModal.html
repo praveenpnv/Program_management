@@ -1,0 +1,426 @@
+<template>
+    <div class="modal-bd" onclick="{handleBdClick}">
+        <div class="modal" onclick="{stop}">
+            <div class="modal-hdr">
+                <div class="modal-hdr-left">
+                    <span class="type-badge">{story.Story_Type__c}</span>
+                    <span class="modal-id">{storyId}</span>
+                    <span class="{statusCls}">{story.Status__c}</span>
+                    <template if:true="{isBlocked}">
+                        <span class="badge bg-red">Blocked</span>
+                    </template>
+                </div>
+                <div class="modal-hdr-right">
+                    <button class="sdm-edit-toggle" onclick="{handleEditToggle}" title="Edit story">
+                        <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                    </button>
+                    <button class="btn-nav" onclick="{handleNav}" title="Open Salesforce record">
+                        <lightning-icon icon-name="utility:open" size="x-small"></lightning-icon>
+                    </button>
+                    <button class="modal-close" onclick="{handleClose}">&#x2715;</button>
+                </div>
+            </div>
+            <div class="modal-layout">
+                <div class="modal-main">
+                    <h2 class="modal-title">{story.Name}</h2>
+                    <div class="sdm-path-row">
+                        <div class="sdm-path">
+                            <template for:each="{statusOptions}" for:item="opt">
+                                <button key="{opt.status}" class="{opt.cls}" value="{opt.status}" onclick="{handleStatusChange}" disabled="{opt.isCurrent}">
+                                    {opt.label}
+                                    <template if:true="{opt.isDone}">
+                                        <span class="sdm-path-check">&#10003;</span>
+                                    </template>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                    <template if:true="{isEditing}">
+                        <div class="sdm-edit-panel">
+                            <div class="sdm-edit-grid">
+                                <span class="sdm-lbl">Blocked?</span>
+                                <div style="padding-top: 6px;">
+                                    <input class="sdm-edit-checkbox" type="checkbox" data-field="blocked" checked="{editBlocked}" onchange="{handleEditCheckbox}"/>
+                                </div>
+                                <div class="sdm-edit-field sdm-edit-full">
+                                    <label class="sdm-edit-lbl">Story Title</label>
+                                    <input class="sdm-edit-input" type="text" data-field="name" value="{editName}" onchange="{handleEditField}"/>
+                                </div>
+                                <div class="sdm-edit-field sdm-edit-full">
+                                    <label class="sdm-edit-lbl">Technical Description</label>
+                                    <textarea class="sdm-edit-ta" data-field="description" onchange="{handleEditField}" rows="3">{editDesc}</textarea>
+                                </div>
+                                <div class="sdm-edit-field sdm-edit-full">
+                                    <label class="sdm-edit-lbl">Business Description</label>
+                                    <textarea class="sdm-edit-ta" data-field="businessDescription" onchange="{handleEditField}" rows="3"> {editBusDesc}</textarea>
+                                </div>
+                                <div class="sdm-edit-field sdm-edit-full">
+                                    <label class="sdm-edit-lbl">Acceptance Criteria</label>
+                                    <textarea class="sdm-edit-ta" data-field="acceptanceCriteria" onchange="{handleEditField}" rows="3"> {editAC}</textarea>
+                                </div>
+                            </div>
+                            <div class="sdm-edit-actions">
+                                <button class="sdm-save-btn" onclick="{handleEditSave}" disabled="{isSavingEdit}">
+                                    <template if:false="{isSavingEdit}">Save</template>
+                                    <template if:true="{isSavingEdit}">Saving…</template>
+                                </button>
+                                <button class="sdm-cancel-btn" onclick="{handleEditCancel}">Cancel</button>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:false="{isEditing}">
+                        <template if:true="{story.Business_Description__c}">
+                            <div class="sdm-section">
+                                <div class="sdm-section-title">Business Description</div>
+                                <p class="sdm-text">{story.Business_Description__c}</p>
+                            </div>
+                        </template>
+                        <template if:true="{story.Description__c}">
+                            <div class="sdm-section">
+                                <div class="sdm-section-title">Technical Description</div>
+                                <p class="sdm-text">{story.Description__c}</p>
+                            </div>
+                        </template>
+                        <template if:true="{story.Acceptance_Criteria__c}">
+                            <div class="sdm-section">
+                                <div class="sdm-section-title">Acceptance Criteria</div>
+                                <p class="sdm-text">{story.Acceptance_Criteria__c}</p>
+                            </div>
+                        </template>
+                    </template>
+                    <div class="sdm-section">
+                        <div class="sdm-section-title">Linked Stories</div>
+                        
+                        <template if:true={isLoadingLinks}>
+                            <lightning-spinner alternative-text="Loading links" size="small"></lightning-spinner>
+                        </template>
+
+                        <template if:false={isLoadingLinks}>
+                            <template if:true={hasLinkedStories}>
+                                <div class="sdm-linked-list">
+                                    <template for:each={linkedStories} for:item="link">
+                                        <div key={link.Id} class="sdm-linked-item">
+                                            <lightning-icon icon-name="utility:link" size="xx-small" class="sdm-link-icon"></lightning-icon>
+                                            <span class="sdm-link-type">{link.Link_Type__c}:</span>
+                                            <button class="sdm-linked-btn" value={link.Target_Story__c} onclick={handleStoryNav}>
+                                                {link.Target_Story__r.Name}
+                                            </button>
+                                            <span class={link.statusCls}>{link.Target_Story__r.Status__c}</span>
+                                            <button class="sdm-unlink-btn" value={link.Id} onclick={handleUnlinkStory} title="Remove Link">&#x2715;</button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:false={hasLinkedStories}>
+                                <p class="sdm-no-activity">No stories linked to this record.</p>
+                            </template>
+
+                            <template if:true={isEditingLinks}>
+                                <div class="sdm-add-link-wrap">
+                                    <select class="sdm-edit-select sdm-link-type-select" onchange={handleLinkTypeChange}>
+                                        <option value="Relates To">Relates To</option>
+                                        <option value="Depends On">Depends On</option>
+                                        <option value="Blocks">Blocks</option>
+                                        <option value="Duplicate Of">Duplicate Of</option>
+                                    </select>
+                                    <div class="sdm-story-search-wrap">
+                                        <input type="text" class="sdm-link-input" style="width: 100%;"
+                                            placeholder="Search by Story Name..." 
+                                            value={linkSearchTerm} 
+                                            onkeyup={handleStorySearchKeyup}
+                                            onfocus={handleStorySearchFocus}
+                                            onblur={handleStorySearchBlur} />
+                                            
+                                        <template if:true={showStoryDropdown}>
+                                            <ul class="sdm-dropdown-menu">
+                                                <template for:each={storySearchResults} for:item="res">
+                                                    <li key={res.Id} class="sdm-dropdown-item" data-id={res.Id} data-name={res.Name} onmousedown={handleStorySelect}>
+                                                        <span class="sdm-res-type">{res.Story_Type__c}</span>
+                                                        <span class="sdm-res-name">{res.Name}</span>
+                                                    </li>
+                                                </template>
+                                                <template if:false={hasStoryResults}>
+                                                    <li class="sdm-dropdown-empty">No stories found...</li>
+                                                </template>
+                                            </ul>
+                                        </template>
+                                    </div>
+                                    <!-- <input type="text" class="sdm-edit-input sdm-link-input" 
+                                        placeholder="Target Story ID (18-char)..." 
+                                        value={linkSearchTerm} 
+                                        onchange={handleLinkSearchChange} /> -->
+                                    <button class="sdm-save-btn" onclick={handleSaveLink} disabled={isLinking}>
+                                        <template if:false={isLinking}>Link</template>
+                                        <template if:true={isLinking}>Linking...</template>
+                                    </button>
+                                    <button class="sdm-cancel-btn" onclick={handleToggleLinkEdit}>Cancel</button>
+                                </div>
+                            </template>
+                            <template if:false={isEditingLinks}>
+                                <button class="sdm-add-link-btn" onclick={handleToggleLinkEdit}>+ Add Link</button>
+                            </template>
+                        </template>
+                    </div>
+                    <div class="sdm-section">
+                        <div class="sdm-section-title">Activity</div>
+                        <div class="sdm-comment-input-wrap">
+                            <div class="sdm-avatar">{userInitials}</div>
+                            <div class="sdm-comment-editor">
+                                <div class="sdm-mention-wrap">
+                                    <textarea class="sdm-comment-ta" placeholder="Add a comment... (Type @ to mention someone)" value="{commentDraft}" onkeyup="{handleCommentKeyup}" onchange="{handleCommentChange}" rows="3"></textarea>
+                                    <template if:true="{showMentionMenu}">
+                                        <ul class="sdm-mention-menu">
+                                            <template for:each="{mentionUsers}" for:item="user">
+                                                <li key="{user.Id}" class="sdm-mention-item" data-id="{user.Id}" data-name="{user.Name}" onmousedown="{handleMentionSelect}">
+                                                    <span class="sdm-mention-av">👤</span>
+                                                    <span class="sdm-mention-name">{user.Name}</span>
+                                                </li>
+                                            </template>
+                                            <template if:false="{hasMentionUsers}">
+                                                <li class="sdm-mention-empty">No users found...</li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <div class="sdm-comment-actions">
+                                        <template if:true={savekeyUp}>
+                                        <button class="sdm-comment-save" onclick="{handleAddComment}" disabled="{isSavingComment}">
+                                            <template if:false="{isSavingComment}">Save</template>
+                                            <template if:true="{isSavingComment}">Saving…</template>
+                                        </button>
+                                        <button class="sdm-comment-cancel" onclick="{handleCancelComment}">Cancel</button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sdm-activity-list">
+                            <template if:true="{isLoadingActivity}">
+                                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                            </template>
+                            <template for:each="{activityItems}" for:item="act">
+                                <div key="{act.id}" class="sdm-activity-item">
+                                    <div class="sdm-av">{act.initials}</div>
+                                    <div class="sdm-activity-body">
+                                        <div class="sdm-activity-who">
+                                            <span class="sdm-act-name">{act.who}</span>
+                                            <span class="sdm-act-time">{act.when}</span>
+                                        </div>
+                                        <p class="sdm-act-text">{act.body}</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true="{noActivity}">
+                                <p class="sdm-no-activity">No activity yet. Add a comment above.</p>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-sidebar">
+                    <div class="sdm-field-group">
+                        <template if:false="{isEditing}">
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Status</span>
+                                <span class="{statusCls}">{story.Status__c}</span>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Priority</span>
+                                <span class="{priCls}">{story.Priority__c}</span>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Type</span>
+                                <span class="sdm-val">{story.Story_Type__c}</span>
+                            </div>
+                            <!-- <div class="sdm-field">
+                                <span class="sdm-lbl">Story Points</span>
+                                <span class="sdm-val">{story.Story_Points__c}</span>
+                            </div> -->
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Assigned To</span>
+                                <span class="sdm-val">{assignedName}</span>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">QA Assignee</span>
+                                <span class="sdm-val sdm-qa-name">{qaAssigneeName}</span>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Tagged Projects</span>
+                                <template if:true="{hasTaggedProjects}">
+                                    <div class="sdm-pill-container" style="margin-top: 4px;">
+                                        <template for:each="{taggedProjectsList}" for:item="tp">
+                                            <span key="{tp.id}" class="sdm-pill">{tp.name}</span>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template if:false="{hasTaggedProjects}">
+                                    <span class="sdm-val">—</span>
+                                </template>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Feature</span>
+                                <span class="sdm-val">{featureName}</span>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Release</span>
+                                <span class="sdm-val">{releaseName}</span>
+                            </div>
+                            <!-- <div class="sdm-field">
+                                <span class="sdm-lbl">Sprint</span>
+                                <span class="sdm-val">{story.Sprint__c}</span>
+                            </div> -->
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Due Date</span>
+                                <span class="{dueCls}">{story.Due_Date__c}</span>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Reporter</span>
+                                <span class="sdm-val">{story.Requestor__c}</span>
+                            </div>
+                            <template if:true="{hasLinkedReq}">
+                                <div class="sdm-field">
+                                    <span class="sdm-lbl">Requirement</span>
+                                    <button class="sdm-req-link-btn" value="{story.Requirement__c}" onclick="{handleReqOpen}">🔗 {reqName}</button>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:true="{isEditing}">
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Status</span>
+                                <select class="sdm-edit-select" data-field="status" onchange="{handleEditField}">
+                                    <template for:each="{editStatusOptions}" for:item="opt">
+                                        <option key="{opt.value}" value="{opt.value}" selected="{opt.selected}">{opt.label}</option>
+                                    </template>
+                                </select>
+                                <!-- <select class="sdm-edit-select" data-field="status" onchange={handleEditField}>
+                                    <option value="Backlog" selected={editStatBacklog}>Backlog</option>
+                                    <option value="In Progress" selected={editStatInProgress}>In Progress</option>
+                                    <option value="Developed" selected={editStatDeveloped}>Developed</option>
+                                    <option value="QA Approved" selected={editStatQA}>QA Approved</option>
+                                    <option value="UAT" selected={editStatUAT}>UAT</option>
+                                    <option value="UAT Approved" selected={editStatUATApp}>UAT Approved</option>
+                                    <option value="Production" selected={editStatProd}>Production</option>
+                                    <option value="Done" selected={editStatDone}>Done</option>
+                                    <option value="On Hold" selected={editStatHold}>On Hold</option>
+                                </select> -->
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Priority</span>
+                                <select class="sdm-edit-select" data-field="priority" onchange="{handleEditField}">
+                                    <option value="Critical" selected="{editPriCritical}">Critical</option>
+                                    <option value="High" selected="{editPriHigh}">High</option>
+                                    <option value="Medium" selected="{editPriMed}">Medium</option>
+                                    <option value="Low" selected="{editPriLow}">Low</option>
+                                </select>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Type</span>
+                                <input class="sdm-edit-input" type="text" data-field="type" value="{editType}" onchange="{handleEditField}"/>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Story Points</span>
+                                <input class="sdm-edit-input" type="number" data-field="storyPoints" value="{editPoints}" onchange="{handleEditField}" min="0"/>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Assigned To</span>
+                                <c-user-lookup label="" placeholder="Search developer…" value="{editAssignedToObj}" onselect="{handleAssignedToSelect}" onclear="{handleAssignedToClear}"></c-user-lookup>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">QA Assignee</span>
+                                <c-user-lookup label="" placeholder="Search QA…" value="{editQaAssigneeObj}" onselect="{handleQaAssigneeSelect}" onclear="{handleQaAssigneeClear}"></c-user-lookup>
+                            </div>
+                            <div class="sdm-field sdm-edit-full">
+                                <label class="sdm-edit-lbl">Tagged Projects</label>
+                                <div class="sdm-pill-container">
+                                    <template for:each="{selectedProjectsList}" for:item="proj">
+                                        <span key="{proj.id}" class="sdm-pill">
+                                            {proj.name}
+                                            <button data-id="{proj.id}" onclick="{handleRemoveProject}">&#x2715;</button>
+                                        </span>
+                                    </template>
+                                </div>
+                                <select class="sdm-edit-select" onchange="{handleAddProject}">
+                                    <option value="">— Tag another project —</option>
+                                    <template for:each="{availableProjects}" for:item="proj">
+                                        <option key="{proj.id}" value="{proj.id}">{proj.name}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Feature</span>
+                                <select class="sdm-edit-select" data-field="feature" onchange="{handleEditField}">
+                                    <option value="">— None —</option>
+                                    <template for:each="{featureOptions}" for:item="feat">
+                                        <option key="{feat.id}" value="{feat.id}" selected="{feat.selected}">{feat.name}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Release</span>
+                                <input class="sdm-edit-input" type="text" data-field="release" value="{editRelease}" onchange="{handleEditField}"/>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Sprint</span>
+                                <input class="sdm-edit-input" type="text" data-field="sprint" value="{editSprint}" onchange="{handleEditField}" placeholder="e.g. Sprint 3"/>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Due Date</span>
+                                <input class="sdm-edit-input" type="date" data-field="dueDate" value="{editDueDate}" onchange="{handleEditField}"/>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Reporter</span>
+                                <input class="sdm-edit-input" type="text" data-field="reporter" value="{editReporter}" onchange="{handleEditField}"/>
+                            </div>
+                            <div class="sdm-field">
+                                <span class="sdm-lbl">Requirement</span>
+                                <select class="sdm-edit-select" data-field="requirement" onchange={handleEditField}>
+                                    <option value="">— None —</option>
+                                    <template for:each={requirementOptions} for:item="req">
+                                        <option key={req.id} value={req.id} selected={req.selected}>
+                                            {req.name}
+                                        </option>
+                                    </template>
+                                </select>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div class="sdm-audit-col">
+                    <div class="sdm-audit-hdr">
+                        <span class="sdm-audit-title">📋 Status History</span>
+                        <template if:true="{isLoadingAudit}">
+                            <lightning-spinner size="small" alternative-text="Loading audit"></lightning-spinner>
+                        </template>
+                    </div>
+                    <div class="sdm-audit-scroll">
+                        <template if:true="{hasAuditItems}">
+                            <div class="sdm-audit-timeline">
+                                <template for:each="{auditItems}" for:item="entry">
+                                    <div key="{entry.id}" class="sdm-audit-entry">
+                                        <div class="sdm-audit-dot-wrap">
+                                            <div style="{entry.dotStyle}"></div>
+                                            <div class="sdm-audit-line"></div>
+                                        </div>
+                                        <div class="sdm-audit-body">
+                                            <div class="sdm-audit-statuses">
+                                                <template if:true="{entry.fromStatus}">
+                                                    <span style="{entry.fromStyle}">{entry.fromStatus}</span>
+                                                    <span class="sdm-audit-arrow">→</span>
+                                                </template>
+                                                <span style="{entry.toStyle}">{entry.toStatus}</span>
+                                            </div>
+                                            <div class="sdm-audit-meta">{entry.who} &nbsp;·&nbsp; {entry.when}</div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        <template if:false="{hasAuditItems}">
+                            <template if:false="{isLoadingAudit}">
+                                <p class="sdm-audit-empty">No status changes recorded yet.</p>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

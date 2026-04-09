@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title={typeTitle} icon-name="standard:employee_job_position">
+        <c-job-data-table
+            key-field="Id"
+            data={records}
+            columns={columns}
+            draft-values={draftValues}
+            hide-checkbox-column="true"
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}>
+        </c-job-data-table>
+
+        <div class="slds-m-around_medium slds-align_absolute-center">
+            <lightning-button label="Previous" onclick={prevPage} disabled={isFirstPage}></lightning-button>
+            <span class="slds-m-horizontal_small">Page {currentPage} of {totalPages}</span>
+            <lightning-button label="Next" onclick={nextPage} disabled={isLastPage}></lightning-button>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,147 @@
+<template>
+    <div class="fdm-backdrop" onclick={handleBdClick}>
+        <div class="fdm-modal" onclick={stop}>
+
+            
+            <div class="fdm-header">
+                <div class="fdm-header-left">
+                    <lightning-icon icon-name="utility:flow" size="small"></lightning-icon>
+                    <template if:false={isEditing}>
+                        <div>
+                            <h2 class="fdm-title">{featureName}</h2>
+                            <p class="fdm-desc">{featureDesc}</p>
+                        </div>
+                    </template>
+                    <template if:true={isEditing}>
+                        <div class="fdm-edit-fields">
+                            <input class="fdm-edit-input fdm-edit-title" type="text" value={editName} onchange={handleEditField} data-field="Name" placeholder="Feature name" />
+                            <input class="fdm-edit-input fdm-edit-desc" type="text" value={editDesc} onchange={handleEditField} data-field="Description__c" placeholder="Description" />
+                        </div>
+                    </template>
+                </div>
+                <div class="fdm-header-actions">
+                    <template if:false={isEditing}>
+                        <span class={statusCls}>{featureStatus}</span>
+                        <span class={priCls}>{featurePriority}</span>
+                        <button class="fdm-edit-btn" onclick={handleEditToggle} title="Edit feature">
+                            <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                        </button>
+                    </template>
+                    <template if:true={isEditing}>
+                        <select class="fdm-edit-select" data-field="Status__c" onchange={handleEditField}>
+                            <option value="Planning"   selected={editStatusIs_Planning}>Planning</option>
+                            <option value="Active"     selected={editStatusIs_Active}>Active</option>
+                            <option value="On Hold"    selected={editStatusIs_OnHold}>On Hold</option>
+                            <option value="Completed"  selected={editStatusIs_Completed}>Completed</option>
+                        </select>
+                        <select class="fdm-edit-select" data-field="Priority__c" onchange={handleEditField}>
+                            <option value="Critical"  selected={editPriIs_Critical}>Critical</option>
+                            <option value="High"      selected={editPriIs_High}>High</option>
+                            <option value="Medium"    selected={editPriIs_Medium}>Medium</option>
+                            <option value="Low"       selected={editPriIs_Low}>Low</option>
+                        </select>
+                        <button class="fdm-save-btn" onclick={handleEditSave}>Save</button>
+                        <button class="fdm-cancel-btn" onclick={handleEditCancel}>Cancel</button>
+                    </template>
+                    <button class="fdm-nav-btn" onclick={handleNav} title="Open in Salesforce">
+                        <lightning-icon icon-name="utility:open" size="x-small"></lightning-icon>
+                    </button>
+                    <button class="fdm-close-btn" onclick={handleClose}>&#x2715;</button>
+                </div>
+            </div>
+
+            
+            <template if:true={isLoading}>
+                <div class="fdm-loading">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            
+            <template if:false={isLoading}>
+                <div class="fdm-content">
+
+                    
+                    <div class="fdm-panel fdm-panel-req">
+                        <div class="fdm-panel-hdr">
+                            <span class="fdm-panel-title">Business Requirements</span>
+                            <span class="fdm-panel-count">{reqCount}</span>
+                        </div>
+                        <div class="fdm-panel-body">
+                            <template for:each={reqItems} for:item="req">
+                                <div key={req.Id} class="fdm-node fdm-node-req">
+                                    <div class="fdm-node-top">
+                                        <span class={req.statusCls}>{req.Status__c}</span>
+                                        <template if:true={req.Auto_Story_Created__c}>
+                                            <span class="fdm-auto-badge">&#10003; Story Linked</span>
+                                        </template>
+                                    </div>
+                                    <p class="fdm-node-name">{req.Name}</p>
+                                    <template if:true={req.Category__c}>
+                                        <span class="fdm-node-meta">{req.Category__c}</span>
+                                    </template>
+                                    <template if:true={req.Requestor__c}>
+                                        <span class="fdm-node-meta">👤 {req.Requestor__c}</span>
+                                    </template>
+                                    <div class="fdm-node-btns">
+                                        <button class="fdm-btn-sm" value={req.Id} onclick={handleReqOpen}>View</button>
+                                        <button class="fdm-btn-nav" value={req.Id} onclick={handleReqNav} title="Open record">
+                                            <lightning-icon icon-name="utility:open" size="xx-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={hasReqs}>
+                                <div class="fdm-empty-node">No requirements linked to this feature</div>
+                            </template>
+                        </div>
+                    </div>
+
+                    
+                    <div class="fdm-panel fdm-panel-story">
+                        <div class="fdm-panel-hdr">
+                            <span class="fdm-panel-title">Development Stories</span>
+                            <span class="fdm-panel-count">{storyCount}</span>
+                        </div>
+                        <div class="fdm-panel-body">
+                            <template for:each={storyItems} for:item="st">
+                                <div key={st.Id} class="fdm-node fdm-node-story">
+                                    <div class="fdm-node-top">
+                                        <span class="fdm-type-badge">{st.Story_Type__c}</span>
+                                        <span class={st.statusCls}>{st.Status__c}</span>
+                                        <template if:true={st.Is_Global__c}>
+                                            <span class="fdm-global-badge">Global</span>
+                                        </template>
+                                    </div>
+                                    <p class="fdm-node-name">{st.Name}</p>
+                                    <template if:true={st.assigneeName}>
+                                        <span class="fdm-node-meta">👤 {st.assigneeName}</span>
+                                    </template>
+                                    <template if:true={st.requirementName}>
+                                        <span class="fdm-node-meta">🔗 Req: {st.requirementName}</span>
+                                    </template>
+                                    <div class="fdm-node-btns">
+                                        <button class="fdm-btn-sm" value={st.Id} onclick={handleStoryOpen}>View</button>
+                                        <button class="fdm-btn-nav" value={st.Id} onclick={handleStoryNav} title="Open record">
+                                            <lightning-icon icon-name="utility:open" size="xx-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={hasStories}>
+                                <div class="fdm-empty-node">No stories linked to this feature</div>
+                            </template>
+                        </div>
+                    </div>
+
+                </div>
+            </template>
+
+            
+            <div class="fdm-footer">
+                <button class="fdm-close-footer" onclick={handleClose}>Close</button>
+            </div>
+
+        </div>
+    </div>
+</template>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Technical_Support_Requires_Parent</fullName>
+    <active>true</active>
+    <description>Technical Support projects must reference a parent (completed) project.</description>
+    <errorConditionFormula>ISPICKVAL(Project_Type__c, &apos;Technical Support&apos;) &amp;&amp; ISBLANK(Parent_Project__c)</errorConditionFormula>
+    <errorMessage>A Technical Support project must reference a Parent Project (the project it is supporting).</errorMessage>
+</ValidationRule>

@@ -1,0 +1,34 @@
+<template>
+    <lightning-card title="Upload and Categorize File">
+        <div class="slds-p-around_medium">
+            <!-- Picklist for File Category (Mandatory) -->
+            <lightning-combobox 
+                label="Select Category"
+                options={categoryOptions}
+                value={category}
+                onchange={handleCategoryChange}
+                required>
+            </lightning-combobox>
+
+            <!-- File Upload Component (Disabled until Category is selected) -->
+            <lightning-file-upload
+                label="Upload File"
+                name="fileUploader"
+                accept=".pdf,.png,.jpg,.docx"
+                record-id={recordId} 
+                disabled={isUploadDisabled}
+                onuploadfinished={handleUploadFinished}>
+            </lightning-file-upload>
+        </div>
+    </lightning-card>
+    <!-- Datatable to Show Uploaded Files 
+    <lightning-card title="Uploaded Files">
+        <div class="slds-p-around_medium">
+            <lightning-datatable
+                key-field="id"
+                data={fileData}
+                columns={columns}>
+            </lightning-datatable>
+        </div>
+    </lightning-card> -->
+</template>

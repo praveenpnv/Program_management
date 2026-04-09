@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title="Portal Action Subscriber" icon-name="custom:custom14">
+        <div class="slds-m-around_medium">
+            <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+            </template>
+            <p>Listening for portal actions...</p>
+        </div>
+    </lightning-card>
+</template>

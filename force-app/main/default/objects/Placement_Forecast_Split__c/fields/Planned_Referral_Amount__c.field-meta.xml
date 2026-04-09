@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Planned_Referral_Amount__c</fullName>
+    <formula>IF(
+AND(
+Placement__r.Torc_User__r.Referrer__c&lt;&gt;NULL,
+ADDMonthS(Placement__r.Placed_User_Created_At__c,12) &gt;  Start_Date__c), 
+Split_Talent_Rate__c/100.0 , 0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Planned Referral Amount</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

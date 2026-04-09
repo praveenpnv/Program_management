@@ -1,0 +1,310 @@
+<apex:page Controller="QBBulkInvoiceUpdate" action="{!pageToken}" title="Bulk Invoice Update" showHeader="false" sidebar="false">
+<style>
+.dateFormat{
+    display:none;
+    }
+.UCls
+{
+    background-color:'yellow';
+}
+
+.DCls
+{
+    background-color:'#f9c7c7';
+}
+.ICls
+{
+    background-color:'#aff5af';
+}
+.NCls
+{
+    background-color:'white';
+}
+
+.rich-tabhdr-side-cell {border-top:none;}   
+.rich-tabhdr-side-border {background-image:none;}
+
+.tabPanel {
+   border: none !important;
+   }
+
+.activeTab {
+    background-color: lightblue;    
+    background-image:none; 
+    font-size: 18px;
+    border-radius: 50px 20px;
+    border: none !important;    
+    }
+.inactiveTab {
+    background-color: lightgrey;    
+    background-image:none;
+    font-size: 12px;
+    color:blue; 
+    border-radius: 50px 20px;
+    border: none !important;
+}
+</style>
+<script>
+    function checkuncheckAll(chk, className)
+    {
+        var v = document.getElementsByClassName(className);
+        for(var i in v)
+            v[i].checked = chk;
+    }
+    function confirmdelete()
+    {
+        if (confirm("It will delete INVOICES from Quickbooks. Are you sure?") == true) 
+        {
+            if (confirm("Are you really sure?") == true)  
+            {
+                showDisable();   
+                return true;
+            }    
+        }
+        return false;
+    }
+    function confirmUpdate()
+    {
+        if (confirm("It will Update existing INVOICES in Quickbooks. Are you sure?") == true) 
+        {
+            showDisable();   
+            return true;
+        }
+        return false;
+    }
+</script>
+<apex:sectionHeader title="Bulk Update"/>
+<apex:form >
+<apex:pageblock mode="edit">
+    <apex:pageblockbuttons location="top">
+        <apex:commandButton value="Filter For Update" action="{!filterForUpdateInvoice}" onclick="showDisable();"/>
+        <apex:commandButton value="Filter For Delete" action="{!filterForDeleteInvoice}" onclick="showDisable();"/>
+        <apex:commandButton value="Filter For Crosscheck" action="{!filterForCrossCheck}" onclick="showDisable();"/>
+<!--
+        <apex:commandButton value="Verify Data" action="{!validateData}" rendered="{!AND(STEP='RAW',FilterFor='UPDATE')}"/>
+-->        
+        <apex:commandButton value="Update Invoices" onclick="return confirmUpdate();" action="{!SaveUpdate}" rendered="{!AND(STEP="SAVE",FilterFor="UPDATE",lstDataRow.SIZE>0)}"/>
+        <apex:commandButton value="Delete Invoices" onclick="return confirmdelete();" action="{!SaveDelete}" rendered="{!AND(STEP="SAVE",FilterFor="DELETE",lstDataRow.SIZE>0)}"/>
+        
+    </apex:pageblockbuttons>
+    <div class="pbError" id="errorDiv_ep">
+        <apex:messages />
+     </div>
+    <apex:pageblockSection columns="2">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Select Account"/>
+            <apex:inputField value="{!fromDate.Account__c}" required="true"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Description Filter"/>
+            <apex:inputText value="{!descriptionFilter}" required="false"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="From Date"/>
+            <apex:inputField value="{!fromDate.Date__c}"/>
+        </apex:pageblockSectionItem>
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="To Date"/>
+            <apex:inputField value="{!toDate.Date__c}"/>
+        </apex:pageblockSectionItem>
+    </apex:pageblockSection>
+    <apex:pageblockSection columns="2" title="Customer Information" rendered="{!act<>NULL}">
+        <apex:pageblockSectionItem >
+            <apex:outputLabel value="Customer Quickbooks Id"/>
+            <apex:outputField value="{!act.Quickbooks_ID__c}"/>
+        </apex:pageblockSectionItem>
+            <apex:outputField value="{!act.Invoice_Group_Type__c}"/>
+    </apex:pageblockSection>    
+    
+    <apex:pageblockSection columns="1" title="Filter Data">
+    <!--
+    <apex:pageblocktable value="{!lstDataRow}" var="rec" rendered="{!STEP='RAW'}">
+        <apex:column >
+            <apex:facet name="header">Id</apex:facet>
+            <apex:outputText value="{!rec.invoice.Id}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Txndate</apex:facet>
+            <apex:outputText value="{!rec.invoice.TxnDate}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">MASTERCRMID</apex:facet>
+            <apex:outputText value="{!rec.invoice.MasterCrmId.Val}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">New Txndate</apex:facet>
+            <apex:inputField value="{!rec.NewTxnDate.Date__c}"/>
+        </apex:column>
+        <apex:column >
+            <apex:pageblockTable value="{!rec.invoice.Line}" var="rl">
+                <apex:column style="width:3%">
+                    <apex:facet name="header">Row</apex:facet>
+                    <apex:outputText value="{!rl.LineNum}"/>
+                </apex:column>
+                <apex:column style="width:45%">
+                    <apex:facet name="header">Description</apex:facet>
+                    <apex:outputText value="{!rl.Description}"/>
+                </apex:column>
+                <apex:column style="width:7%">
+                    <apex:facet name="header">Unit</apex:facet>
+                    <apex:outputText value="{!rl.SalesItemLineDetail.Qty}"/>
+                </apex:column>
+                <apex:column style="width:10%">
+                    <apex:facet name="header">Unit Price</apex:facet>
+                    <apex:outputText value="{!rl.SalesItemLineDetail.UnitPrice}"/>
+                </apex:column>
+                <apex:column style="width:10%">
+                    <apex:facet name="header">Total Amount</apex:facet>
+                    <apex:outputText value="{!rl.Amount}"/>
+                </apex:column>
+                <apex:column style="width:15%">
+                    <apex:facet name="header">Week Ending Date</apex:facet>
+                    <apex:inputField value="{!rec.lineDataMap[rl.LineNum].weekEndingDate.Date__c}" rendered="{!rl.LineNum<>NULL}"/>
+                </apex:column>
+                <apex:column style="width:10%">
+                    <apex:facet name="header">Torc User</apex:facet>
+                    <apex:inputField value="{!rec.lineDataMap[rl.LineNum].weekEndingDate.Torc_User__c}" rendered="{!rl.LineNum<>NULL}"/>
+                </apex:column>
+            </apex:pageblockTable>  
+        </apex:column>                          
+    </apex:pageblocktable>
+-->    
+    <apex:pageblocktable value="{!lstDataRow}" var="rec" rendered="{!AND(STEP="SAVE",lstDataRow.SIZE>0,filterFor<>'CROSSCHECK')}">
+        <apex:column headerValue="Select">
+            <apex:inputcheckBox value="{!rec.invoice.selectedRow}" id="chk" styleClass="prods" rendered="{!rec.Editable}"/>
+            <apex:facet name="header"> <input type="checkbox" onClick="checkuncheckAll(this.checked,'prods');"/></apex:facet>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Id</apex:facet>
+            <apex:outputText value="{!rec.invoice.Id}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Doc No.</apex:facet>
+            <apex:outputText value="{!rec.invoice.DocNumber}" rendered="{!rec.isDocNumberSet}"/>
+            <apex:inputText value="{!rec.invoice.DocNumber}" rendered="{!AND(NOT(rec.isDocNumberSet),rec.Editable)}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Payment Terms</apex:facet>
+            <apex:selectList id="selc" value="{!rec.Invoice.SalesTermRef.value}" size="1" rendered="{!rec.Editable}">
+                 <apex:selectOptions value="{!paymenttermsOptions}"/>
+            </apex:selectList>
+            <apex:outputText value="{!rec.invoice.SalesTermRef.name}" rendered="{!NOT(rec.Editable)}"/>
+        </apex:column>
+        
+        <apex:column >
+            <apex:facet name="header">EmailStatus</apex:facet>
+            <apex:outputText value="{!rec.invoice.EmailStatus}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Txndate</apex:facet>
+            <apex:outputText value="{!rec.invoice.TxnDate}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">PO Number</apex:facet>
+            <apex:outputText value="{!rec.NewPONumber}" rendered="{!FilterFor='DELETE'}"/>
+            <apex:inputText value="{!rec.NewPONumber}" rendered="{!FilterFor='UPDATE'}" style="width:200px"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">MASTERCRMID</apex:facet>
+            <apex:outputText value="{!rec.invoice.MasterCrmIdVal}" rendered="{!FilterFor='DELETE'}"/>
+            <apex:inputText value="{!rec.NewMASTERCRMID}" rendered="{!FilterFor='UPDATE'}" style="width:200px"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Bill Email</apex:facet>
+            <apex:outputText value="{!rec.invoice.BillEmail.Address}" rendered="{!FilterFor='DELETE'}"/>
+            <apex:inputText value="{!rec.invoice.BillEmail.Address}" rendered="{!FilterFor='UPDATE'}"  style="width:300px"/>
+        </apex:column>
+        <apex:column >
+            <apex:pageblockTable value="{!rec.invoice.Line}" var="rl">
+                <apex:column style="width:3%">
+                    <apex:facet name="header">Row</apex:facet>
+                    <apex:outputText value="{!rl.LineNum}"/>
+                </apex:column>
+                <apex:column style="width:60%">
+                    <apex:facet name="header">Description</apex:facet>
+                    <apex:outputText value="{!rl.Description}"  rendered="{!FilterFor='DELETE'}"/>
+                    <apex:inputText value="{!rl.Description}"  rendered="{!AND(FilterFor="UPDATE",rl.LineNum<>NULL)}" style="width:350px"/>
+                </apex:column>
+                <apex:column style="width:7%">
+                    <apex:facet name="header">Account Reference Name</apex:facet>
+                    <apex:outputText value="{!rl.SalesItemLineDetail.ItemRef.name}" rendered="{!rl.DetailType<>'SubTotalLineDetail'}"/>
+                </apex:column>
+                <apex:column style="width:7%">
+                    <apex:facet name="header">Account Reference Val</apex:facet>
+                    <apex:inputText value="{!rl.SalesItemLineDetail.ItemRef.value}" rendered="{!rl.DetailType<>'SubTotalLineDetail'}"/>
+                </apex:column>
+                
+                
+                <apex:column style="width:7%">
+                    <apex:facet name="header">Unit</apex:facet>
+                    <apex:inputText value="{!rl.SalesItemLineDetail.Qty}" rendered="{!rl.DetailType<>'SubTotalLineDetail'}"/>
+
+                </apex:column>
+                <apex:column style="width:15%">
+                    <apex:facet name="header">Unit Price</apex:facet>
+                    <apex:inputText value="{!rl.SalesItemLineDetail.UnitPrice}"/>
+                </apex:column>
+                <apex:column style="width:15%">
+                    <apex:facet name="header">Total Amount</apex:facet>
+                    <apex:outputText value="{!rl.Amount}"/>
+                </apex:column>
+            </apex:pageblockTable>  
+        </apex:column>                          
+    </apex:pageblocktable>
+
+    <apex:pageblocktable value="{!lstDataRow}" var="rec" rendered="{!AND(STEP="SAVE",lstDataRow.SIZE>0,filterFor='CROSSCHECK')}">
+        <apex:column >
+            <apex:facet name="header">Id</apex:facet>
+            <apex:outputText value="{!rec.invoice.Id}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Doc No.</apex:facet>
+            <apex:outputText value="{!rec.invoice.DocNumber}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Txndate</apex:facet>
+            <apex:outputText value="{!rec.invoice.TxnDate}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">PO Number</apex:facet>
+            <apex:outputText value="{!rec.NewPONumber}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">MASTERCRMID</apex:facet>
+            <apex:outputText value="{!rec.invoice.MasterCrmIdVal}"/>
+        </apex:column>
+        <apex:column >
+            <apex:pageblockTable value="{!rec.invoice.Line}" var="rl">
+                <apex:column style="width:3%">
+                    <apex:facet name="header">Row</apex:facet>
+                    <apex:outputText value="{!rl.LineNum}"/>
+                </apex:column>
+                
+                <apex:column style="width:60%">
+                    <apex:facet name="header">Description</apex:facet>
+                    <apex:outputText value="{!rl.Description}"/>
+                </apex:column>
+                <apex:column style="width:7%">
+                    <apex:facet name="header">Unit</apex:facet>
+                    <apex:outputText value="{!rl.SalesItemLineDetail.Qty}"/>
+                </apex:column>
+                <apex:column style="width:15%">
+                    <apex:facet name="header">Unit Price</apex:facet>
+                    <apex:outputText value="{!rl.SalesItemLineDetail.UnitPrice}"/>
+                </apex:column>
+                <apex:column style="width:15%">
+                    <apex:facet name="header">Total Amount</apex:facet>
+                    <apex:outputText value="{!rl.Amount}"/>
+                </apex:column>
+            </apex:pageblockTable>  
+        </apex:column>                          
+    </apex:pageblocktable>
+
+    <apex:Outputpanel rendered="{!AND(STEP='SAVE',lstDataRow.SIZE=0)}" style="font-size: 20px;color: blue;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>No Invoices to display.
+    </apex:Outputpanel>
+    </apex:pageblockSection>
+</apex:pageblock>
+<c:WaitPopup />
+</apex:form>
+</apex:page>

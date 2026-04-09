@@ -1,0 +1,8 @@
+<apex:page controller="adminPanel">
+    <apex:form >
+        <apex:commandButton value="Run AWS Data Load" action="{! rerunAWS}"/><br/><br/>
+        <apex:inputTextarea value="{!json}"/>
+        <apex:commandButton value="Run Trolley Paypal WebHook" action="{!runJsonTrolleyPaypalWebhook}"/>
+        <apex:commandButton value="Run Trolley WebHook" action="{!runJsonTrolley}"/>
+    </apex:form>  
+</apex:page>

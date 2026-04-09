@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Auto_Create_Community_Login__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If Checked, Create a community user and email the credentials</description>
+    <label>Auto Create Community Login</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

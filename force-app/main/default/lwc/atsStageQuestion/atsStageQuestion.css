@@ -1,0 +1,28 @@
+.custom-container{
+	color : black;
+}
+.required-asterisk {
+    color: maroon;
+    font-weight: bold;
+    margin-right: 5px; /* Space between the asterisk and the question text */
+}
+
+.radio-group-container {
+    margin-top : -1.5rem ; /* Space between the question and radio buttons */
+}
+
+.picklist-container {
+    margin-top : -1.25rem /* Adjust this value to control space between the question and the picklist */
+}
+
+.question-text {
+    margin-left: 0.25rem; /* Adjust this value to set the space at the start of the question text */
+}
+.bold-text {
+    font-weight: bold;
+}
+.textarea-input {
+    width: 100%; /* Make the textarea take full width of its container */
+    margin-top: -1.25rem; /* Remove margin to eliminate gap around the textarea */
+    padding: 0.5rem; /* Optional: add padding for better input appearance */
+}

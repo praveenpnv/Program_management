@@ -1,0 +1,41 @@
+<template>
+    <div if:true={showSpinner} class="slds-spinner_container">
+        <div class="slds-spinner--brand  slds-spinner slds-spinner--small slds-is-relative" role="alert">
+          <span class="slds-assistive-text">Loading...</span>
+          <div class="slds-spinner__dot-a"></div>
+          <div class="slds-spinner__dot-b"></div>
+        </div>
+      </div>
+    <lightning-card if:false={showSpinner}  title="Candidate Details" icon-name="custom:custom63">
+        <template if:true={fields}>
+            <p class="slds-text-color_error ">Please fill in the mandatory candidate details:</p>
+            <lightning-record-edit-form
+                object-api-name={objectApiName}
+                record-id={recordId}
+                onsubmit={handleSubmit}
+                onsuccess={handleSuccess}
+                onerror={handleError}>
+                <div class="slds-grid slds-wrap">
+                    <template for:each={fields} for:item="field">
+                        <div key={field} class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                            <lightning-input-field field-name={field} required></lightning-input-field>
+                            
+                        </div>
+                    </template>
+                     <template for:each={readonlyControllingFields} for:item="field">
+                        <div key={field} class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                            <lightning-input-field field-name={field} disabled></lightning-input-field>
+                            
+                        </div>
+                    </template>
+                </div>
+                
+                <!-- Centered submit button with variant "brand" -->
+                <div class="slds-m-top_small slds-grid slds-grid_align-right">
+                    <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                </div>
+               
+            </lightning-record-edit-form>
+            </template>
+    </lightning-card>
+</template>

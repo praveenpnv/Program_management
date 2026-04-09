@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Torc_Send_Notification_About_Match_Accept</name>
+        <label>Torc-Send Notification About Match Accept</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <actionName>Torc_User__c.Torc_Send_Notification_About_Match_Accept</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>Torc_User__c.Torc_Send_Notification_About_Match_Accept</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <environments>Default</environments>
+    <interviewLabel>Torc-Send Notification About Match Accept {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Torc-Send Notification About Match Accept</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Torc_Send_Notification_About_Match_Accept</targetReference>
+        </connector>
+        <filterFormula>AND(
+ISCHANGED({!$Record.Latest_Accepted_Match__c}) ,
+NOT(ISBLANK({!$Record.Latest_Accepted_Match__c})), 
+ISBLANK({!$Record.Latest_Freelancer_Questionnaire__c}),
+{!$Record.Latest_Accepted_Match__r.EOR_OR_IC__c} = &apos;IC&apos;,
+{!$Record.Country__r.Name}=&apos;United States&apos;
+)</filterFormula>
+        <object>Torc_User__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

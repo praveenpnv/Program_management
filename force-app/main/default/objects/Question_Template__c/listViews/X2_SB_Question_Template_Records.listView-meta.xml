@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X2_SB_Question_Template_Records</fullName>
+    <columns>NAME</columns>
+    <columns>Order__c</columns>
+    <columns>Category__c</columns>
+    <columns>Grouping__c</columns>
+    <columns>QuestionTextEN__c</columns>
+    <columns>QuestionTextAlt__c</columns>
+    <columns>Stage__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>OwningEntity__c</field>
+        <operation>equals</operation>
+        <value>X2-SB</value>
+    </filters>
+    <label>X2-SB Question Template Records</label>
+</ListView>

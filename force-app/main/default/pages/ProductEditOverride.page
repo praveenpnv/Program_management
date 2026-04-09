@@ -1,0 +1,6 @@
+<apex:page standardController="OpportunityLineItem">
+    <script>
+    var url='/apex/OpportunityLineItem?oppId={!OpportunityLineItem.OpportunityID}';
+    window.location.href = url;
+    </script> 
+</apex:page>

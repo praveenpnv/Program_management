@@ -1,0 +1,23 @@
+<!--
+  @description       : Rejection Modal Wrapper for BH Component
+  @author            : mhamdaoui@salesforce.com
+  @last modified on  : 03-10-2022
+  @last modified by  : mhamdaoui@salesforce.com
+  Modifications Log
+  Ver   Date         Author                     Modification
+  1.0   03-09-2022   mhamdaoui@salesforce.com   Initial Version
+-->
+<aura:component>
+    <!-- Application Id -->
+    <aura:attribute name="recordId" type="String" access="public" />
+
+     <!-- Application Ids passed to the wrapper -->
+    <aura:attribute name="appIds" type="String[]" access="private" />
+
+     <!-- Init handler to set appIds -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <aura:if isTrue="{!v.appIds.length > 0}">
+        <TR1:ATS_Candidate_Rejection_notes_Wrapper appIds="{!v.appIds}" />
+    </aura:if>
+</aura:component>

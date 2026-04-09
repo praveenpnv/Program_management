@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <applicationVisibilities>
+        <application>RD_Program</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <description>Permission to access the RD Program app</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>RD Program</label>
+    <tabSettings>
+        <tab>rd_one_Project_Platform</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

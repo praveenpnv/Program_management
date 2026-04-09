@@ -1,0 +1,94 @@
+<template>
+    <div class="rlv-wrap">
+        <template if:false={embedded}>
+            <div class="rlv-header">
+                <div class="rlv-header-left">
+                    <h1 class="rlv-title">Requirements Board</h1>
+                    <p class="rlv-sub">Business requirements across all projects. Approve a requirement to auto-create a linked story.</p>
+                </div>
+                <div class="rlv-header-right">
+                    <input class="rlv-search" type="text" placeholder="Search requirements…" onkeyup={handleSearch}/>
+                    <button class="rlv-new-btn" onclick={handleNew}>+ New Requirement</button>
+                </div>
+            </div>
+
+            
+            <div class="rlv-stats">
+            <template for:each={statItems} for:item="stat">
+                <div key={stat.label} class="rlv-stat">
+                    <span class={stat.numCls}>{stat.count}</span>
+                    <span class="rlv-stat-lbl">{stat.label}</span>
+                </div>
+            </template>
+        </div>
+        </template>
+
+        
+        <div class="rlv-board">
+            <template for:each={columns} for:item="col">
+                <div key={col.status} class={col.colCls}
+                     data-col={col.status}
+                     ondragover={handleDragOver}
+                     ondragleave={handleDragLeave}
+                     ondrop={handleDrop}>
+                    <div class="rlv-col-hdr" style={col.hdrStyle}>
+                        <span class="rlv-col-title">{col.label}</span>
+                        <span class="rlv-col-count">{col.count}</span>
+                    </div>
+                    <div class="rlv-col-body">
+                        <template for:each={col.cards} for:item="card">
+                            <div key={card.Id} class={card.cardCls}
+                                 draggable="true"
+                                 data-id={card.Id}
+                                 data-status={card.Status__c}
+                                 ondragstart={handleDragStart}
+                                 ondragend={handleDragEnd}>
+                                
+                                <div class="rlv-card-top">
+                                    <span class={card.priCls}>{card.Priority__c}</span>
+                                    <template if:true={card.Category__c}>
+                                        <span class="rlv-cat-badge">{card.Category__c}</span>
+                                    </template>
+                                </div>
+
+                                
+                                <template if:true={card.projectName}>
+                                    <div class="rlv-project-tag">📁 {card.projectName}</div>
+                                </template>
+
+                                <p class="rlv-card-name">{card.Name}</p>
+
+                                <template if:true={card.featureName}>
+                                    <span class="rlv-feature-tag">{card.featureName}</span>
+                                </template>
+
+                                <div class="rlv-card-meta">
+                                    <template if:true={card.requestor}>
+                                        <span class="rlv-requestor">👤 {card.requestor}</span>
+                                    </template>
+                                    
+                                    <template if:true={card.storyLink}>
+                                        <button class="rlv-story-link-btn" value={card.storyId} onclick={handleStoryLink} title="View linked story">
+                                            🔗 {card.storyName}
+                                        </button>
+                                    </template>
+                                </div>
+
+                                
+                                <div class="rlv-card-btns">
+                                    <template if:true={card.canApprove}>
+                                        <button class="rlv-approve-btn" value={card.Id} onclick={handleApprove}>✓ Approve</button>
+                                    </template>
+                                    <button class="rlv-view-btn" value={card.Id} onclick={handleView}>View</button>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={col.hasCards}>
+                            <div class="rlv-empty-col">No requirements</div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

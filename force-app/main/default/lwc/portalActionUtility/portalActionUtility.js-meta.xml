@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>62.0</apiVersion>
+	<isExposed>true</isExposed>
+	<targets>
+		<target>lightning__RecordPage</target>
+		<target>lightning__UtilityBar</target>
+		<target>lightning__AppPage</target>
+	</targets>
+	<targetConfigs>
+        <targetConfig targets="lightning__UtilityBar">
+            <property name="label" type="string" default="Portal Actions" />
+            <property name="iconName" type="string" default="custom:custom14" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

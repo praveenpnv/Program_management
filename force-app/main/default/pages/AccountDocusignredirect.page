@@ -1,0 +1,21 @@
+<apex:page standardController="Account" extensions="AccountDocusignredirect" title="Account Docusign Redirect">
+    <apex:sectionHeader title="Account Docusign redirect" subtitle="{!Account.Name}"/>
+    <apex:form id="frm">
+        <apex:pageBlock title="Select Signer" mode="edit">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Launch Docusign" action="{!reDirect}"/>
+                <apex:commandButton value="Save & return to Account" action="{!saveAndreturn}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockButtons>
+            <div class="pbError" id="errorDiv_ep">
+                    <apex:messages />
+            </div>
+            <apex:pageblockSection Columns="1" >
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Select the MSA Signer from Customer Side"/>
+                    <apex:inputField value="{!Act.MSA_Signer__c}"/>
+                </apex:pageblocksectionItem>    
+            </apex:pageblockSection>
+       </apex:pageBlock>
+    </apex:form>        
+</apex:page>

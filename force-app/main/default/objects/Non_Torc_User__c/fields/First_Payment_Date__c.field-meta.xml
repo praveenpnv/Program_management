@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>First_Payment_Date__c</fullName>
+    <formula>If( NOT(ISNULL(Payment_Start_Date__c)),
+Payment_Start_Date__c
+,
+DATE(Year( DATEVALUE(CreatedDate) ),Month( DATEVALUE(CreatedDate) )+1,1) -1)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>First Payment Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

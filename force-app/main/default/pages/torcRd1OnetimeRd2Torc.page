@@ -1,0 +1,60 @@
+<apex:page controller="torcRd1OnetimeRd2TorcController"  docType="html-5.0" sidebar="true" showHeader="true">
+    <apex:form id="theForm">
+        <apex:pageMessages id="msgPanel"/>
+        <apex:pageBlock title="Contact Processor">
+            <apex:pageBlockSection columns="1" title="Inputs" collapsible="false">
+                <apex:inputTextarea value="{!soqlQuery}" label="SOQLQuery (Contact only)"
+                                    rows="7" cols="120" required="true"
+                                    html-placeholder="e.g. SELECT Id FROM Contact WHERE Email != null"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="BatchSize"/>
+                    <apex:inputText value="{!batchSize}" required="true"/>
+                </apex:pageBlockSectionItem>
+                <apex:commandButton value="Process"
+                                    action="{!startProcess}"
+                                    rerender="progressPanel,msgPanel,pollerwrap"
+                                    status="processStatus"/>
+            </apex:pageBlockSection>
+            <apex:outputPanel id="pollerwrap">
+            <apex:actionPoller id="poller"
+                               interval="15"
+                               enabled="{!pollEnabled}"
+                               action="{!poll}"
+                               rerender="progressPanel,msgPanel"
+                               status="processStatus"/>
+            </apex:outputPanel>
+            <apex:pageBlockSection columns="1" title="Progress" collapsible="false">
+                <apex:outputPanel id="progressPanel">
+                    <apex:outputText value="Total: {!totalCount} | Processed: {!processedCount} | Remaining: {!remainingCount} | {0,number,0.##}%">
+                        <apex:param value="{!percentDone}" />
+                    </apex:outputText>
+
+                    <div class="progress">
+                        <div class="bar" style="width:{!percentDone}%;"></div>
+                    </div>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:actionStatus id="processStatus">
+            <apex:facet name="start">
+                <div class="overlay">
+                    <div class="spinner">Processing…</div>
+                </div>
+            </apex:facet>
+            <apex:facet name="stop"></apex:facet>
+        </apex:actionStatus>
+    </apex:form>
+
+    <style>
+        .progress{width:100%; height:16px; border:1px solid #ccc; border-radius:8px; overflow:hidden; margin-top:8px;}
+        .bar{height:100%; background:#1589EE;}
+        .overlay{
+            position:fixed; inset:0; background:rgba(0,0,0,0.25);
+            display:flex; align-items:center; justify-content:center; z-index:9999;
+        }
+        .spinner{
+            background:#fff; padding:14px 18px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.2);
+            font-weight:600;
+        }
+    </style>
+</apex:page>

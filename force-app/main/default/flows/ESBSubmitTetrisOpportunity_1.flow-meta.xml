@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>myRule_3_A1</name>
+        <label>ESB CP TimeFlow Submit Opportunity</label>
+        <locationX>522</locationX>
+        <locationY>587</locationY>
+        <actionName>CPTimeFlowPresales</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>opptyID</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>CPTimeFlowPresales</nameSegment>
+    </actionCalls>
+    <apiVersion>57.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>myRule_1</name>
+        <label>Stage is won</label>
+        <locationX>456</locationX>
+        <locationY>371</locationY>
+        <defaultConnector>
+            <targetReference>myRule_3</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>FALSE_Stage is won</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.StageName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Closed Won</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Record_type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>SoW</stringValue>
+                </rightValue>
+            </conditions>
+            <label>TRUE_Stage is won</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>myRule_3</name>
+        <label>Needs Analysis</label>
+        <locationX>654</locationX>
+        <locationY>479</locationY>
+        <defaultConnectorLabel>FALSE_Qualified Opportunity</defaultConnectorLabel>
+        <rules>
+            <name>TRUE_myRule_3</name>
+            <conditionLogic>(1 AND 2)</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.StageName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Opportunity Identified</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Record_type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Sow</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_3_A1</targetReference>
+            </connector>
+            <label>TRUE_Qualified Opportunity</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>RestrictedDataFlow</name>
+        <label>RestrictedDataFlow</label>
+        <locationX>297</locationX>
+        <locationY>320</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>RestrictedDataFlowPermission</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Permission.RestrictDataFlow</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>myRule_1</targetReference>
+            </connector>
+            <label>RestrictedDataFlowPermission</label>
+        </rules>
+    </decisions>
+    <description>add check to only trigger when TF id is empty</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>Record_type</name>
+        <dataType>String</dataType>
+        <expression>{!$Record.RecordType.DeveloperName}</expression>
+    </formulas>
+    <interviewLabel>ESBSubmitTetrisOpportunity_1 {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>ESB Submit Opportunity to Timeflow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>330</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>RestrictedDataFlow</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Timeflow_ID__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Responsible_Opco__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>US</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Responsible_Opco__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>UK</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Responsible_Opco__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Germany</stringValue>
+            </value>
+        </filters>
+        <object>Opportunity</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

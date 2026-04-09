@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Intel_Skill__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Intel Skill</label>
+    <referenceTo>Intel_Skill__c</referenceTo>
+    <relationshipLabel>Intel Talent Skills</relationshipLabel>
+    <relationshipName>Intel_Talent_Skills</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

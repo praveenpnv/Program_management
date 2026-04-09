@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AvailableForSubmittal__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>No prevents the Question from ever being added to an email template. Yes forces inclusion (Validation) or includes if an Answer is present (Internal Interview).</description>
+    <inlineHelpText>Yes, Answer will be submitted to the client if present. No, Answer will never be sent to the Client.</inlineHelpText>
+    <label>Available for Submittal</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,57 @@
+<template>
+    <lightning-card title="Interview Details" icon-name="custom:custom63">
+        <div class="slds-p-around_medium">
+            <!-- Single Record View Form -->
+            <lightning-record-view-form record-id={candidateId} object-api-name="Contact">
+
+                <!-- Accordion for collapsible sections -->
+                <lightning-accordion allow-multiple-sections-open>
+                
+                    <!-- Primary Interview Section -->
+                    <template if:true={showPrimaryInterview}>
+                        <lightning-accordion-section name="primaryInterview" label="Primary Interview Details">
+                            <div class="slds-grid slds-wrap">
+                              <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                                    <lightning-output-field field-name="Primary_Interview_Taker__c"></lightning-output-field>
+                               </div> 
+                                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                                    <lightning-output-field field-name="Date_of_the_First_Interview__c"></lightning-output-field>
+                                 </div>
+                            </div>
+                        </lightning-accordion-section>
+                    </template>
+
+                    <!-- Secondary Interview Section -->
+                    <template if:true={showSecondaryInterview}>
+                        <lightning-accordion-section name="secondaryInterview" label="Secondary Interview Details">
+                            <div class="slds-grid slds-wrap">
+                              <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                                    <lightning-output-field field-name="Secondary_Interview_Taker__c"></lightning-output-field>
+                                 </div> 
+                                 <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                                    <lightning-output-field field-name="Date_of_the_Second_Interview__c"></lightning-output-field>
+                                 </div>
+                            </div>
+                        </lightning-accordion-section>
+                    </template>
+
+                    <!-- Job Expert Interview Section -->
+                    <template if:true={showJobExpertInterview}>
+                        <lightning-accordion-section name="jobExpertInterview" label="Job Expert Interview Details">
+                             <div class="slds-grid slds-wrap">
+                              <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                                    <lightning-output-field field-name="Job_Expert__c"></lightning-output-field>
+                              </div>
+                              <div class="slds-col slds-size_1-of-2 slds-p-horizontal_small">
+                                    <lightning-output-field field-name="Date_of_the_Technical_Interview__c"></lightning-output-field>
+                              </div>
+                             </div>
+                        </lightning-accordion-section>
+                    </template>
+
+                </lightning-accordion>
+                
+            </lightning-record-view-form>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,107 @@
+<apex:page standardController="Opportunity" extensions="OpportunityDocusigngenRedirect" title="Redirect to Docusign">
+    <style>
+        .dateFormat{display:none}
+        .tooltip {
+          position: relative;
+          display: inline-block;
+          border-bottom: 1px dotted black;
+        }
+        
+        .tooltip .tooltiptext {
+          visibility: hidden;
+          width: 220px;
+          background-color: black;
+          color: #fff;
+          text-align: center;
+          padding: 5px 0;
+          border-radius: 6px;
+         
+          /* Position the tooltip text - see examples below! */
+          position: absolute;
+          z-index: 1;
+        }
+        
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+        }
+    </style>
+    <apex:sectionHeader title="CHANGE ORDER ENGAGEMENT DOCUMENT" subtitle="{!opportunity.Name}"/>
+    <apex:form rendered="{!editableSigningDate}">
+        <div class="pbError">
+            Agreement date is not set on Account :<b><a href="/{!opp.AccountId}">{!opp.Account.Name}</a></b>. Please contact <b>Mike Cardillo</b> to update or click on <b><apex:commandLink action="{!SendChatter}" value="this link"/></b> to send chatter to Mike.
+        </div>
+    </apex:form>
+    <apex:form rendered="{!errorMessage<>''}">
+        <div class="pbError">
+            {!errorMessage}&nbsp;&nbsp; <b><a href="/{!opp.Id}">Back>></a></b>.
+        </div>
+    </apex:form>
+    <apex:form id="frm" rendered="{!AND(NOT(editableSigningDate),errorMessage='')}">
+        <apex:actionfunction name="setupInvoicingContact" id="setupInvoicingContact" action="{!setupInvoicingContact}" rerender="frm"/>
+        <apex:actionfunction name="setupSignerContact" id="setupSignerContact" action="{!setupSignerContact}" rerender="frm"/>
+        <apex:pageBlock title="CUSTOMER ENGAGEMENT DOCUMENT" mode="edit">
+            <apex:pageblockButtons >
+                <apex:commandButton value="Launch Docusign" action="{!reDirectChangeOrderNow}"/>
+                <apex:commandButton value="Save & return to Opportunity" action="{!SaveAndBack}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}"/>
+            </apex:pageblockButtons>
+            <div class="pbError" id="errorDiv_ep">
+                    <apex:messages />
+            </div>
+            <apex:pageblockSection Columns="1">
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Customer"/>
+                    <apex:outputField value="{!Opp.Account.Name}"/>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Engagement Document being modified"/>
+                    <apex:outputPanel >
+                        <apex:inputField value="{!Opp.Change_Order_Type__c}" style="width:75%"/>
+                    </apex:outputPanel>    
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel value="Agreement Date"/>
+                    <apex:outputfield value="{!Opp.Account.Agreement_Date__c}"/>
+                </apex:pageblocksectionItem>
+          </apex:pageblockSection>      
+                    <apex:outputPanel >
+                    This Change Order is effective as of the date of last signature below (the “Effective Date”) and modifies the Engagement Document referenced above by and between Torc LLC and the Customer listed above.  Except as specifically modified by this Change Order, all terms of the Engagement Document and Agreement remain in full force and effect.  All capitalized terms used in this Change Order that are not otherwise defined herein, have the meanings ascribed to them in the Engagement Document or Agreement, as applicable.  In the event of any inconsistency or conflict between this Change Order, the Engagement Document and the Agreement, precedence shall be given to terms in the following order of priority: this Change Order shall control, followed by the terms of this Engagement Document and finally the Agreement.    
+                    </apex:outputPanel>
+            <apex:pageblockSection Columns="1" title="The scope of the Engagement Document is hereby modified by this Change Order as follows:">
+                <apex:pageblocksectionItem >
+                    <apex:inputfield value="{!Opp.Change_Order_Description__c}" style="width:100%"/>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+            
+            <apex:pageblockSection Columns="1" title="Other Changes, if applicable:">
+                <apex:pageblocksectionItem >
+                    <apex:inputfield value="{!Opp.Change_Order_Additional_Description__c}" style="width:100%"/>
+                </apex:pageblocksectionItem>
+                <br/><br/>
+                To the extent this Change Order necessitates a corresponding modification to an Engagement Document between Torc and a Talent Member, then upon execution of this Change Order, Torc will use commercially reasonable efforts to retain Talent on the terms listed above or enter into a corresponding change order with existing Talent.  No obligations are imposed upon Torc with respect to this Change Order until such time as both the Customer and Talent Member have accepted the terms of their respective Change Orders and each of Customer and Talent Member have executed their respective Change Orders with Torc.
+ 
+                Accepted and agreed to by the authorized representative of each party as of the date of last signature below:
+            </apex:pageblockSection>
+            
+            <apex:pageblockSection Columns="1" title="Engagement Signer:" id="espbs">
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Engagement Signer"/>
+                    <apex:outputPanel >
+                        <apex:inputfield value="{!Opp.Engagement_Signatory__c}" onchange="setupSignerContact();"/>
+                        &nbsp;&nbsp;<apex:commandLink value="Clear" action="{!clearSignerContact}" reRender="espbs"/>
+                    </apex:outputPanel>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Contact Name"/>
+                    <apex:outputLabel value="{!engagementSigner.Name}"/>
+                </apex:pageblocksectionItem>
+                <apex:pageblocksectionItem >
+                    <apex:outputLabel value="Email Address:"/>
+                    <apex:outputLabel value="{!engagementSigner.Email}"/>
+                </apex:pageblocksectionItem>
+            </apex:pageblockSection>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

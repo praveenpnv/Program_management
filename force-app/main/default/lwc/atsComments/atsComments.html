@@ -1,0 +1,17 @@
+<template>
+            <lightning-accordion>
+                <lightning-accordion-section name="TaskDetails" class ="ats-accordion" label="Comments" active-section-name={activeSection}>
+                    
+                                                    <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="editDescription">Comments</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="text" id="editDescription" value={taskDescription} onchange={handleDescriptionChange} disabled={isReadOnly}></lightning-input>
+                                </div>
+                            </div>
+                        
+                    
+                </lightning-accordion-section>
+            </lightning-accordion>
+            
+        <!-- Footer with Save and Cancel buttons -->
+</template>

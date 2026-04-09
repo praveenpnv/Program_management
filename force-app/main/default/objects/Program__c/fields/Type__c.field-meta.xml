@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <label>Program Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Acceleration</fullName>
+                <default>false</default>
+                <label>Acceleration</label>
+            </value>
+            <value>
+                <fullName>Business Expansion</fullName>
+                <default>false</default>
+                <label>Business Expansion</label>
+            </value>
+            <value>
+                <fullName>Major Projects</fullName>
+                <default>true</default>
+                <label>Major Projects</label>
+            </value>
+            <value>
+                <fullName>Run</fullName>
+                <default>false</default>
+                <label>Run</label>
+            </value>
+            <value>
+                <fullName>Sanitization</fullName>
+                <default>false</default>
+                <label>Sanitization</label>
+            </value>
+            <value>
+                <fullName>Stabilization</fullName>
+                <default>false</default>
+                <label>Stabilization</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

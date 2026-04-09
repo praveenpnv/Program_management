@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Internal_Placement__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Internal Placement</label>
+    <referenceTo>Internal_Placement__c</referenceTo>
+    <relationshipLabel>Dummy Object</relationshipLabel>
+    <relationshipName>Dummy_Object</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

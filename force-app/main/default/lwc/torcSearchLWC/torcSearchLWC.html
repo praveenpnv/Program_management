@@ -1,0 +1,40 @@
+<template>
+    <!-- Fullscreen target wrapper: header + content live inside -->
+    <div class={fsRootClass} data-id="fs-root" tabindex="-1">
+            <div class="header-bar">
+
+                <template if:true={torcjobsfdcid}>
+                    <a href={jobDetailUrl} class="slds-text-link">← Go back to Job</a>
+                </template>
+                <template if:false={torcjobsfdcid}>
+                    <a href={sfdcHomeUrl} class="slds-text-link">← Salesforce Home</a>
+                </template>
+                
+                <lightning-button
+                    variant="base"
+                    label="External Search"
+                    onclick={handleTextKernelExternalClick}
+                    class="slds-text-link custom-button">
+                </lightning-button>
+
+                <lightning-button
+                    variant="neutral"
+                    label={fullscreenLabel}
+                    onclick={handleToggleFullscreen}
+                    class="custom-button">
+                </lightning-button>
+            </div>
+
+        <template if:true={iframeSrc}>
+            <iframe
+                data-id="content-iframe"
+                src={iframeSrc}
+                class="content-frame"
+                frameborder="0">
+            </iframe>
+        </template>
+        <template if:false={iframeSrc}>
+            <p class="loading">Loading...</p>
+        </template>
+    </div>
+</template>

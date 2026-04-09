@@ -1,0 +1,65 @@
+<template>
+    <div class="rp-root">
+        <div class="rp-header">
+            <div>
+                <div class="rp-label">Releases</div>
+                <div class="rp-title">
+                    {projectName}
+                    <template if:true={releaseCount}>
+                        <span class="rp-count">{releaseCount}</span>
+                    </template>
+                </div>
+            </div>
+            <button class="rp-add-btn" onclick={handleAdd} title="New Release">+ Release</button>
+        </div>
+
+        
+        <template if:true={hasReleases}>
+            <div class="rp-list">
+                <template for:each={releaseItems} for:item="rel">
+                    <div key={rel.Id} class="rp-release-card">
+                        <div class="rp-release-top">
+                            <div class="rp-release-left">
+                                <span class={rel.stageCls}>{rel.Stage__c}</span>
+                                <span class="rp-release-name">{rel.Name}</span>
+                                <template if:true={rel.Version__c}>
+                                    <span class="rp-version">v{rel.Version__c}</span>
+                                </template>
+                            </div>
+                            <button class="rp-open-btn" value={rel.Id} onclick={handleOpen}>View</button>
+                        </div>
+                        <div class="rp-release-meta">
+                            <template if:true={rel.Go_Live_Date__c}>
+                                <span class="rp-meta-item">
+                                    <lightning-icon icon-name="utility:date_input" size="xx-small"></lightning-icon>
+                                    Go Live: {rel.Go_Live_Date__c}
+                                </span>
+                            </template>
+                            <template if:true={rel.Status__c}>
+                                <span class="rp-status">{rel.Status__c}</span>
+                            </template>
+                        </div>
+
+                        
+                        <div class="rp-pipeline">
+                            <template for:each={rel.pipelineStages} for:item="stage">
+                                <div key={stage.label} class={stage.cls} title={stage.label}>
+                                    <span class="rp-pip-dot"></span>
+                                    <span class="rp-pip-label">{stage.shortLabel}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template if:false={hasReleases}>
+            <div class="rp-empty">
+                <lightning-icon icon-name="utility:package" size="medium"></lightning-icon>
+                <p>No releases yet.</p>
+                <button class="rp-empty-btn" onclick={handleAdd}>Create First Release</button>
+            </div>
+        </template>
+    </div>
+</template>

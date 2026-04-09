@@ -1,0 +1,23 @@
+<template>
+    <div class="slds-box slds-box_x-small">
+        
+        <lightning-record-view-form
+            record-id={recordId}
+            object-api-name="TR1__Job__c">
+            
+            <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title">
+                    <button class="slds-button slds-section__title-action" aria-controls="section-content-id-1" aria-expanded="true">
+                        <lightning-icon icon-name="utility:chevrondown" size="small" class="slds-section__title-action-icon" alternative-text="Toggle Information"></lightning-icon>
+                        <span class="slds-truncate" title="Information">Information</span>
+                    </button>
+                </h3>
+                
+                <div id="section-content-id-1" class="slds-section__content">
+                    <lightning-output-field field-name="Generated_Job_Ad__c"></lightning-output-field>
+                </div>
+            </div>
+            
+        </lightning-record-view-form>
+    </div>
+</template>

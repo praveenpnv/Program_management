@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Region__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE( countryName__c , 
+&apos;India&apos;, &apos;India&apos;, 
+&apos;United States&apos;, &apos;United States&apos;,
+&apos;Canada&apos;, &apos;Canada&apos;,
+&apos;Belize&apos;,&apos;LATAM&apos;,
+&apos;Costa Rica&apos;,&apos;LATAM&apos;,
+&apos;El Salvador&apos;,&apos;LATAM&apos;,
+&apos;Guatemala&apos;,&apos;LATAM&apos;,
+&apos;Honduras&apos;,&apos;LATAM&apos;,
+&apos;Mexico&apos;,&apos;LATAM&apos;,
+&apos;Nicaragua&apos;,&apos;LATAM&apos;,
+&apos;Panama&apos;,&apos;LATAM&apos;,
+&apos;Argentina&apos;,&apos;LATAM&apos;,
+&apos;Bolivia&apos;,&apos;LATAM&apos;,
+&apos;Brazil&apos;,&apos;LATAM&apos;,
+&apos;Chile&apos;,&apos;LATAM&apos;,
+&apos;Colombia&apos;,&apos;LATAM&apos;,
+&apos;Ecuador&apos;,&apos;LATAM&apos;,
+&apos;Guyana&apos;,&apos;LATAM&apos;,
+&apos;Paraguay&apos;,&apos;LATAM&apos;,
+&apos;Peru&apos;,&apos;LATAM&apos;,
+&apos;Suriname&apos;,&apos;LATAM&apos;,
+&apos;Uruguay&apos;,&apos;LATAM&apos;,
+&apos;Venezuela&apos;,&apos;LATAM&apos;,
+&apos;Cuba&apos;,&apos;LATAM&apos;,
+&apos;Dominican Republic&apos;,&apos;LATAM&apos;,
+&apos;Haiti&apos;,&apos;LATAM&apos;,
+&apos;dependencies and constituent entities&apos;,&apos;LATAM&apos;,
+&apos;Guadeloupe&apos;,&apos;LATAM&apos;,
+&apos;Martinique&apos;,&apos;LATAM&apos;,
+&apos;Puerto Rico&apos;,&apos;LATAM&apos;,
+&apos;Saint-Barthélemy&apos;,&apos;LATAM&apos;,
+&apos;Saint-Martin&apos;,&apos;LATAM&apos;,
+&apos;Belarus&apos;,&apos;Eastern Europe&apos;,
+&apos;Bulgaria&apos;,&apos;Eastern Europe&apos;,
+&apos;the Czech Republic&apos;,&apos;Eastern Europe&apos;,
+&apos;Hungary&apos;,&apos;Eastern Europe&apos;,
+&apos;Moldova&apos;,&apos;Eastern Europe&apos;,
+&apos;Poland&apos;,&apos;Eastern Europe&apos;,
+&apos;Romania&apos;,&apos;Eastern Europe&apos;,
+&apos;Slovakia&apos;,&apos;Eastern Europe&apos;,
+&apos;Ukraine&apos;,&apos;Eastern Europe&apos;,
+&apos;Other&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Region(Deprecated)</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

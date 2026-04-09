@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Show_Client_Accept_Reject_Stage__c</fullName>
+    <formula>OR(
+status__c = &apos;ACCEPTED&apos;,
+status__c = &apos;REJECTEDBYCUSTOMER&apos;,
+status__c = &apos;REJECTEDBYMATCHER&apos;,
+status__c = &apos;REJECTEDBYMEMBER&apos;,
+status__c = &apos;SKIPPED&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Show Client Accept Reject Stage</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

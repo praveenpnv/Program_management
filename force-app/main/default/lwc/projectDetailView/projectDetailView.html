@@ -1,0 +1,405 @@
+<template>
+    
+    <div class="pdv-header">
+        <div class="pdv-header-info">
+            <h1 class="pdv-title">{project.name}</h1>
+            <div class="pdv-badges">
+                <span class={statusCls}>{project.status}</span>
+                <template if:true={project.projectType}>
+                    <span class="pdv-badge pdv-indigo">{project.projectType}</span>
+                </template>
+                <template if:true={project.methodology}>
+                    <span class={methodCls}>{project.methodology}</span>
+                </template>
+                <template if:true={project.ragStatus}>
+                    <span class={ragBadgeCls}>&#9679; {project.ragStatus}</span>
+                </template>
+                <template if:true={project.ownerName}>
+                    <span class="pdv-badge pdv-grey">&#128100; {project.ownerName}</span>
+                </template>
+                <template if:true={project.technicalOwnerName}>
+                    <span class="pdv-badge pdv-sky">&#9874; Tech: {project.technicalOwnerName}</span>
+                </template>
+                <template if:true={project.functionalOwnerName}>
+                    <span class="pdv-badge pdv-teal">&#9788; Func: {project.functionalOwnerName}</span>
+                </template>
+                <template if:true={project.businessOwnerName}>
+                    <span class="pdv-badge pdv-purple">&#9733; Biz: {project.businessOwnerName}</span>
+                </template>
+                <template if:true={project.parentProjectName}>
+                    <span class="pdv-badge pdv-amber">&#8617; {project.parentProjectName}</span>
+                </template>
+            </div>
+        </div>
+        <div class="pdv-header-actions">
+            <button class="pdv-btn-action" onclick={handleNewRequirement}>+ Requirement</button>
+            <button class="pdv-btn-action" onclick={handleNewFeature}>+ Feature</button>
+            <button class="pdv-btn-action" onclick={handleNewStory}>+ Request</button>
+            <button class="pdv-btn-nav" onclick={handleEditProjectToggle} title="Edit project">
+                <lightning-icon icon-name="utility:edit" size="xx-small"></lightning-icon>
+            </button>
+            <button class="pdv-btn-nav" onclick={handleOpenRecord} title="Open Salesforce record">
+                <lightning-icon icon-name="utility:open" size="xx-small"></lightning-icon>
+            </button>
+        </div>
+    </div>
+
+    
+    <template if:true={isEditingProject}>
+        <div class="pdv-edit-panel">
+            <div class="pdv-edit-grid">
+                <div class="pdv-edit-field pdv-edit-full">
+                    <label class="pdv-edit-lbl">Project Name</label>
+                    <input class="pdv-edit-input" type="text" data-field="name"
+                           value={editProjName} onchange={handleEditProjectField} />
+                </div>
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">Status</label>
+                    <select class="pdv-edit-select" data-field="status" onchange={handleEditProjectField}>
+                        <option value="Not Started" selected={editStatusNotStarted}>Not Started</option>
+                        <option value="Pending"     selected={editStatusPending}>Pending</option>
+                        <option value="On going"    selected={editStatusOngoing}>On going</option>
+                        <option value="On Hold"     selected={editStatusOnHold}>On Hold</option>
+                        <option value="Continues"   selected={editStatusContinues}>Continues</option>
+                        <option value="Delivered"   selected={editStatusDelivered}>Delivered</option>
+                    </select>
+                </div>
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">Methodology</label>
+                    <select class="pdv-edit-select" data-field="methodology" onchange={handleEditProjectField}>
+                        <option value="Scrum"     selected={editMethodScrum}>Scrum</option>
+                        <option value="Kanban"    selected={editMethodKanban}>Kanban</option>
+                        <option value="SAFe"      selected={editMethodSAFe}>SAFe</option>
+                        <option value="Waterfall" selected={editMethodWaterfall}>Waterfall</option>
+                    </select>
+                </div>
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">RAG Status</label>
+                    <select class="pdv-edit-select" data-field="ragStatus" onchange={handleEditProjectField}>
+                        <option value="Green" selected={editRagGreen}>Green</option>
+                        <option value="Amber" selected={editRagAmber}>Amber</option>
+                        <option value="Red"   selected={editRagRed}>Red</option>
+                    </select>
+                </div>
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">Project Type</label>
+                    <select class="pdv-edit-select" data-field="projectType" onchange={handleEditProjectField}>
+                        <option value="Major Projects"    selected={editTypeMajor}>Major Projects</option>
+                        <option value="Technical Support" selected={editTypeTechSupport}>Technical Support</option>
+                        <option value="Acceleration"      selected={editTypeAcceleration}>Acceleration</option>
+                        <option value="Stabilization"     selected={editTypeStabilization}>Stabilization</option>
+                        <option value="Client Onboarding" selected={editTypeClientOnboarding}>Client Onboarding</option>
+                    </select>
+                </div>
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">Target Date</label>
+                    <input class="pdv-edit-input" type="date" data-field="targetDate"
+                           value={editProjTargetDate} onchange={handleEditProjectField} />
+                </div>
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">Technical Owner</label>
+                    <c-user-lookup 
+                        label="" 
+                        placeholder="Search tech owner…"
+                        value={editTechOwnerObj}
+                        onselect={handleTechOwnerSelect}
+                        onclear={handleTechOwnerClear}>
+                    </c-user-lookup>
+                </div>
+
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">Functional Owner</label>
+                    <c-user-lookup 
+                        label="" 
+                        placeholder="Search functional owner…"
+                        value={editFuncOwnerObj}
+                        onselect={handleFuncOwnerSelect}
+                        onclear={handleFuncOwnerClear}>
+                    </c-user-lookup>
+                </div>
+
+                <div class="pdv-edit-field">
+                    <label class="pdv-edit-lbl">Business Owner</label>
+                    <c-user-lookup 
+                        label="" 
+                        placeholder="Search business owner…"
+                        value={editBizOwnerObj}
+                        onselect={handleBizOwnerSelect}
+                        onclear={handleBizOwnerClear}>
+                    </c-user-lookup>
+                </div>
+                <div class="pdv-edit-field pdv-edit-full">
+                    <label class="pdv-edit-lbl">Description</label>
+                    <textarea class="pdv-edit-ta" data-field="description" rows="3"
+                              onchange={handleEditProjectField}>{editProjDescription}</textarea>
+                </div>
+            </div>
+            <div class="pdv-edit-actions">
+                <button class="pdv-edit-save-btn" onclick={handleEditProjectSave} disabled={isSavingProject}>
+                    <template if:false={isSavingProject}>Save Project</template>
+                    <template if:true={isSavingProject}>Saving…</template>
+                </button>
+                <button class="pdv-edit-cancel-btn" onclick={handleEditProjectCancel}>Cancel</button>
+            </div>
+        </div>
+    </template>
+
+    
+    <div class="pdv-stages">
+        <template for:each={stageSteps} for:item="s">
+            <button key={s.name} class={s.cls} value={s.name} onclick={handleStageClick}>
+                <span class="pdv-stage-dot"></span>
+                {s.name}
+            </button>
+        </template>
+    </div>
+
+    
+    <div class="pdv-tabs">
+        <template for:each={tabItems} for:item="t">
+            <button key={t.id} class={t.cls} value={t.id} onclick={handleTabClick}>{t.label}</button>
+        </template>
+    </div>
+
+    
+    <template if:true={isKanban}>
+        <div class="pdv-kanban">
+            <template for:each={kanbanCols} for:item="col">
+                <div key={col.status}
+                     class={col.colCls}
+                     data-status={col.status}
+                     ondragover={handleDragOver}
+                     ondrop={handleDrop}
+                     ondragleave={handleDragLeave}>
+                    <div class="pdv-col-hdr" style={col.hdrStyle}>
+                        <span class="pdv-col-title">{col.label}</span>
+                        <span class="pdv-col-count">{col.count}</span>
+                    </div>
+                    <div class="pdv-col-body">
+                        <template for:each={col.cards} for:item="card">
+                            <div key={card.Id}
+                                 class={card.cardCls}
+                                 draggable="true"
+                                 data-id={card.Id}
+                                 data-status={card.Status__c}
+                                 ondragstart={handleDragStart}
+                                 ondragend={handleDragEnd}>
+                                <div class="pdv-card-top" style="justify-content: space-between;">
+                                    <div style="display:flex; gap:4px; align-items:center;">
+                                        <span class="pdv-type-badge">{card.Story_Type__c}</span>
+                                        <span class={card.priCls}>{card.Priority__c}</span>
+                                        <template if:true={card.Is_Global__c}>
+                                            <span class="pdv-global-badge">Global</span>
+                                        </template>
+                                    </div>
+                                    
+                                    <template if:true={card.isBlocked}>
+                                        <span class="pdv-badge pdv-red">Blocked</span>
+                                    </template>
+                                </div>
+                                <p class="pdv-card-name">{card.Name}</p>
+                                <div class="pdv-card-meta">
+                                    <template if:true={card.assigneeName}>
+                                        <span class="pdv-assignee">{card.assigneeName}</span>
+                                    </template>
+                                    <template if:true={card.Story_Points__c}>
+                                        <span class="pdv-pts">{card.Story_Points__c}pt</span>
+                                    </template>
+                                    <template if:true={card.isOverdue}>
+                                        <span class="pdv-overdue-badge">Overdue</span>
+                                    </template>
+                                </div>
+                                <div class="pdv-card-btns">
+                                    <template if:true={card.canMovePrev}>
+                                        <button class="pdv-move-btn" title="Move left"
+                                                value={card.prevStatusKey}
+                                                onclick={handleCardMove}>&larr;</button>
+                                    </template>
+                                    <button class="pdv-btn-sm" value={card.Id} onclick={handleStoryOpen}>View</button>
+                                    <template if:true={card.canMoveNext}>
+                                        <button class="pdv-move-btn pdv-move-next" title="Move right"
+                                                value={card.nextStatusKey}
+                                                onclick={handleCardMove}>&rarr;</button>
+                                    </template>
+                                    <button class="pdv-btn-nav" value={card.Id} onclick={handleStoryNav} title="Open record">
+                                        <lightning-icon icon-name="utility:open" size="xx-small"></lightning-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={col.hasCards}>
+                            <div class="pdv-col-empty">Drop here</div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    
+    <template if:true={isQaBoard}>
+        <div class="pdv-kanban">
+            <template for:each={qaBoardCols} for:item="col">
+                <div key={col.status}
+                     class={col.colCls}
+                     data-status={col.status}
+                     ondragover={handleDragOver}
+                     ondrop={handleDrop}
+                     ondragleave={handleDragLeave}>
+                    <div class="pdv-col-hdr" style={col.hdrStyle}>
+                        <span class="pdv-col-title">{col.label}</span>
+                        <span class="pdv-col-count">{col.count}</span>
+                    </div>
+                    <div class="pdv-col-body">
+                        <template for:each={col.cards} for:item="card">
+                            <div key={card.Id}
+                                 class={card.cardCls}
+                                 draggable="true"
+                                 data-id={card.Id}
+                                 data-status={card.Status__c}
+                                 ondragstart={handleDragStart}
+                                 ondragend={handleDragEnd}>
+                                <div class="pdv-card-top">
+                                    <span class="pdv-type-badge">{card.Story_Type__c}</span>
+                                    <span class={card.priCls}>{card.Priority__c}</span>
+                                </div>
+                                <p class="pdv-card-name">{card.Name}</p>
+                                <div class="pdv-card-meta">
+                                    <template if:true={card.assigneeName}>
+                                        <span class="pdv-assignee">Dev: {card.assigneeName}</span>
+                                    </template>
+                                    <template if:true={card.qaAssigneeName}>
+                                        <span class="pdv-assignee" >QA: {card.qaAssigneeName}</span>
+                                    </template>
+                                    <template if:true={card.Story_Points__c}>
+                                        <span class="pdv-pts">{card.Story_Points__c}pt</span>
+                                    </template>
+                                </div>
+                                <div class="pdv-card-btns">
+                                    <template if:true={card.canMovePrev}>
+                                        <button class="pdv-move-btn" title="Move left"
+                                                value={card.prevStatusKey}
+                                                onclick={handleCardMove}>&larr;</button>
+                                    </template>
+                                    <template if:true={card.canApprove}>
+                                        <button class="pdv-approve-btn" value={card.Id} onclick={handleQaApprove}>✓ Approve</button>
+                                    </template>
+                                    
+
+                                    
+                                    <button class="pdv-btn-sm-qa" value={card.Id} onclick={handleStoryOpen}>View</button>
+                                    
+                                    <template if:true={card.canMoveNext}>
+                                        <button class="pdv-move-btn pdv-move-next" title="Move right"
+                                                value={card.nextStatusKey}
+                                                onclick={handleCardMove}>&rarr;</button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:false={col.hasCards}>
+                            <div class="pdv-col-empty">No stories</div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    
+    <template if:true={isFeatures}>
+        <div class="pdv-section">
+            <div class="pdv-section-hdr">
+                <div class="pdv-section-hdr-left">
+                    <h3 class="pdv-section-title">Features</h3>
+                    <span class="pdv-section-count">{featureItems.length}</span>
+                </div>
+                <button class="pdv-btn-primary" onclick={handleNewFeature}>+ Feature</button>
+            </div>
+            <template for:each={featureItems} for:item="feat">
+                <div key={feat.Id} class="pdv-feat-card">
+                    <div class="pdv-feat-left">
+                        <span class={feat.priCls}>{feat.Priority__c}</span>
+                        <span class={feat.statusCls}>{feat.Status__c}</span>
+                        <span class="pdv-feat-name">{feat.Name}</span>
+                    </div>
+                    <div class="pdv-feat-right">
+                        <template if:true={feat.ownerName}>
+                            <span class="pdv-owner-lbl">&#128100; {feat.ownerName}</span>
+                        </template>
+                        <button class="pdv-btn-primary" value={feat.Id} onclick={handleFeatureOpen}>
+                            <lightning-icon icon-name="utility:flow" size="xx-small"></lightning-icon>
+                            Details
+                        </button>
+                        <button class="pdv-btn-nav" value={feat.Id} onclick={handleFeatureNav} title="Open record">
+                            <lightning-icon icon-name="utility:open" size="xx-small"></lightning-icon>
+                        </button>
+                    </div>
+                </div>
+            </template>
+            <template if:false={hasFeatures}>
+                <p class="pdv-empty">No features yet. Click + Feature to add one.</p>
+            </template>
+        </div>
+    </template>
+
+    
+    <template if:true={isRequirements}>
+        <div class="pdv-req-kanban-wrap">
+            <div class="pdv-req-kanban-hdr">
+                <div class="pdv-req-kanban-hdr-left">
+                    <h3 class="pdv-section-title">Requirements</h3>
+                    <span class="pdv-section-count">{reqCount}</span>
+                </div>
+                <div class="pdv-section-hdr-btns">
+                    <button class="pdv-btn-secondary" onclick={handleNewChangeRequest}>+ Change Request</button>
+                    <button class="pdv-btn-primary" onclick={handleNewRequirement}>+ New Request</button>
+                </div>
+            </div>
+            <c-requirement-list-view
+                requirements={allRequirements}
+                embedded={isEmbedded}
+                onreqopen={handleReqOpen}
+                onapprovereq={handleApproveReq}
+                onnewrequirement={handleNewRequirement}
+                onreqstatuschange={handleReqStatusChange}>
+            </c-requirement-list-view>
+        </div>
+    </template>
+
+    
+    <template if:true={isReleases}>
+        <div class="pdv-section pdv-section--releases">
+            <div class="pdv-section-hdr">
+                <div class="pdv-section-hdr-left">
+                    <h3 class="pdv-section-title">Releases</h3>
+                    <span class="pdv-section-count">{relCount}</span>
+                </div>
+                <button class="pdv-btn-primary" onclick={handleAddRelease}>+ Add Release</button>
+            </div>
+            <c-release-board-view
+                stories={releaseTabStories}
+                embedded={isReleaseEmbedded}
+                onstatuschange={handleReleaseStatusChange}
+                onstoryopen={handleStoryOpenFromRelease}>
+            </c-release-board-view>
+        </div>
+    </template>
+
+    <template if:true={isSupportBoard}>
+        <div class="pdv-section">
+            <div class="pdv-section-hdr">
+                <div class="pdv-section-hdr-left">
+                    <h3 class="pdv-section-title">Support Stories</h3>
+                    <span class="pdv-section-count">{supportStories.length}</span>
+                </div>
+            </div>
+            <c-support-board-view
+                stories={supportStories}
+                onstatuschange={handleReleaseStatusChange}
+                onstoryopen={handleStoryOpenFromRelease}>
+            </c-support-board-view>
+        </div>
+    </template>
+
+</template>

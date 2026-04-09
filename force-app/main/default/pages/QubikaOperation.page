@@ -1,0 +1,434 @@
+<apex:page controller="QubikaOperation" showHeader="false" sidebar="false" title="Qubika Operation" lightningStylesheets="true">
+    <style>
+    @font-face {
+        font-family: "rubik";
+            src: url('{!URLFOR($Resource.rubik, 'Rubik-VariableFont_wght.ttf')}') format('truetype');
+        }
+        *,td {
+            font-family: rubik;
+        }
+        .root {
+            /*background: linear-gradient(180deg, #93dec4 0%, #d7dea2 50%, #f6dd90 100%);*/
+        }
+        .myordheadercls{
+        
+        }
+        .myordheaderrowcls{
+        
+        }
+        .ordtd1{
+            font-size: 15px;
+            text-align: left;
+            padding: 4px;
+        }
+        .ordtd2{
+            font-size: 15px;
+            text-align: left;
+            padding: 4px;
+            color:#4c32ff
+        }
+    .regular{
+        font-weight:100;
+    }
+    a{
+        text-decoration:solid;
+    }
+    .borderbottom{
+        border-bottom : 2pt solid #eaeaea;
+    }
+    .verifybox{
+        width:45px;font-size:20px;text-align:center;
+    }
+    .nextback{
+         margin-top:20px;
+    }     
+    .summaryproduct{
+        width: 90%;
+        display: flex;
+        padding: 5px;
+        border: #cfcdd2;
+        border-style: none none solid none;
+        margin-left: 20px;
+        border-radius: 1px;
+        margin-right: 20px;
+        margin-bottom: 5px;
+    }
+    .propertymain{
+        width: 80%;
+        display: flex;
+        padding: 5px;
+        border: #5523a2;
+        border-style: solid;
+        margin: 20px;
+        border-radius: 8px;
+    }
+    .propertyname{
+        width: 50%;
+        margin: 5px;
+        font-size: 13px;
+        color: #0000088a;
+        font-weight: bold;
+    }
+    .propertyval{
+        width: 50%;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .propertyvalselect{
+        width: 90%;
+        text-align: center;
+        height: 98%;
+        border-color: #d4d0d0;
+        border-radius: 7px;
+    }
+    
+    .allproducts, .otherproducts{
+        list-style-type: none;
+        
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        border-style: solid;        
+        border-width: 2px;
+    }
+    .allproducts{
+        margin-top : 30px;
+        border-color: #e1a93d;
+        width:48%;
+    }
+    .otherproducts{
+        margin-top : -10px;
+        margin-bottom : 25px;
+        border-color: #e4e4e4;
+        width:90%;
+        background-color:white;
+    }
+    .itembox{
+    }
+    .rootdiv{
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 4px;
+    }
+    .goodiepoints, .goodiepoints1{
+        background-color: #e1a93d;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 5px;
+        display:inline-flex;
+        font-color:black;
+        
+        
+    }
+    .goodiepoints{
+        font-size: 15px;
+    }
+    .goodiepoints1{
+        font-size: 10px;
+    }
+    .goodiename,.goodiename1{
+        border-radius: 5px;
+        display: inline-flex;
+        background-color: #5523a2;
+        padding-left: 40px;
+        padding-right: 40px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin-top: 0px;
+        color: white;
+        
+    }
+    .goodiename{
+        font-size: 15px;
+    }
+    .goodiename1{
+        font-size: 10px;
+    }
+    
+        
+    .shadowborder{
+        box-shadow: rgb(134 130 123) 1px 2px 2px 2px;
+        background-color: #e1a93d;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        border-radius: 35px;
+        display: inline;
+    }
+    .error{
+        color:red;font-size:15px;
+    }
+    .btncls{height: 60px; font-size: 13px !important; width: 230px;}
+    .btn2cls{height: 40px; font-size: 15px !important; width: 170px;}
+    
+  .itemattr1{
+      text-align:left;font-size:15px;padding: 5px;
+      }
+  .itemattr2{
+      text-align:left;font-size:15px;padding: 5px;
+      }
+  .borderdown{
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 60px 40px -7px;
+  }        
+  .normaldiv{box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;}
+</style>
+<script>
+    function moveNext(el)
+    {
+        if(event.keyCode!=9 && event.keyCode!=16)
+        {
+            if(el.value.length==1)
+            {
+                el.nextElementSibling.focus();
+            }
+        }    
+    }
+</script> 
+
+    <apex:form id="frm" styleClass="root">
+       
+        <apex:actionFunction name="verifyCode" id="verifyCode" action="{!verifyCode}" reRender="frm" oncomplete="hideDisable();"/>
+        <apex:actionFunction name="VerifyEmailAddress" id="VerifyEmailAddress" action="{!VerifyEmailAddress}" reRender="frm" oncomplete="hideDisable();"/>
+        <apex:actionFunction name="backToLogin" id="backToLogin" action="{!backToLogin}" reRender="frm" oncomplete="hideDisable();"/>
+        <apex:actionFunction action="{!dummyCall}" name="dummyCall"/>
+        <apex:actionFunction action="{!dummyCall}" name="dummyCall1"/>
+        
+        
+        <div style="width:100%;">
+            <table style="width:100%">
+                <tr>
+                    <td style="width:50px"></td>
+                    <td style="width:50%;padding:15px">
+                            <img src="{!URLFOR($Resource.torcimg, 'torcimg/logo.png')}" style="height:30px"/>                
+                    </td>
+                    <td style="text-align:right;padding-bottom:15px;padding-top:15px">
+                           <div class="shadowborder">
+                                <font style="color:black;font-size:15px"> Welcome: </font>
+                                <font style="color: #027792;font-size: 15px;font-weight: bold;"><apex:outputText value="{!LoggedInUserName}"/> </font>
+                            </div>        
+                    </td>
+                    <td style="width:80px"></td>
+                </tr>
+            </table>                
+        </div>
+            
+        <div class="rootdiv">        
+            <div style="color:red;font-size:15px;text-align:center;width:100%">
+                <apex:repeat value="{!ErrorList}" var="err">
+                    {!err}<br/>
+                </apex:repeat>
+             </div>
+                <apex:outputPanel rendered="{!screen = 'LOGIN'}">
+                    <div style="width:100%;height:450px;text-align:center;verticle-alignment:middle">
+                        <div style="color:black;font-size:15px;position: relative;top: 40%;left: 50%;transform: translate(-50%, -50%);">
+                            Please enter your Qubika email address to verify yourself. 
+                        </div>
+                        <div style="position: relative;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+                            <apex:inputText value="{!emailaddress}" maxlength="60" style="width:250px;font-size:15px;text-align:left;"/>
+                            <br/><br/>
+                            <apex:outputPanel >
+                                <div class="goodiepoints">
+                                    <a href="#" onclick="showDisable();VerifyEmailAddress();">Verify Email Address and Send Verification Code >></a>&nbsp;&nbsp;&nbsp;
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                    </div>    
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!screen = 'VERIFY'}">
+                    <div style="width:100%;height:450px;text-align:center;verticle-alignment:middle">
+                        <div style="color:black;font-size:15px;position: relative;top: 40%;left: 50%;transform: translate(-50%, -50%);">
+                            We have sent a One-Time Password (OTP) to your registered email address.<br/> Please check your inbox (and spam/junk folder) for the OTP and enter it below to verify yourself.
+                        </div>
+                        <div style="position: relative;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+                            <apex:inputText value="{!verifycode1}" maxlength="1" styleclass="verifybox" onkeyup="moveNext(this);" id="v1"/> -
+                            <apex:inputText value="{!verifycode2}" maxlength="1" styleclass="verifybox" onkeyup="moveNext(this);"  id="v2"/>- 
+                            <apex:inputText value="{!verifycode3}" maxlength="1" styleclass="verifybox" onkeyup="moveNext(this);"  id="v3"/>  -
+                            <apex:inputText value="{!verifycode4}" maxlength="1" styleclass="verifybox" onkeyup="moveNext(this);"  id="v4"/>
+                            <br/><br/>
+                            <apex:outputPanel rendered="{!NOT(enteredinvalidCode)}">
+                                <div class="goodiepoints">
+                                    <a href="#" onclick="showDisable();verifyCode();">Verify And Proceed >></a>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!enteredinvalidCode}">
+                                <div class="goodiepoints">
+                                    <a href="#" onclick="showDisable();VerifyEmailAddress();">Resend New Code >></a>
+                                </div>
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="goodiepoints">
+                                    <a href="#" onclick="showDisable();backToLogin();">Reenter Email Address >></a>
+                                </div>
+                                
+                            </apex:outputPanel>
+                        </div>
+                    </div>    
+                </apex:outputPanel>
+        
+                <apex:outputPanel rendered="{!screen = 'DATA'}">
+                    <apex:pageBlock title="Upload CSV File" mode="edit" rendered="{!loadType=''}">
+                        <apex:pageblockButtons location="top">
+                            <apex:commandButton value="Load Employees" action="{!loadcontactData}" rendered="{!OR(userType='SuperAdmin',userType='Admin',userType='Internal',userType='UserData')}" styleclass="shadowborder"/>
+                            <apex:commandButton value="Load Payments" action="{!loadpaymemntData}" rendered="{!OR(userType='SuperAdmin',userType='Admin',userType='Internal',userType='SalaryData')}"  styleclass="shadowborder"/>
+                        </apex:pageblockButtons>
+                        <apex:pageMessages />
+                        <apex:pageBlockSection title="Laod CSV" columns="1">
+                            <apex:pageblockSectionItem >
+                                <apex:outputLabel value="Browse CSV File"/>
+                                <apex:inputfile value="{!file}" filename="{!fileName}" accept=".csv"/>
+                            </apex:pageblockSectionItem>
+                            
+                            <apex:pageblockSectionItem >
+                                <apex:outputLabel value="Operation Month"/>
+                                <apex:selectList id="selc" value="{!selectedDate}" size="1">
+                                     <apex:selectOptions value="{!dates}"/>
+                                </apex:selectList>
+                            </apex:pageblockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>    
+                    <apex:pageBlock title="Send Payments Data To Torc ({!selectedDate})" mode="edit" rendered="{!loadType='PAYMENT'}" id="pgpayment">
+                        <apex:pageblockSection columns="2"  rendered="{!OR(UserType='SuperAdmin',UserType='Internal')}">
+                            <apex:outputField value="{!opp.Name}"/>
+                            <apex:outputField value="{!opp.CloseDate}"/>
+                            <apex:outputField value="{!opp.StageName}"/>
+                            <apex:pageblockSectionItem >
+                                <apex:outputLabel value="New/Existing"/>
+                                <apex:outputLabel value="{!IF(Opp.id=NULL,'NEW','EXISTING')}"/>
+                            </apex:pageblockSectionItem>
+                            <apex:pageblockSectionItem >
+                                <apex:outputLabel value="Line Item New/Existing"/>
+                                <apex:outputLabel value="{!IF(oppLineItem.id=NULL,'NEW','EXISTING')}"/>
+                            </apex:pageblockSectionItem>
+                        </apex:pageblockSection>
+                        <apex:pageblockButtons location="top">
+                            <apex:commandButton value="Send Payments Data To Torc" action="{!updatePayments}" rendered="{!loadType='PAYMENT'}"  styleclass="shadowborder"/>
+                            <apex:commandButton value="Back" action="{!back}"  styleclass="shadowborder"/>
+                        </apex:pageblockButtons>
+                        <div style="font-weight: bold;text-align: center;font-size: large;    color: blue;">
+                            {!WarningMessage}
+                        </div>
+                        <apex:pageblockSection columns="2">
+                            <apex:pageblockSectionItem >
+                                <apex:outputLabel value="Show Rows"/>
+                                <apex:selectList id="selc" value="{!showRowsType}" size="1" onchange="showDisable();dummyCall1();">
+                                     <apex:selectOptions value="{!ShowTypes}"/>
+                                </apex:selectList>
+                            </apex:pageblockSectionItem>   
+                        </apex:pageblockSection>
+                        <apex:pageBlockSection columns="1" >
+                            <apex:pageblockTable var="rec" value="{!showableRows}">
+                                <apex:column >
+                                    <apex:inputCheckbox value="{!rec.chk}" id="chk" styleClass="bills" rendered="{!rec.error=''}"  onchange="showDisable();dummyCall();"/>
+                                </apex:column>
+                                <apex:column headerValue="Qubika Email">
+                                    <apex:outputText value="{!rec.OfficialEmail}"/>
+                                </apex:column>
+                                <apex:column headerValue="Fee">
+                                    <apex:outputtext value="{!rec.Fee}"/>
+                                </apex:column>
+                                <apex:column headerValue="Expense">
+                                    <apex:outputText value="{!rec.Expense}"/>
+                                </apex:column>
+                                <apex:column headerValue="Total">
+                                    <apex:outputText value="{!rec.Total}"/>
+                                    <apex:facet name="footer"><apex:outputPanel id="totAmtCell">
+                                        <apex:outputText value="{0, number, ###,##0.00}"  style="color:red">
+                                            <apex:param value="{!TotalEmployeePayment}" />
+                                        </apex:outputText>
+                                     </apex:outputPanel></apex:facet>
+                                   
+                                </apex:column>
+                                <apex:column headerValue="Non Torc user">
+                                    <apex:outputText value="{!rec.QubikaUserName}" rendered="{!rec.user<>NULL}"/>
+                                </apex:column>
+                                <apex:column headerValue="Payment Profile">
+                                    <apex:outputText value="{!rec.TrolleyStatus}" rendered="{!rec.user<>NULL}"/>
+                                </apex:column>
+                                <apex:column headerValue="Docuisign Profile">
+                                    <apex:outputText value="{!rec.DocusignStatus}" rendered="{!rec.user<>NULL}"/>
+                                </apex:column>
+                                <apex:column headerValue="Bank Fee">
+                                    <apex:outputText value="{0, number, ###,##0.00}"  rendered="{!rec.error=''}">
+                                        <apex:param value="{!rec.BankFee}" />
+                                    </apex:outputText>
+                                    
+                                    <apex:facet name="footer"><apex:outputPanel id="totCell">
+                                        <apex:outputText value="{0, number, ###,##0.00}" style="color:red">
+                                            <apex:param value="{!TotalbankFee}" />
+                                        </apex:outputText>
+                                     </apex:outputPanel></apex:facet>
+                                </apex:column>
+                                <apex:column headerValue="Torc Fee">
+                                    <apex:outputText value="{0, number, ###,##0.00}"  rendered="{!rec.error=''}">
+                                        <apex:param value="{!rec.TorcFee}" />
+                                    </apex:outputText>
+                                    <apex:facet name="footer"><apex:outputPanel id="totCell1">
+                                            <apex:outputText value="{0, number, ###,##0.00}"  style="color:red">
+                                                <apex:param value="{!TotalTorcFee}" />
+                                            </apex:outputText>
+                                     </apex:outputPanel></apex:facet>
+                                </apex:column>
+                                <apex:column headerValue="Payout Method">
+                                    <apex:outputText value="{!rec.TrolleyPayoutMethod}"/>
+                                </apex:column>
+                                <apex:column headerValue="Error">
+                                    <apex:outputText value="{!rec.error}"/>
+                                </apex:column>
+                            </apex:pageblockTable>
+                        </apex:pageBlockSection>
+                  </apex:pageblock>
+                  <apex:pageblock title="Contact data" rendered="{!loadType='CONTACT'}">
+                       <apex:pageblockButtons location="top">
+                            <apex:commandButton value="Create/Update Employees" action="{!updateContacts}" rendered="{!loadType='CONTACT'}"  styleclass="shadowborder"/>
+                            <apex:commandButton value="Back" action="{!back}"  styleclass="shadowborder"/>
+                        </apex:pageblockButtons>
+                        <apex:pageBlockSection columns="1">
+                            <apex:pageblockTable var="rec" value="{!lstContacts}">
+                                <apex:column headerValue="Existing Torc Record?">
+                                    <apex:outputText value="{!IF(rec.user.id<>NULL,'YES','NO')}"/>
+                                </apex:column>
+                                <apex:column headerValue="First Name">
+                                    <apex:inputField value="{!rec.user.Given_Name__c}" ignoreEditPermissionForRendering="true"/>
+                                </apex:column>
+                                <apex:column headerValue="Last Name">
+                                    <apex:inputField value="{!rec.user.Family_Name__c}" ignoreEditPermissionForRendering="true"/>
+                                </apex:column>
+                                <apex:column headerValue="Email">
+                                    <apex:outputField value="{!rec.user.Email__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Qubika Email">
+                                    <apex:outputField value="{!rec.user.Official_Email__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Start Date">
+                                    <apex:outputField value="{!rec.user.First_Month__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Payment Start Date">
+                                    <apex:outputField value="{!rec.user.Payment_Start_Date__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Role">
+                                    <apex:outputField value="{!rec.user.Position__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Country">
+                                    <apex:outputField value="{!rec.user.Country__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="USD Monthly">
+                                    <apex:outputText value="{0, number, ###,##0.00}">
+                                        <apex:param value="{!rec.MonthlyUSD}" />
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column headerValue="Monthly Expense">
+                                    <apex:outputText value="{0, number, ###,##0.00}">
+                                        <apex:param value="{!rec.MonthlyExpense}" />
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column headerValue="Terminated  (Last day/Month)">
+                                    <apex:outputField value="{!rec.user.Termination_Date__c}"/>
+                                </apex:column>
+                            </apex:pageblockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+          </div>          
+    </apex:form>
+    <c:WaitPopup2 />
+</apex:page>

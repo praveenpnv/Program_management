@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Working_Day__c</fullName>
+    <label>Last Working Day</label>
+    <summarizedField>Placement_Forecast__c.Engagement_End__c</summarizedField>
+    <summaryFilterItems>
+        <field>Placement_Forecast__c.Engagement_End__c</field>
+        <operation>notEqual</operation>
+        <value></value>
+    </summaryFilterItems>
+    <summaryFilterItems>
+        <field>Placement_Forecast__c.Default_Hours_Week__c</field>
+        <operation>greaterThan</operation>
+        <value>0</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Placement_Forecast__c.Placement__c</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

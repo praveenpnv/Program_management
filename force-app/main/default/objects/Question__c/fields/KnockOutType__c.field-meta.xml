@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>KnockOutType__c</fullName>
+    <description>Affects how the system should evaluate a Response against Knock Out Conditions. Preset based on the Question Template.</description>
+    <label>Knock Out Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>boolean</fullName>
+                <default>false</default>
+                <label>boolean</label>
+            </value>
+            <value>
+                <fullName>number</fullName>
+                <default>false</default>
+                <label>number</label>
+            </value>
+            <value>
+                <fullName>date</fullName>
+                <default>false</default>
+                <label>date</label>
+            </value>
+            <value>
+                <fullName>picklist</fullName>
+                <default>false</default>
+                <label>picklist</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

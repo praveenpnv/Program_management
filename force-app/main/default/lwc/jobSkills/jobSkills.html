@@ -1,0 +1,113 @@
+<!--
+  @description       : 
+  @author            : Raga Viswanathan
+  @group             : 
+  @last modified on  : 07-03-2025
+  @last modified by  : Raga Viswanathan
+-->
+<template>
+    <template if:true={isProcessing}>
+        <lightning-spinner alternative-text="loading..." size="medium"></lightning-spinner>
+    </template>
+    <div class="slds-grid slds-gutters slds-p-around_medium">
+        <!-- Suggested Skills Column -->
+        <div class="slds-col slds-size_1-of-3">
+            <!-- Header -->
+            <div class="slds-box slds-theme_shade slds-p-around_medium slds-text-heading_small custom-brand-background ">
+                <div class="slds-grid slds-align-center slds-align-middle slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-truncate">
+                        Suggested Skills
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pills Section -->
+            <template if:true={skills}>
+                <div class="slds-grid slds-wrap slds-m-top_small">
+                    <template for:each={skills} for:item="skill">
+                        <lightning-pill key={skill.Id}
+                            label={skill.Description}
+                            name={skill.Id}
+                            variant="plain"
+                            onclick={handleClickOnPill}
+                            class="slds-m-around_x-small">
+                        </lightning-pill>
+                    </template>
+                </div>
+            </template>
+            <template if:false={skills}>
+                <p class="slds-text-body_regular slds-m-top_small">No suggested skills.</p>
+            </template>
+        </div>
+
+        <!-- Selected Skills Column -->
+        <div class="slds-col slds-size_2-of-3">
+            <!-- Header -->
+            <div class="custom-brand-background slds-box slds-theme_brand slds-p-around_medium slds-text-heading_small">
+                <div class="slds-grid  slds-align-middle slds-wrap">
+                    <div class="slds-col slds-size_1-of-3 slds-truncate">
+                        Selected Skills
+                    </div>
+                    <div class="slds-col slds-size_2-of-3 slds-text-align_right">
+                        <button class="slds-button slds-button_neutral slds-m-left_x-small"
+                            style="border-radius: var(--slds-c-button-radius-border, 0.25rem);"
+                            onclick={handleNewSkillClick}>
+                            New Skills
+                        </button>
+
+                        <button class="slds-button slds-button_destructive slds-m-left_small"
+                            style="border-radius: var(--slds-c-button-radius-border, 0.25rem);"
+                            disabled={isRemoveButtonDisabled} onclick={handleRemoveSelectedRows}>
+                    
+                            Remove Selected
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datatable Section -->
+            
+
+            <div class="datatable-wrapper slds-m-top_small">
+                <c-custom-data-table
+                    key-field="Id"
+                    data={selectedSkills}
+                    columns={columns}
+                    draft-values={draftValues}
+                    onsave={handleSaveSkills}
+                    onrowselection={handleRowSelection}
+                    oncustomchange={handleCustomChange}>
+                </c-custom-data-table>
+            </div>
+            
+
+        </div>
+    </div>
+
+    <template if:true={showNewSkillModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title">Create New Skill</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-record-edit-form object-api-name="TR1__Skills__c" onsuccess={handleSkillCreateSuccess}>
+                        <lightning-messages></lightning-messages>
+    
+                        <!-- Example fields: include all except Skill Code -->
+                        <lightning-input-field field-name="TR1__Master_Skill__c"></lightning-input-field>
+                        <lightning-input-field field-name="TR1__Level__c"></lightning-input-field>
+                        <lightning-input-field field-name="TR1__Duration_for_Job_Skill__c"></lightning-input-field>
+                        <lightning-input-field field-name="TR1__Job__c" value={recordId}></lightning-input-field>
+    
+                        <div class="slds-m-top_medium">
+                            <lightning-button variant="brand" type="submit" label="Save"></lightning-button>
+                            <lightning-button variant="neutral" label="Cancel" onclick={handleCancelNewSkill} class="slds-m-left_small"></lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

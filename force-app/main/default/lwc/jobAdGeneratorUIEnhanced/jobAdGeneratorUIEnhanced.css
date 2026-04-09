@@ -1,0 +1,739 @@
+/* jobAdGenerator.css - Enhanced with Randstad Blue */
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    box-sizing: border-box;
+}
+
+/* ============================================
+   RANDSTAD BLUE - Solid Color
+   ============================================ */
+:host {
+    --randstad-blue: #101942;
+    --randstad-blue-dark: #101942;
+    --randstad-blue-light: #101942;
+}
+
+/* ============================================
+   HEADER - Randstad Blue Solid
+   ============================================ */
+.header-container {
+    background: var(--randstad-blue);
+    padding: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 99, 163, 0.2);
+    border-radius: 8px !important;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.header-icon-wrapper {
+    flex-shrink: 0;
+    margin-right: 1rem;
+    margin-top: 4px;
+    display: flex;
+}
+
+.wand-icon {
+    width: 32px;
+    height: 32px;
+    display: block;
+}
+
+.header-icon-wrapper lightning-icon {
+    --slds-c-icon-color-foreground: white;
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.header-content-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header-title {
+    font-size: 1.50rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.header-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 0.25rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+/* ============================================
+   MAIN WRAPPER
+   ============================================ */
+.main-wrapper {
+    background: #F7F9FC;
+    min-height: calc(100vh - 150px); 
+    padding: 0 1rem; 
+    margin: 0 auto;
+   
+}
+
+.content-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 2rem;
+   height: calc(100vh - 200px);
+}
+
+/* ============================================
+   FORM PANEL
+   ============================================ */
+.final-job-ad-app .form-panel {
+    background: white;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 1.25rem 1.5rem 0.875rem;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    background: #ffffff;
+}
+
+.panel-icon {
+    color: var(--randstad-blue);
+}
+
+.panel-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.divider {
+    height: 2px;
+    background: var(--randstad-blue);
+    margin: 0 1.5rem 1.25rem;
+}
+
+/* ============================================
+   FORM CONTENT
+   ============================================ */
+.form-content {
+    padding: 0 1.5rem 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.loading-container {
+    text-align: center;
+    padding: 2.5rem 1rem;
+}
+
+.loading-text {
+    margin-top: 0.875rem;
+    color: #5B5B5B;
+    font-size: 0.9375rem;
+}
+/* Form Content Scrollbar to match */
+.form-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.form-content::-webkit-scrollbar-track {
+    background: #f0f4f8;
+    border-radius: 10px;
+}
+
+.form-content::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+    border: 2px solid #f0f4f8;
+}
+
+.form-content::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* ============================================
+   FORM FIELDS
+   ============================================ */
+.field-group {
+    margin-bottom: 1rem;
+}
+
+/* ============================================
+   SLDS SECTION OVERRIDES
+   ============================================ */
+.slds-section__title {
+    background-color: #f8f9fa;
+    margin: 0 -1.5rem;
+    border-top: 1px solid #e9ecef;
+    padding: 0.75rem 1.5rem;
+}
+
+.slds-section__content {
+    padding: 1rem 1.5rem 0.5rem 0.5rem;
+}
+
+.section-title-text {
+    text-transform: initial;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #495057;
+    line-height: 1.25;
+}
+
+.slds-section__title-action {
+    padding: 0 !important;
+    background: transparent !important;
+    text-decoration: none !important;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.slds-section__title-action-icon {
+    margin-right: 0.5rem;
+}
+
+/* ============================================
+   GENERATE BUTTON - Randstad Blue Solid
+   ============================================ */
+.button-wrapper {
+    margin-top: 1rem;
+}
+
+.generate-btn {
+    width: 100%;
+    background: var(--randstad-blue);
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9375rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem !important;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 8px rgba(0, 99, 163, 0.2);
+}
+
+.generate-btn .btn-icon {
+    --slds-c-icon-color-foreground: white !important;
+    --slds-c-icon-color-foreground-default: white !important;
+}
+
+.generate-btn:hover:not(:disabled) {
+    background: var(--randstad-blue-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 99, 163, 0.3);
+}
+
+.generate-btn:active:not(:disabled) {
+    transform: translateY(0);
+    background: var(--randstad-blue-dark);
+}
+
+.generate-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+    color: white !important;
+}
+
+.spinner-small {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   RESULTS PANEL
+   ============================================ */
+.final-job-ad-app .results-panel {
+    background: white;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}
+
+.final-job-ad-app .result-container .result-header {
+    background: var(--randstad-blue);
+    padding: 1.25rem 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+
+/* ============================================
+   STATE CONTAINERS
+   ============================================ */
+.state-container {
+    text-align: center;
+    padding: 3.5rem 2.5rem;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.state-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 1.25rem 0 0.625rem;
+}
+
+.state-description {
+    font-size: 0.9375rem;
+    color: #5B5B5B;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.state-note {
+    font-size: 0.8125rem;
+    color: #9E9E9E;
+    margin: 0.625rem 0 0;
+}
+
+.empty-icon {
+    width: 72px;
+    height: 72px;
+    color: #E0E0E0;
+    margin: 0 auto;
+}
+
+.error .state-title {
+    color: #D32F2F;
+}
+
+.retry-btn {
+    margin-top: 1.25rem;
+    background: white;
+    border: 2px solid var(--randstad-blue);
+    color: var(--randstad-blue);
+    padding: 0.625rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.retry-btn:hover {
+    background: var(--randstad-blue);
+    color: white;
+}
+
+/* ============================================
+   RESULT CONTAINER
+   ============================================ */
+.result-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.result-title {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ============================================
+   METADATA SECTION
+   ============================================ */
+.metadata-section {
+    background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid #dde3eb;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+.metadata-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3125rem;
+}
+
+.meta-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--randstad-blue);
+    letter-spacing: 0.5px;
+}
+
+.meta-value {
+    font-size: 0.8125rem;
+    color: #495057;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+/* ============================================
+   CONTENT SECTION
+   ============================================ */
+.content-section {
+    flex: 1;
+    padding: 1.75rem;
+    overflow-y: auto;
+    background: white;
+}
+
+.content-section::-webkit-scrollbar {
+    width: 10px;
+}
+
+.content-section::-webkit-scrollbar-track {
+    background: #f0f4f8;
+}
+
+.content-section::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border: 2px solid #f0f4f8;
+    border-radius: 10px;
+}
+
+.content-section::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* ============================================
+   ACTIONS SECTION
+   ============================================ */
+.actions-section {
+    display: flex;
+    gap: 0.625rem;
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid #e9ecef;
+    background: #fafbfc;
+}
+
+.action-btn {
+    flex: 1;
+    border: 2px solid #d1d5db;
+    background: white;
+    color: #495057;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4375rem;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    border-color: var(--randstad-blue);
+    background: #f8f9fa;
+    transform: translateY(-1px);
+}
+
+.action-btn.success {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+.action-btn.success:hover {
+    background: #45A049;
+    border-color: #45A049;
+}
+
+/* ============================================
+   BUTTON PILLS - Modern Rounded Design
+   ============================================ */
+.option-group {
+    margin-bottom: 0.75rem;
+    padding: 0;
+}
+
+.option-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.75rem;
+}
+
+.option-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.option-pills button {
+    padding: 0.625rem 1.25rem;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.option-pills button:hover {
+    border-color: var(--randstad-blue);
+    background: #f0f9ff;
+    color: var(--randstad-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 99, 163, 0.1);
+}
+
+.option-pills button:focus {
+    outline: none;
+}
+
+/* Active State - Solid Randstad Blue */
+.option-pills button.active,
+.option-pills button[aria-pressed="true"],
+.option-pills button.isSelected {
+    background: var(--randstad-blue);
+    border-color: var(--randstad-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 99, 163, 0.3);
+}
+
+.option-pills button.active:hover,
+.option-pills button[aria-pressed="true"]:hover,
+.option-pills button.isSelected:hover {
+    background: var(--randstad-blue-light);
+    border-color: var(--randstad-blue-light);
+    transform: translateY(-1px);
+}
+
+/* Specific width for Tone of Voice dropdown container */
+.tone-section {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Optional: Ensure the internal dropdown aligns correctly */
+.tone-section lightning-combobox {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.option-pills button.active {
+    background: var(--randstad-blue);
+    border-color: var(--randstad-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 99, 163, 0.3);
+}
+
+/* ============================================
+   LIGHTNING COMPONENT OVERRIDES
+   ============================================ */
+lightning-formatted-rich-text {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #495057;
+}
+
+lightning-formatted-rich-text h1,
+lightning-formatted-rich-text h2,
+lightning-formatted-rich-text h3 {
+    color: #2c3e50;
+    margin-top: 1.25rem;
+    margin-bottom: 0.625rem;
+}
+
+lightning-formatted-rich-text p {
+    margin-bottom: 0.875rem;
+}
+
+lightning-formatted-rich-text ul,
+lightning-formatted-rich-text ol {
+    margin-left: 1.375rem;
+    margin-bottom: 0.875rem;
+}
+
+lightning-formatted-rich-text li {
+    margin-bottom: 0.4375rem;
+}
+
+/* ============================================
+   METADATA TOGGLE
+   ============================================ */
+.metadata-wrapper {
+    background: #f0f4f8;
+    border-bottom: 1px solid #dde3eb;
+}
+
+.metadata-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.metadata-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.meta-toggle-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #5d6875;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-icon {
+    transition: transform 0.2s ease;
+    --slds-c-icon-color-foreground: #5d6875;
+}
+
+.meta-icon.open {
+    transform: rotate(90deg);
+}
+
+.metadata-section {
+    background: transparent;
+    padding: 0 1.75rem 1.25rem 1.75rem;
+    border-bottom: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 1200px) {
+    .content-container {
+        grid-template-columns: 380px 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .content-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        height: auto;
+    }
+    
+    .results-panel {
+        min-height: 480px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        padding: 1.25rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .header-title {
+        font-size: 1.375rem;
+        padding-left: 90px;
+    }
+    
+    .main-wrapper {
+        padding: 1rem;
+    }
+    
+    .actions-section {
+        flex-direction: column;
+    }
+    
+    .metadata-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .option-pills {
+        gap: 0.375rem;
+    }
+    
+    .option-pills button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+    }
+}

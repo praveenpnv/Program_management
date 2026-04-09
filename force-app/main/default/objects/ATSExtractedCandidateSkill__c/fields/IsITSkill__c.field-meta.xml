@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsITSkill__c</fullName>
+    <formula>AND(ISPICKVAL( Category__c,&apos;IT_skill&apos;),  Contact_Candidate__r.Is_Index_to_Textkernel__c )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Is IT Skill</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

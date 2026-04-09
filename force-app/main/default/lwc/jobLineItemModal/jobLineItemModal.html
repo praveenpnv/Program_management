@@ -1,0 +1,14 @@
+<template>
+    <lightning-modal-header label="Job Creation"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-spinner if:true={isLoading} alternative-text="Creating jobs..." size="medium"></lightning-spinner>
+        <lightning-datatable data={lineItemDetails} columns={columns} key-field="Id" hide-checkbox-column>
+        </lightning-datatable>
+        </lightning-modal-body>
+        <lightning-modal-footer>
+        <div class="slds-m-top_medium slds-align_absolute-right">
+            <lightning-button variant="brand" label="Create Job" onclick={handleCreateJob} disabled={allJobsCreated}>
+            </lightning-button>
+        </div>
+        </lightning-modal-footer>
+</template>

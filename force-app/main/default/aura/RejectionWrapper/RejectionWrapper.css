@@ -1,0 +1,18 @@
+/* Fix UI Issue related to BH Stage Modal */
+.THIS .slds-backdrop.slds-backdrop_open {
+    opacity: 1 !important;
+    z-index: 9010 !important;
+    width: 10000%; /* Workaround */
+    position: fixed;
+    left: -500%; /* Workaround */
+}
+
+/* Make sure the component is not hidden by parent modal */
+.THIS .slds-modal {
+    z-index: 9011;
+}
+
+/* Fix width issue with Rejection Modal */
+.THIS .slds-modal__container {
+    width: min-content !important;
+}

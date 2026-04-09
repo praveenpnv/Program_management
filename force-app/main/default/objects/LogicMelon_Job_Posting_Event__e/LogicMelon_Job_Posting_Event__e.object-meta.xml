@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Platform event for sending Job updates to LogicMelon Third party App.</description>
+    <eventType>HighVolume</eventType>
+    <label>LogicMelon Job Posting Event</label>
+    <pluralLabel>LogicMelon Job  Posting Events</pluralLabel>
+    <publishBehavior>PublishAfterCommit</publishBehavior>
+</CustomObject>

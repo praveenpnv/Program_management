@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Drug_Screen_Vendor__c</fullName>
+    <label>Drug Screen Vendor</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Randstad Preferred</fullName>
+                <default>false</default>
+                <label>Randstad Preferred</label>
+            </value>
+            <value>
+                <fullName>AccurateNow</fullName>
+                <default>false</default>
+                <label>AccurateNow</label>
+            </value>
+            <value>
+                <fullName>ADP</fullName>
+                <default>false</default>
+                <label>ADP</label>
+            </value>
+            <value>
+                <fullName>AWSI</fullName>
+                <default>false</default>
+                <label>AWSI</label>
+            </value>
+            <value>
+                <fullName>EScreen</fullName>
+                <default>false</default>
+                <label>EScreen</label>
+            </value>
+            <value>
+                <fullName>HireRight</fullName>
+                <default>false</default>
+                <label>HireRight</label>
+            </value>
+            <value>
+                <fullName>InfoCubic</fullName>
+                <default>false</default>
+                <label>InfoCubic</label>
+            </value>
+            <value>
+                <fullName>Infomart</fullName>
+                <default>false</default>
+                <label>Infomart</label>
+            </value>
+            <value>
+                <fullName>LabCorp</fullName>
+                <default>false</default>
+                <label>LabCorp</label>
+            </value>
+            <value>
+                <fullName>Quest</fullName>
+                <default>false</default>
+                <label>Quest</label>
+            </value>
+            <value>
+                <fullName>Sterling</fullName>
+                <default>false</default>
+                <label>Sterling</label>
+            </value>
+            <value>
+                <fullName>Truscreen</fullName>
+                <default>false</default>
+                <label>Truscreen</label>
+            </value>
+            <value>
+                <fullName>No Preference</fullName>
+                <default>false</default>
+                <label>No Preference</label>
+            </value>
+            <value>
+                <fullName>See Additional Notes</fullName>
+                <default>false</default>
+                <label>See Additional Notes</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

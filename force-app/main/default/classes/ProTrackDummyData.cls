@@ -1,0 +1,172 @@
+public class ProTrackDummyData {
+
+    public static void load() {
+        if ([SELECT COUNT() FROM Project__c WHERE Name = 'US Market Expansion'] > 0) {
+            System.debug('Dummy data already loaded — aborting.');
+            return;
+        }
+
+        Id me = UserInfo.getUserId();
+
+        
+        Project__c p1 = new Project__c(
+            Name='US Market Expansion',          Status__c='Active', Stage__c='Execution',
+            RAG_Status__c='Green',               Methodology__c='Scrum',
+            Description__c='Expand platform capabilities for US sales: lead scoring, territory management, regional compliance.',
+            Owner__c=me, Start_Date__c=Date.today().addDays(-45), Target_Completion_Date__c=Date.today().addDays(60)
+        );
+        Project__c p2 = new Project__c(
+            Name='Customer Portal Redesign',     Status__c='Active', Stage__c='Monitoring',
+            RAG_Status__c='Amber',               Methodology__c='Kanban',
+            Description__c='Full redesign of customer-facing portal: mobile-first, self-service dashboards, SSO integration.',
+            Owner__c=me, Start_Date__c=Date.today().addDays(-90), Target_Completion_Date__c=Date.today().addDays(20)
+        );
+        Project__c p3 = new Project__c(
+            Name='Data Compliance Initiative',   Status__c='Active', Stage__c='Planning',
+            RAG_Status__c='Red',                 Methodology__c='Waterfall',
+            Description__c='GDPR and CCPA compliance: consent management, data lineage mapping, automated retention policies.',
+            Owner__c=me, Start_Date__c=Date.today().addDays(-10), Target_Completion_Date__c=Date.today().addDays(120)
+        );
+        insert new List<Project__c>{ p1, p2, p3 };
+
+        
+        Feature__c f1 = new Feature__c(Name='Lead Scoring Engine',         Project__c=p1.Id, Priority__c='Critical', Status__c='In Progress', Feature_Owner__c=me, Description__c='ML-based lead scoring 0-100 from activity data and firmographic signals.');
+        Feature__c f2 = new Feature__c(Name='Territory Management',        Project__c=p1.Id, Priority__c='High',     Status__c='In Progress', Feature_Owner__c=me, Description__c='Rule-based territory assignment for US regions with CSV bulk import and auto-reassignment.');
+        Feature__c f3 = new Feature__c(Name='Regional Compliance Reports', Project__c=p1.Id, Priority__c='Medium',   Status__c='Not Started', Feature_Owner__c=me, Description__c='Pre-built templates for US state sales tax, licensing, and regulatory filing.');
+        Feature__c f4 = new Feature__c(Name='New Navigation & Shell',      Project__c=p2.Id, Priority__c='Critical', Status__c='Completed',   Feature_Owner__c=me, Description__c='Redesigned responsive top-nav with breadcrumbs. Replaces legacy iframe shell.');
+        Feature__c f5 = new Feature__c(Name='Self-Service Dashboard',      Project__c=p2.Id, Priority__c='High',     Status__c='In Progress', Feature_Owner__c=me, Description__c='Customer-configurable widget dashboard with drag-to-rearrange and server-persisted layout.');
+        Feature__c f6 = new Feature__c(Name='SSO & Identity Integration',  Project__c=p2.Id, Priority__c='High',     Status__c='In Progress', Feature_Owner__c=me, Description__c='OAuth 2.0 / SAML 2.0 with Okta and Azure AD. JIT provisioning eliminates separate credentials.');
+        Feature__c f7 = new Feature__c(Name='Consent Management',          Project__c=p3.Id, Priority__c='Critical', Status__c='Not Started', Feature_Owner__c=me, Description__c='Granular GDPR/CCPA consent capture, preference centre, audit log, and suppression management.');
+        Feature__c f8 = new Feature__c(Name='Data Lineage Mapping',        Project__c=p3.Id, Priority__c='High',     Status__c='Not Started', Feature_Owner__c=me, Description__c='Automated PII field discovery and interactive data-flow diagram across all integrated systems.');
+        Feature__c f9 = new Feature__c(Name='Retention Policy Engine',     Project__c=p3.Id, Priority__c='Medium',   Status__c='Not Started', Feature_Owner__c=me, Description__c='Configurable retention rules per data category with scheduled purge jobs and pre-delete notifications.');
+        insert new List<Feature__c>{ f1, f2, f3, f4, f5, f6, f7, f8, f9 };
+
+        
+        Release__c r1 = new Release__c(
+            Name='v1.0 Lead Intelligence',     Project__c=p1.Id, Version__c='1.0',
+            Status__c='Active',  Stage__c='UAT',
+            Release_Date__c=Date.today().addDays(14), Go_Live_Date__c=Date.today().addDays(21),
+            Code_Freeze_Date__c=Date.today().addDays(7),
+            Release_Notes__c='Lead Scoring Engine and Territory Management. Includes CSV bulk import and real-time score badges.'
+        );
+        Release__c r2 = new Release__c(
+            Name='v2.0 Compliance Reports',    Project__c=p1.Id, Version__c='2.0',
+            Status__c='Planned', Stage__c='Planning',
+            Release_Date__c=Date.today().addDays(55), Go_Live_Date__c=Date.today().addDays(60),
+            Code_Freeze_Date__c=Date.today().addDays(48),
+            Release_Notes__c='State-by-state tax compliance report templates. PDF and Excel export for all 50 US states.'
+        );
+        Release__c r3 = new Release__c(
+            Name='Portal v3.0 Nav & SSO',      Project__c=p2.Id, Version__c='3.0',
+            Status__c='Active',  Stage__c='UAT Approved',
+            Release_Date__c=Date.today().addDays(5),  Go_Live_Date__c=Date.today().addDays(8),
+            Code_Freeze_Date__c=Date.today().addDays(-3),
+            Release_Notes__c='New mobile-first navigation, Okta SAML SSO with JIT provisioning, drag-to-rearrange dashboard widgets.'
+        );
+        Release__c r4 = new Release__c(
+            Name='Compliance MVP v0.1',        Project__c=p3.Id, Version__c='0.1',
+            Status__c='Planned', Stage__c='Planning',
+            Release_Date__c=Date.today().addDays(110), Go_Live_Date__c=Date.today().addDays(120),
+            Code_Freeze_Date__c=Date.today().addDays(100),
+            Release_Notes__c='GDPR consent capture, CCPA opt-out processing, automated PII field tagging and 7-year audit log.'
+        );
+        insert new List<Release__c>{ r1, r2, r3, r4 };
+
+        
+        Requirement__c q01 = new Requirement__c(Name='Lead score must update within 5 minutes of activity',   Project__c=p1.Id, Feature__c=f1.Id, Status__c='Approved',    Priority__c='Critical', Category__c='New Request',    Requestor__c='sarah.chen@company.com',  Description__c='When any qualifying activity is logged the lead score must recalculate within 5 minutes and update the Salesforce record.', Auto_Story_Created__c=true);
+        Requirement__c q02 = new Requirement__c(Name='Score badge visible on Lead list view',                  Project__c=p1.Id, Feature__c=f1.Id, Status__c='Approved',    Priority__c='High',     Category__c='New Request',    Requestor__c='sarah.chen@company.com',  Description__c='Colour-coded badge (Red 0-40, Amber 41-70, Green 71-100) in a new Score column on Lead list view. Column sortable and filterable.', Auto_Story_Created__c=true);
+        Requirement__c q03 = new Requirement__c(Name='Territory rules CSV bulk import',                        Project__c=p1.Id, Feature__c=f2.Id, Status__c='Under Review', Priority__c='High',     Category__c='Change Request', Requestor__c='mike.torres@company.com', Description__c='Sales ops needs CSV import for territory assignments. Current UI only supports manual entry which is not feasible for 200+ reps.');
+        Requirement__c q04 = new Requirement__c(Name='Auto-reassign leads when territory rep changes',         Project__c=p1.Id, Feature__c=f2.Id, Status__c='Draft',        Priority__c='Medium',   Category__c='New Request',    Requestor__c='mike.torres@company.com', Description__c='When a rep is reassigned or leaves, all open leads in their territory should auto-reassign to the new covering rep.');
+        Requirement__c q05 = new Requirement__c(Name='State-by-state tax compliance report template',          Project__c=p1.Id, Feature__c=f3.Id, Status__c='Draft',        Priority__c='Medium',   Category__c='New Request',    Requestor__c='legal@company.com',       Description__c='Pre-built report template pulling sales data by US state and calculating applicable tax rates. PDF and Excel export for all 50 states.');
+        Requirement__c q06 = new Requirement__c(Name='Monthly licensing fee summary per region',               Project__c=p1.Id, Feature__c=f3.Id, Status__c='Rejected',     Priority__c='Low',      Category__c='New Request',    Requestor__c='legal@company.com',       Description__c='Monthly automated report for licensing fees per region. Rejected - existing Finance BI tool already covers this requirement.');
+        Requirement__c q07 = new Requirement__c(Name='Navigation must work on 375px mobile viewport',         Project__c=p2.Id, Feature__c=f4.Id, Status__c='Approved',     Priority__c='Critical', Category__c='New Request',    Requestor__c='ux.team@company.com',     Description__c='Redesigned nav must be fully functional on 375px viewport. Side-nav collapses to hamburger. All items accessible within 2 taps.', Auto_Story_Created__c=true);
+        Requirement__c q08 = new Requirement__c(Name='Dashboard widgets must be drag-and-drop reorderable',   Project__c=p2.Id, Feature__c=f5.Id, Status__c='Approved',     Priority__c='High',     Category__c='New Request',    Requestor__c='product@company.com',     Description__c='Customers must drag widgets to rearrange layout. Preference must persist server-side across sessions.', Auto_Story_Created__c=true);
+        Requirement__c q09 = new Requirement__c(Name='Billing summary widget on default dashboard',           Project__c=p2.Id, Feature__c=f5.Id, Status__c='Under Review', Priority__c='High',     Category__c='Change Request', Requestor__c='revenue@company.com',     Description__c='Default dashboard needs a billing summary widget: current plan, next billing date, last 3 invoices. Finance receives 50+ support tickets monthly asking for this.');
+        Requirement__c q10 = new Requirement__c(Name='Okta SSO integration for enterprise customers',         Project__c=p2.Id, Feature__c=f6.Id, Status__c='Approved',     Priority__c='Critical', Category__c='New Request',    Requestor__c='enterprise@company.com',  Description__c='Okta SAML 2.0 SSO with JIT provisioning for enterprise tier. Customers have contractually committed to this feature in Q1.', Auto_Story_Created__c=true);
+        Requirement__c q11 = new Requirement__c(Name='Azure AD support for mid-market segment',               Project__c=p2.Id, Feature__c=f6.Id, Status__c='Draft',        Priority__c='High',     Category__c='New Request',    Requestor__c='enterprise@company.com',  Description__c='Mid-market customers predominantly use Azure AD. OAuth 2.0 integration needed alongside the Okta SAML integration.');
+        Requirement__c q12 = new Requirement__c(Name='Consent capture must be GDPR Article 7 compliant',     Project__c=p3.Id, Feature__c=f7.Id, Status__c='Under Review', Priority__c='Critical', Category__c='New Request',    Requestor__c='compliance@company.com',  Description__c='Consent mechanism must meet GDPR Art 7: freely given, specific, informed, unambiguous. No pre-ticked boxes. Withdrawal as easy as consent.');
+        Requirement__c q13 = new Requirement__c(Name='Consent audit log retained for 7 years',               Project__c=p3.Id, Feature__c=f7.Id, Status__c='Draft',        Priority__c='Critical', Category__c='New Request',    Requestor__c='compliance@company.com',  Description__c='Every consent event logged with timestamp, IP, user agent, and consent text version. Immutable records retained for minimum 7 years.');
+        Requirement__c q14 = new Requirement__c(Name='Automated PII field tagging across all objects',        Project__c=p3.Id, Feature__c=f8.Id, Status__c='Draft',        Priority__c='High',     Category__c='New Request',    Requestor__c='data.eng@company.com',    Description__c='System must scan all Salesforce objects and auto-tag PII fields (names, emails, phones, addresses). Tags feed into the data lineage map.');
+        Requirement__c q15 = new Requirement__c(Name='Data flow diagram export to PDF',                       Project__c=p3.Id, Feature__c=f8.Id, Status__c='Draft',        Priority__c='Medium',   Category__c='New Request',    Requestor__c='data.eng@company.com',    Description__c='Privacy officer needs to export the data lineage diagram as PDF for regulatory submission, including all nodes, flows, PII tags, and timestamp.');
+        Requirement__c q16 = new Requirement__c(Name='Configurable retention rules per data category',        Project__c=p3.Id, Feature__c=f9.Id, Status__c='Draft',        Priority__c='High',     Category__c='New Request',    Requestor__c='compliance@company.com',  Description__c='Admins configure retention periods per category (Contact: 3yr, Transaction: 7yr, Marketing: 2yr). Rules applied automatically by scheduled jobs.');
+        Requirement__c q17 = new Requirement__c(Name='Pre-delete notification email to data owners',          Project__c=p3.Id, Feature__c=f9.Id, Status__c='Draft',        Priority__c='Medium',   Category__c='Change Request', Requestor__c='compliance@company.com',  Description__c='30-day advance email to data owners before any scheduled purge, listing what will be deleted with a link to request an extension.');
+        Requirement__c q18 = new Requirement__c(Name='CCPA opt-out requests processed within 45 days',        Project__c=p3.Id, Feature__c=f7.Id, Status__c='Draft',        Priority__c='Critical', Category__c='New Request',    Requestor__c='legal@company.com',       Description__c='System tracks CCPA opt-out requests and ensures processing within 45-business-day deadline. Automated reminders at 30 and 40 days to responsible team.');
+        insert new List<Requirement__c>{ q01,q02,q03,q04,q05,q06,q07,q08,q09,q10,q11,q12,q13,q14,q15,q16,q17,q18 };
+
+        
+        
+        Story__c s01 = new Story__c(Name='Build lead score calculation service',       Project__c=p1.Id, Feature__c=f1.Id, Release__c=r1.Id, Status__c='Done',        Priority__c='Critical', Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 1', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-14), Completed_Date__c=Date.today().addDays(-12), Description__c='Core scoring service consuming activity events and applying weighting rules to produce a 0-100 score within 5-min SLA.', Acceptance_Criteria__c='Email open updates score within 5 min. Website visit updates score within 5 min. 80%+ unit test coverage.');
+        Story__c s02 = new Story__c(Name='Score weighting configuration UI',           Project__c=p1.Id, Feature__c=f1.Id, Release__c=r1.Id, Status__c='Done',        Priority__c='High',     Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 1', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-11), Completed_Date__c=Date.today().addDays(-10), Description__c='Admin UI to configure weighting rules per activity type. Changes take effect on next recalculation cycle.', Acceptance_Criteria__c='Admin can add/edit/delete rules. Changes persist. Validation prevents total weights exceeding 100 per category.');
+        Story__c s03 = new Story__c(Name='Score badge on Lead list view',              Project__c=p1.Id, Feature__c=f1.Id, Release__c=r1.Id, Status__c='QA Approved', Priority__c='High',     Story_Type__c='Story', Story_Points__c=3,  Sprint__c='Sprint 2', Assigned_To__c=me, QA_Assignee__c=me, Due_Date__c=Date.today().addDays(-2), Description__c='Colour-coded badge (Red/Amber/Green) in Score column on Lead list view. Sortable and filterable.', Acceptance_Criteria__c='Badge visible. Colour matches band. Sort works. Filter by range works.');
+        Story__c s04 = new Story__c(Name='Score recalculation on activity trigger',    Project__c=p1.Id, Feature__c=f1.Id, Release__c=r1.Id, Status__c='UAT',         Priority__c='Critical', Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(3),  Description__c='Platform event trigger firing score recalculation on email open, website visit, or form submission. Handles 1000 events/hr.', Acceptance_Criteria__c='Score updates within 5 min of trigger. Bulk events batched. No governor limit exceptions at 1000 events/hr.');
+        
+        Story__c s05 = new Story__c(Name='Build territory rule engine',                Project__c=p1.Id, Feature__c=f2.Id, Release__c=r1.Id, Status__c='In Progress', Priority__c='Critical', Story_Type__c='Story', Story_Points__c=13, Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(7),  Description__c='Core engine evaluating lead attributes against territory rules and assigning the correct rep by priority order.', Acceptance_Criteria__c='Lead assigned by state rule. Tie-break by priority. Unmatched leads go to default queue.');
+        Story__c s06 = new Story__c(Name='CSV bulk import for territory assignments',  Project__c=p1.Id, Feature__c=f2.Id, Release__c=r1.Id, Status__c='Developed',   Priority__c='High',     Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 2', Assigned_To__c=me, QA_Assignee__c=me, Due_Date__c=Date.today().addDays(5), Description__c='Upload UI for territory CSV import. Validates format, previews changes, detects conflicts. Processes up to 500 rows.', Acceptance_Criteria__c='CSV works for 500 rows. Invalid rows flagged. Preview shows before/after. Duplicates detected.');
+        Story__c s07 = new Story__c(Name='Territory coverage map visualisation',       Project__c=p1.Id, Feature__c=f2.Id, Release__c=r1.Id, Status__c='Backlog',     Priority__c='Medium',   Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(30), Description__c='Interactive US map showing territory coverage by rep. Click state to see assigned rep and rule details.', Acceptance_Criteria__c='All 50 states render. Assigned rep shown on hover. Unassigned states in grey.');
+        
+        Story__c s08 = new Story__c(Name='State tax rate reference data import',       Project__c=p1.Id, Feature__c=f3.Id, Release__c=r2.Id, Status__c='Backlog',     Priority__c='High',     Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 4', Assigned_To__c=me, Due_Date__c=Date.today().addDays(42), Description__c='Import and maintain US state sales tax rate reference table. Updated quarterly from IRS data. Admin UI for overrides.', Acceptance_Criteria__c='All 50 states + DC loaded. Quarterly job runs. Admin can override individual rates.');
+        Story__c s09 = new Story__c(Name='State tax compliance report template',       Project__c=p1.Id, Feature__c=f3.Id, Release__c=r2.Id, Status__c='Backlog',     Priority__c='Medium',   Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 4', Assigned_To__c=me, Due_Date__c=Date.today().addDays(50), Description__c='Report aggregating closed-won opps by state, applying tax rates, producing a compliance table. PDF and Excel export.', Acceptance_Criteria__c='All states with sales shown. Tax calculation correct. PDF renders cleanly. Excel has correct headers.');
+        
+        Story__c s10 = new Story__c(Name='Redesign top navigation component',          Project__c=p2.Id, Feature__c=f4.Id, Release__c=r3.Id, Status__c='Done',        Priority__c='Critical', Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 1', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-31), Completed_Date__c=Date.today().addDays(-30), Description__c='New top-nav with logo, primary links, search, notification bell, and user avatar. Fully responsive. Replaces iframe nav.', Acceptance_Criteria__c='Nav renders at 1440px and 375px. All links functional. Hamburger works on mobile. Legacy iframe removed.');
+        Story__c s11 = new Story__c(Name='Mobile hamburger menu 375px viewport',       Project__c=p2.Id, Feature__c=f4.Id, Release__c=r3.Id, Status__c='Done',        Priority__c='Critical', Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 1', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-26), Completed_Date__c=Date.today().addDays(-25), Description__c='Hamburger menu for mobile. Slides in from left. Shows full nav tree. Closes on backdrop tap or nav item tap.', Acceptance_Criteria__c='Opens/closes smoothly. All nav items accessible. Back button closes. Keyboard accessible.');
+        Story__c s12 = new Story__c(Name='Breadcrumb trail component',                 Project__c=p2.Id, Feature__c=f4.Id, Release__c=r3.Id, Status__c='Done',        Priority__c='High',     Story_Type__c='Story', Story_Points__c=3,  Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-20), Completed_Date__c=Date.today().addDays(-18), Description__c='Breadcrumb showing current path (Home > Billing > Invoices). Each segment a link. Updates dynamically on navigation.', Acceptance_Criteria__c='Updates on route change. All segments clickable. Truncates gracefully beyond 5 levels.');
+        
+        Story__c s13 = new Story__c(Name='Widget grid layout engine',                  Project__c=p2.Id, Feature__c=f5.Id, Release__c=r3.Id, Status__c='UAT Approved',Priority__c='Critical', Story_Type__c='Story', Story_Points__c=13, Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-5),  Description__c='Drag-and-drop grid engine supporting 1x1, 2x1, 2x2 widget sizes. Layout persists to server on drag-end.', Acceptance_Criteria__c='Widgets draggable. Layout saves automatically. Persists after refresh. Works on tablet 768px.');
+        Story__c s14 = new Story__c(Name='Ticket status widget',                       Project__c=p2.Id, Feature__c=f5.Id, Release__c=r3.Id, Status__c='UAT Approved',Priority__c='High',     Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-3),  Description__c='Dashboard widget showing open ticket count by status. Clicking a status filters the ticket list. Refreshes every 5 min.', Acceptance_Criteria__c='Counts accurate. Status click navigates to filtered list. Auto-refreshes every 5 min.');
+        Story__c s15 = new Story__c(Name='Billing summary widget',                     Project__c=p2.Id, Feature__c=f5.Id, Release__c=r3.Id, Status__c='Production',  Priority__c='High',     Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-8),  Description__c='Widget showing current plan, next billing date, amount due, and last 3 invoices as downloadable PDFs.', Acceptance_Criteria__c='Correct plan shown. Billing date accurate. Invoice PDFs download. Shows loading state.');
+        Story__c s16 = new Story__c(Name='Usage metrics widget',                       Project__c=p2.Id, Feature__c=f5.Id, Release__c=r3.Id, Status__c='Done',        Priority__c='Medium',   Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-7),  Completed_Date__c=Date.today().addDays(-6), Description__c='Widget for API usage vs limit, storage vs limit, active users vs seats. Colour-coded bars amber at 80%, red at 95%.', Acceptance_Criteria__c='Bars update daily. Amber at 80%, red at 95%. Tooltip shows exact numbers.');
+        
+        Story__c s17 = new Story__c(Name='Okta SAML 2.0 integration',                 Project__c=p2.Id, Feature__c=f6.Id, Release__c=r3.Id, Status__c='Done',        Priority__c='Critical', Story_Type__c='Story', Story_Points__c=13, Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-15), Completed_Date__c=Date.today().addDays(-14), Description__c='Full Okta SAML 2.0 SP-initiated and IdP-initiated SSO. JIT provisioning creates portal accounts on first login.', Acceptance_Criteria__c='SP-initiated SSO works. IdP-initiated works. JIT creates account on first login. Role mapped from Okta groups.');
+        Story__c s18 = new Story__c(Name='SSO session management and logout',          Project__c=p2.Id, Feature__c=f6.Id, Release__c=r3.Id, Status__c='Done',        Priority__c='High',     Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(-13), Completed_Date__c=Date.today().addDays(-12), Description__c='Session management: 8-hour timeout, single logout propagated to IdP, force-logout from admin console, SSO login audit log.', Acceptance_Criteria__c='Session expires at 8hr. Single logout redirects to IdP. Admin can force-logout. Login events logged.');
+        Story__c s19 = new Story__c(Name='Azure AD OAuth 2.0 integration',             Project__c=p2.Id, Feature__c=f6.Id, Release__c=r3.Id, Status__c='In Progress', Priority__c='High',     Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(6),  Description__c='Azure AD OAuth 2.0 integration alongside Okta. Multi-tenant Azure AD apps supported. User provisioning via SCIM 2.0.', Acceptance_Criteria__c='Azure AD login works. SCIM provisioning syncs users. Works alongside Okta without conflict.');
+        
+        Story__c s20 = new Story__c(Name='Consent data model and object schema',       Project__c=p3.Id, Feature__c=f7.Id, Release__c=r4.Id, Status__c='Developed',   Priority__c='Critical', Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 1', Assigned_To__c=me, Due_Date__c=Date.today().addDays(12), Description__c='Salesforce schema for consent: Consent_Record__c, Consent_Version__c, Consent_Event__c. All fields, relationships, and validation rules.', Acceptance_Criteria__c='Objects created with all fields. Lookups to Contact and Lead. Validation prevents duplicate active consents.');
+        Story__c s21 = new Story__c(Name='Consent capture UI component',               Project__c=p3.Id, Feature__c=f7.Id, Release__c=r4.Id, Status__c='In Progress', Priority__c='Critical', Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 1', Assigned_To__c=me, Due_Date__c=Date.today().addDays(18), Description__c='LWC consent component: granular opt-in/out, no pre-ticked boxes, captures IP and user agent, writes Consent_Event__c on submit.', Acceptance_Criteria__c='No pre-ticked boxes. IP and user agent captured. Event written. Works on mobile. WCAG 2.1 AA accessible.');
+        Story__c s22 = new Story__c(Name='Consent preference centre page',             Project__c=p3.Id, Feature__c=f7.Id, Release__c=r4.Id, Status__c='Backlog',     Priority__c='High',     Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(35), Description__c='Self-service preference centre: view and update all consents, history of changes, withdraw-all button with confirmation.', Acceptance_Criteria__c='User views all active consents. Can withdraw individual or all. History shows all past events. Withdrawal is logged.');
+        Story__c s23 = new Story__c(Name='CCPA opt-out request intake and tracking',   Project__c=p3.Id, Feature__c=f7.Id, Release__c=r4.Id, Status__c='Backlog',     Priority__c='Critical', Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(40), Description__c='Public CCPA opt-out form creating a tracked request record with 45-business-day deadline. Automated reminders at day 30 and 40.', Acceptance_Criteria__c='Form accessible without login. Request record with deadline created. Reminders at day 30 and 40. Dashboard shows outstanding requests.');
+        
+        Story__c s24 = new Story__c(Name='PII field detection and auto-tagging',       Project__c=p3.Id, Feature__c=f8.Id, Release__c=r4.Id, Status__c='Backlog',     Priority__c='High',     Story_Type__c='Story', Story_Points__c=13, Sprint__c='Sprint 2', Assigned_To__c=me, Due_Date__c=Date.today().addDays(55), Description__c='Nightly scanner inspecting all Salesforce fields and applying PII tags based on names, labels, and data patterns.', Acceptance_Criteria__c='Email, phone, name, address fields auto-tagged. Pattern detection configurable. Nightly scan completes without timeout.');
+        Story__c s25 = new Story__c(Name='Data flow diagram component',                Project__c=p3.Id, Feature__c=f8.Id, Release__c=r4.Id, Status__c='Backlog',     Priority__c='Medium',   Story_Type__c='Story', Story_Points__c=13, Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(70), Description__c='Interactive D3.js data flow diagram showing all integrated systems as nodes and flows as edges. PII fields highlighted. Zoom and pan.', Acceptance_Criteria__c='Renders in 3 seconds. All integrations shown. PII highlighted. Zoom/pan smooth. PDF export works.');
+        
+        Story__c s26 = new Story__c(Name='Retention rule configuration UI',            Project__c=p3.Id, Feature__c=f9.Id, Release__c=r4.Id, Status__c='Backlog',     Priority__c='High',     Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(80), Description__c='Admin UI for retention rules: select data category, set period, choose delete or anonymise. Rules activatable/deactivatable.', Acceptance_Criteria__c='Admin creates rules per category. Period in days/months/years. Rules can be toggled. Validation prevents zero periods.');
+        Story__c s27 = new Story__c(Name='Automated retention purge batch job',        Project__c=p3.Id, Feature__c=f9.Id, Release__c=r4.Id, Status__c='Backlog',     Priority__c='High',     Story_Type__c='Story', Story_Points__c=8,  Sprint__c='Sprint 3', Assigned_To__c=me, Due_Date__c=Date.today().addDays(90), Description__c='Scheduled daily Apex batch (2am) evaluating all active retention rules and deleting or anonymising overdue records. Writes purge audit log.', Acceptance_Criteria__c='Runs daily at 2am. Processes 50,000 records per run. Audit log per record. Email report to compliance team on completion.');
+        Story__c s28 = new Story__c(Name='Pre-delete notification email service',      Project__c=p3.Id, Feature__c=f9.Id, Release__c=r4.Id, Status__c='Backlog',     Priority__c='Medium',   Story_Type__c='Story', Story_Points__c=5,  Sprint__c='Sprint 4', Assigned_To__c=me, Due_Date__c=Date.today().addDays(95), Description__c='30-day advance email to data owners listing records scheduled for deletion, deletion date, and a link to request an extension.', Acceptance_Criteria__c='Email sent 30 days before deletion. Lists affected records. Extension request link works. Extension logged against the rule.');
+        insert new List<Story__c>{ s01,s02,s03,s04,s05,s06,s07,s08,s09,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27,s28 };
+
+        
+        update new List<Requirement__c>{
+            new Requirement__c(Id=q01.Id, Linked_Story__c=s01.Id),
+            new Requirement__c(Id=q02.Id, Linked_Story__c=s02.Id),
+            new Requirement__c(Id=q07.Id, Linked_Story__c=s10.Id),
+            new Requirement__c(Id=q08.Id, Linked_Story__c=s13.Id),
+            new Requirement__c(Id=q10.Id, Linked_Story__c=s17.Id)
+        };
+
+        
+        insert new List<Story_Audit__c>{
+            new Story_Audit__c(Story__c=s01.Id, Changed_By__c=me, From_Status__c='Backlog',     To_Status__c='In Progress', Changed_At__c=DateTime.now().addDays(-20)),
+            new Story_Audit__c(Story__c=s01.Id, Changed_By__c=me, From_Status__c='In Progress', To_Status__c='Developed',   Changed_At__c=DateTime.now().addDays(-16)),
+            new Story_Audit__c(Story__c=s01.Id, Changed_By__c=me, From_Status__c='Developed',   To_Status__c='QA Approved', Changed_At__c=DateTime.now().addDays(-15)),
+            new Story_Audit__c(Story__c=s01.Id, Changed_By__c=me, From_Status__c='QA Approved', To_Status__c='Done',        Changed_At__c=DateTime.now().addDays(-12)),
+
+            new Story_Audit__c(Story__c=s10.Id, Changed_By__c=me, From_Status__c='Backlog',     To_Status__c='In Progress', Changed_At__c=DateTime.now().addDays(-38)),
+            new Story_Audit__c(Story__c=s10.Id, Changed_By__c=me, From_Status__c='In Progress', To_Status__c='Developed',   Changed_At__c=DateTime.now().addDays(-35)),
+            new Story_Audit__c(Story__c=s10.Id, Changed_By__c=me, From_Status__c='Developed',   To_Status__c='QA Approved', Changed_At__c=DateTime.now().addDays(-33)),
+            new Story_Audit__c(Story__c=s10.Id, Changed_By__c=me, From_Status__c='QA Approved', To_Status__c='Done',        Changed_At__c=DateTime.now().addDays(-30)),
+
+            new Story_Audit__c(Story__c=s17.Id, Changed_By__c=me, From_Status__c='Backlog',     To_Status__c='In Progress', Changed_At__c=DateTime.now().addDays(-22)),
+            new Story_Audit__c(Story__c=s17.Id, Changed_By__c=me, From_Status__c='In Progress', To_Status__c='Developed',   Changed_At__c=DateTime.now().addDays(-18)),
+            new Story_Audit__c(Story__c=s17.Id, Changed_By__c=me, From_Status__c='Developed',   To_Status__c='QA Approved', Changed_At__c=DateTime.now().addDays(-16)),
+            new Story_Audit__c(Story__c=s17.Id, Changed_By__c=me, From_Status__c='QA Approved', To_Status__c='Done',        Changed_At__c=DateTime.now().addDays(-14)),
+
+            new Story_Audit__c(Story__c=s15.Id, Changed_By__c=me, From_Status__c='Backlog',     To_Status__c='In Progress', Changed_At__c=DateTime.now().addDays(-15)),
+            new Story_Audit__c(Story__c=s15.Id, Changed_By__c=me, From_Status__c='In Progress', To_Status__c='Developed',   Changed_At__c=DateTime.now().addDays(-12)),
+            new Story_Audit__c(Story__c=s15.Id, Changed_By__c=me, From_Status__c='Developed',   To_Status__c='QA Approved', Changed_At__c=DateTime.now().addDays(-10)),
+            new Story_Audit__c(Story__c=s15.Id, Changed_By__c=me, From_Status__c='QA Approved', To_Status__c='UAT',         Changed_At__c=DateTime.now().addDays(-9)),
+            new Story_Audit__c(Story__c=s15.Id, Changed_By__c=me, From_Status__c='UAT',         To_Status__c='Production',  Changed_At__c=DateTime.now().addDays(-8))
+        };
+
+        System.debug('ProTrack dummy data loaded successfully.');
+        System.debug('Projects: 3 | Features: 9 | Requirements: 18 | Releases: 4 | Stories: 28 | Audit rows: 17');
+    }
+}

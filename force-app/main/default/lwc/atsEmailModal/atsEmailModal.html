@@ -1,0 +1,17 @@
+<!--
+  @description       : ATS Sub Stage Header component
+  @author            : ragaswaroop.kundrathurviswanathan@randstadusa.com
+  @last modified on  : 08-21-2024
+  @last modified by  : Raga Viswanathan
+  Modifications Log
+  Ver   Date         Author                                              Modification
+  1.0   -            ragaswaroop.kundrathurviswanathan@randstadusa.com   Initial Version
+  -->
+<template>
+    <div class="slds-p-horizontal_xxx-large slds-m-bottom_x-small slds-m-top_small">
+        <span>
+            <lightning-button variant="brand-outline" label='Create Email' data-substagename="Proposed"
+                onclick={handleEmail} disabled={isReadOnly}></lightning-button>
+        </span>      
+    </div>
+</template>

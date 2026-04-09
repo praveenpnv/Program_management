@@ -1,0 +1,40 @@
+<template>
+    <lightning-card>
+        <div class="slds-theme_shade">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate ">
+                    <div class="slds-media__figure slds-var-m-around_medium">
+                        <lightning-icon icon-name="standard:linked"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title slds-truncate" title="Card Header">
+                            Randstad Integration Gateway
+                        </h2>
+                    </div>
+                </header>
+            </div>
+        </div>
+
+        <div class="slds-card__body">
+            <template lwc:if={url}>
+                <p class="slds-text-align_center slds-text-heading_small">
+                <lightning-formatted-url value={url} onclick={handleClick} label={urlText} tooltip="Navigate to RIG" target="_blank"></lightning-formatted-url>   
+                <lightning-icon class="slds-var-p-left_xx-small" size="x-small"  style="position: relative; top: -2px;" icon-name="utility:new_window" alternative-text="New Windo" title="New Window" variant="info"></lightning-icon>
+                </p>
+            </template>
+            <template lwc:else>
+                <div class="slds-text-align_center" role="alert">
+                    <span class="slds-assistive-text">Warning</span>
+                    <lightning-icon icon-name="utility:warning" alternative-text="Warning!" title="Warning!" variant="warning"></lightning-icon>
+                    <p>User does not have access to RIG</p>
+                </div>
+            </template>
+        </div>
+        
+        <div class="slds-card__footer">
+            <p>
+            </p>
+        </div>
+    </lightning-card>
+
+</template>

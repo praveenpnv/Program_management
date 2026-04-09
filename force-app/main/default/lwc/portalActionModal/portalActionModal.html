@@ -1,0 +1,36 @@
+<!--
+  @description       : 
+  @author            : Raga Viswanathan
+  @group             : 
+  @last modified on  : 02-24-2025
+  @last modified by  : Raga Viswanathan
+-->
+
+<template>
+    <lightning-modal-header label="Portal Action"></lightning-modal-header>
+    <lightning-modal-body>
+ <!-- Table for displaying contact data -->
+ <template if:true={hasData}>
+    <template if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+    </template>
+    
+    <lightning-datatable
+        data={contactData}
+        columns={columns}
+        key-field="Id"
+        hide-checkbox-column>
+    </lightning-datatable>
+</template>    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-button-group" role="group">
+       <lightning-button label="Add to Job" variant="brand" onclick={handleSave}></lightning-button>
+       <!-- Button menu for "Add to Call List" and "Add to Long List" -->
+        <lightning-button-menu alternative-text="More Actions" menu-alignment="right" >
+            <lightning-menu-item label="Add to Call List" value="callList" onclick={saveCallList}></lightning-menu-item>
+            <lightning-menu-item label="Add to Long List" value="longList" onclick={saveLonglist}></lightning-menu-item>
+        </lightning-button-menu>
+        </div>
+    </lightning-modal-footer>
+   
+</template>

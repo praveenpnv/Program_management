@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Vertical__c</fullName>
+    <description>Job&apos;s Sub Vertical.Pulled from Job.Sub Vertical field</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Job&apos;s Sub Vertical.Pulled from Job.Sub Vertical field</inlineHelpText>
+    <label>Sub Vertical</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

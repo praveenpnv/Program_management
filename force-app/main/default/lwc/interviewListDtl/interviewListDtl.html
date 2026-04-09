@@ -1,0 +1,28 @@
+<template>
+    <div class="slds-m-bottom_medium">
+        <div class="section-toggle" onclick={toggleInterviewList}>
+            <lightning-icon
+                icon-name={toggleIcon}
+                size="x-small"
+                class="slds-m-right_small"
+                alternative-text="Toggle section">
+            </lightning-icon>
+            <span class="section-title thin-text">Interview List</span>
+        </div>
+
+        <template if:true={showInterviewList}>
+            <div class="section-body slds-col slds-size_1-of-1">
+                <lightning-datatable
+                    key-field="Id"
+                    data={tableData}
+                    columns={columns}
+                    draft-values={draftValues}
+                    onsave={handleSave}
+                    hide-checkbox-column
+                    column-widths-mode="auto"
+                    class="custom-datatable">
+                </lightning-datatable>
+            </div>
+        </template>
+    </div>
+</template>

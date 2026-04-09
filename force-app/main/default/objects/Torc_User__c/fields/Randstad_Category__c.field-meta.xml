@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Randstad_Category__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(AND(CONTAINS( Email__c ,&apos;@randstad&apos;), Country__r.Name = &apos;India&apos;),&apos;RD GDC Employee&apos;,
+IF(referrerCode__c = &apos;RDIndia&apos;,&apos;RD GDC Employee&apos;,
+IF(referrerCode__c = &apos;RDPL&apos;,&apos;RDPL&apos;,
+IF(OR(RD_Ingestion_Status__c=&apos;RDIndiaImport&apos;,RD_Ingestion_Status__c=&apos;RDIndiaImportClaimed&apos;),&apos;RD GDC&apos;,
+IF(OR(RD_Ingestion_Status__c=&apos;RDImport&apos;,RD_Ingestion_Status__c=&apos;RDImportClaimed&apos;),&apos;RD USA&apos;,
+IF(AND(CONTAINS( Email__c ,&apos;@randstad&apos;),Country__r.Name  &lt;&gt; &apos;India&apos;),&apos;RD USA&apos;,
+IF(CONTAINS( Referrer_s_Email__c ,&apos;@randstad&apos;),&apos;RD REFERRER&apos;,
+IF(OR(referrerCode__c = &apos;RDILI1054604&apos;,
+       referrerCode__c = &apos;RDILI1058988&apos;,
+       referrerCode__c = &apos;RDILI1058986&apos;,
+       referrerCode__c = &apos;RDILI1058936&apos;,
+       referrerCode__c = &apos;RDILI1057308&apos;),&apos;RD REFERRER&apos;,
+&apos;TORC&apos;
+))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Randstad category?</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

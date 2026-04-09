@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ApplicationV2_Trigger__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>If unchecked, custom ApplicationV2 trigger will not be fired. By default it will be checked but can be turned off at user / profile level.</description>
+    <inlineHelpText>If unchecked, custom ApplicationV2 trigger will not fire. By default it should be checked</inlineHelpText>
+    <label>ApplicationV2.Trigger</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

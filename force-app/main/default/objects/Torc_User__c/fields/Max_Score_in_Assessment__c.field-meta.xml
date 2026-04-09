@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Score_in_Assessment__c</fullName>
+    <label>Max Score in Assessment</label>
+    <summarizedField>Torc_Assessment__c.finalScore__c</summarizedField>
+    <summaryForeignKey>Torc_Assessment__c.Torc_User__c</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

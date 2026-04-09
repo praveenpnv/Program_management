@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Populate External Vacancy ID with Randstad ID</description>
+    <environments>Default</environments>
+    <interviewLabel>Fill External Vacancy Id with Randstad ID {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Populate External Vacancy ID with Randstad ID</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <description>Update External Request ID For VMS or Other Integrations</description>
+        <name>Update_External_Request_ID</name>
+        <label>Update External Request ID</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>TR1__External_Vacancy_Id__c</field>
+            <value>
+                <elementReference>$Record.Randstad_ID__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_External_Request_ID</targetReference>
+        </connector>
+        <filterFormula>AND(
+    {!$Setup.Active_Trigger_Flow_VR__c.Job_Flow__c} = TRUE,
+    ISBLANK({!$Record.TR1__External_Vacancy_Id__c})
+)</filterFormula>
+        <object>TR1__Job__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

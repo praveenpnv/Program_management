@@ -1,0 +1,250 @@
+<template>
+<div class="exec-dash">
+
+    
+    <div class="exec-hero">
+        <div class="exec-hero-left">
+            <div class="exec-eyebrow">Portfolio Command Centre</div>
+            <h1 class="exec-title">Delivery Overview</h1>
+            <p class="exec-sub">Real-time portfolio health across all active programmes</p>
+        </div>
+        <div class="exec-hero-right">
+            <button class="exec-hero-btn" onclick={handleViewProjects}>
+                <span>All Projects</span>
+                <span class="exec-hero-arrow">→</span>
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="kpi-ribbon">
+        <div class="kpi-tile kpi-tile--primary">
+            <div class="kpi-icon">◈</div>
+            <div class="kpi-body">
+                <div class="kpi-num">{m.totalProjects}</div>
+                <div class="kpi-lbl">Total Projects</div>
+                <div class="kpi-sub">{m.activeProjects} active · {m.completedProjects} completed</div>
+            </div>
+        </div>
+
+        <div class="kpi-tile kpi-tile--velocity">
+            <div class="kpi-icon">⚡</div>
+            <div class="kpi-body">
+                <div class="kpi-num">{m.completionPct}<span class="kpi-unit">%</span></div>
+                <div class="kpi-lbl">Stories Complete</div>
+                <div class="kpi-sub">{m.storiesDone} of {m.totalStories} done</div>
+            </div>
+            <div class="kpi-progress-wrap">
+                <div class="kpi-progress-bar" style={completionBarStyle}></div>
+            </div>
+        </div>
+
+        <div class="kpi-tile kpi-tile--release">
+            <div class="kpi-icon">🚀</div>
+            <div class="kpi-body">
+                <div class="kpi-num">{m.upcomingReleases}</div>
+                <div class="kpi-lbl">Upcoming Releases</div>
+                <div class="kpi-sub">{m.totalFeatures} features in flight</div>
+            </div>
+        </div>
+
+        <template if:true={hasApprovals}>
+            <div class="kpi-tile kpi-tile--warn">
+                <div class="kpi-icon">⚠</div>
+                <div class="kpi-body">
+                    <div class="kpi-num">{m.pendingApprovals}</div>
+                    <div class="kpi-lbl">Pending Approvals</div>
+                    <div class="kpi-sub">Requirements awaiting sign-off</div>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={hasOverdue}>
+            <div class="kpi-tile kpi-tile--alert">
+                <div class="kpi-icon">🔴</div>
+                <div class="kpi-body">
+                    <div class="kpi-num">{m.storiesOverdue}</div>
+                    <div class="kpi-lbl">Overdue Stories</div>
+                    <div class="kpi-sub">Past due date, not done</div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    
+    <div class="exec-grid">
+
+        
+        <div class="exec-card exec-card--health">
+            <div class="card-hdr">
+                <div class="card-hdr-left">
+                    <div class="card-eyebrow">RAG Status</div>
+                    <h2 class="card-title">Portfolio Health</h2>
+                </div>
+                <div class="health-total-badge">{m.activeProjects} Active</div>
+            </div>
+            <div class="rag-list">
+                <template for:each={portfolioHealth} for:item="row">
+                    <div key={row.label} class="rag-row">
+                        <div class="rag-row-left">
+                            <div class={row.dotCls}></div>
+                            <span class="rag-label">{row.label}</span>
+                        </div>
+                        <div class="rag-row-right">
+                            <div class="rag-track">
+                                <div class={row.cls} style={row.barStyle}
+                                     data-width={row.pct}></div>
+                            </div>
+                            <span class="rag-count">{row.count}</span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            
+            <div class="stage-pills-hdr">By Stage</div>
+            <div class="stage-pills">
+                <template for:each={projectStages} for:item="s">
+                    <div key={s.label} class="stage-pill">
+                        <div class="stage-pill-num">{s.count}</div>
+                        <div class="stage-pill-lbl">{s.short}</div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        
+        <div class="exec-card exec-card--velocity">
+            <div class="card-hdr">
+                <div class="card-hdr-left">
+                    <div class="card-eyebrow">Delivery Velocity</div>
+                    <h2 class="card-title">Story Pipeline</h2>
+                </div>
+            </div>
+            <div class="vel-stats">
+                <div class="vel-stat">
+                    <div class="vel-stat-num vel-green">{m.storiesDone}</div>
+                    <div class="vel-stat-lbl">Done</div>
+                </div>
+                <div class="vel-divider"></div>
+                <div class="vel-stat">
+                    <div class="vel-stat-num vel-blue">{m.storiesInProgress}</div>
+                    <div class="vel-stat-lbl">In Progress</div>
+                </div>
+                <div class="vel-divider"></div>
+                <div class="vel-stat">
+                    <div class="vel-stat-num vel-red">{m.storiesOverdue}</div>
+                    <div class="vel-stat-lbl">Overdue</div>
+                </div>
+                <div class="vel-divider"></div>
+                <div class="vel-stat">
+                    <div class="vel-stat-num vel-grey">{m.totalStories}</div>
+                    <div class="vel-stat-lbl">Total</div>
+                </div>
+            </div>
+
+            
+            <div class="completion-ring-wrap">
+                <div class="completion-ring">
+                    <div class="ring-donut" style={ringStyle}></div>
+                    <div class="ring-label">
+                        <div class="ring-pct">{m.completionPct}%</div>
+                        <div class="ring-sub">complete</div>
+                    </div>
+                </div>
+                <div class="completion-legend">
+                    <div class="cl-row"><span class="cl-dot cl-green"></span>Done ({m.storiesDone})</div>
+                    <div class="cl-row"><span class="cl-dot cl-blue"></span>In Progress ({m.storiesInProgress})</div>
+                    <div class="cl-row"><span class="cl-dot cl-red"></span>Overdue ({m.storiesOverdue})</div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="exec-card exec-card--releases">
+            <div class="card-hdr">
+                <div class="card-hdr-left">
+                    <div class="card-eyebrow">Release Pipeline</div>
+                    <h2 class="card-title">Next Go-Lives</h2>
+                </div>
+            </div>
+            <template if:true={hasNextReleases}>
+                <div class="rel-list">
+                    <template for:each={nextReleases} for:item="r">
+                        <div key={r.id} class="rel-row">
+                            <div class="rel-row-top">
+                                <div class="rel-row-left">
+                                    <div class="rel-name">{r.name}</div>
+                                    <div class="rel-project">{r.projectName}</div>
+                                </div>
+                                <div class="rel-row-right">
+                                    <div class={r.daysCls}>{r.daysLabel}</div>
+                                    <button class="rel-open-btn"
+                                            data-project-id={r.projectId}
+                                            data-release-id={r.id}
+                                            onclick={handleOpenRelease}>Open →</button>
+                                </div>
+                            </div>
+                            <div class="rel-progress-row">
+                                <div class="rel-progress-track">
+                                    <div class="rel-progress-fill" style={r.barStyle}></div>
+                                </div>
+                                <span class="rel-pct">{r.pct}%</span>
+                                <span class="rel-stories">{r.doneCount}/{r.storyCount} stories</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <template if:false={hasNextReleases}>
+                <div class="empty-state">No upcoming releases scheduled</div>
+            </template>
+        </div>
+
+    </div>
+
+    
+    <template if:true={hasPortfolioProjects}>
+        <div class="exec-card exec-card--portfolio">
+            <div class="card-hdr">
+                <div class="card-hdr-left">
+                    <div class="card-eyebrow">Active Portfolio</div>
+                    <h2 class="card-title">Project Tracker</h2>
+                </div>
+                <button class="card-view-all" onclick={handleViewProjects}>View All →</button>
+            </div>
+            <div class="port-table">
+                <div class="port-table-hdr">
+                    <span>Project</span>
+                    <span>Owner</span>
+                    <span>Stage</span>
+                    <span>Methodology</span>
+                    <span>Target</span>
+                    <span></span>
+                </div>
+                <template for:each={portfolioProjects} for:item="p">
+                    <div key={p.id} class="port-row">
+                        <div class="port-name-cell">
+                            <div class={p.ragDot}></div>
+                            <span class="port-name">{p.name}</span>
+                        </div>
+                        <div class="port-owner">
+                            <template if:true={p.ownerPhoto}>
+                                <img src={p.ownerPhoto} class="owner-avatar" alt={p.ownerName} />
+                            </template>
+                            <span>{p.ownerName}</span>
+                        </div>
+                        <div><span class="port-stage-badge">{p.stage}</span></div>
+                        <div><span class="port-method-badge">{p.methodology}</span></div>
+                        <div class={p.daysCls}>{p.daysLabel}</div>
+                        <div>
+                            <button class="port-open-btn" data-id={p.id} onclick={handleOpen}>Open →</button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </template>
+
+</div>
+</template>

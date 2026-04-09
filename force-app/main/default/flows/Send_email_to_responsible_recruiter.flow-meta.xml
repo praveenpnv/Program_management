@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_email_to_responsible_recruiter</name>
+        <label>Send email to responsible recruiter</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <name>Send_email_to_responsible_recruiter1</name>
+        <label>Send email to responsible recruiter</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</actionName>
+        <actionType>emailAlert</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>SObjectRowId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TR1__Job__c.Job_Created_mail_for_responsible_recruiter</nameSegment>
+    </actionCalls>
+    <apiVersion>60.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Checking_Responsible_recruiter_field</name>
+        <label>Checking Responsible recruiter field</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_Job_status_is_Accepting_candidates</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Accepting Candidates</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_email_to_responsible_recruiter</targetReference>
+            </connector>
+            <label>Check Job status is Accepting candidates</label>
+        </rules>
+        <rules>
+            <name>Responsible_Recruiter_is_filled</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Recruiter__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TR1__Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Accepting Candidates</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_email_to_responsible_recruiter1</targetReference>
+            </connector>
+            <label>Responsible Recruiter is filled</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Send email to responsible recruiter {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Send email to responsible recruiter</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Checking_Responsible_recruiter_field</targetReference>
+        </connector>
+        <filterFormula>AND(
+   {!$Setup.Active_Trigger_Flow_VR__c.Job_Flow__c} = TRUE,
+   TEXT({!$Record.TR1__Status__c}) = &quot;Accepting Candidates&quot;
+)</filterFormula>
+        <object>TR1__Job__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

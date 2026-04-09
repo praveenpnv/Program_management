@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Assignment_Key__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Auto-populated in before-save Flow as {Recruiter_ManagerId}_{ManagerId}. Prevents duplicates.</description>
+    <externalId>false</externalId>
+    <label>Assignment Key</label>
+    <length>80</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

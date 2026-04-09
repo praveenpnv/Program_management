@@ -1,0 +1,57 @@
+<template>
+    <template if:true={isLoading}>
+        <div class="slds-is-relative slds-p-around_medium">
+            <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container custom-modal" style="max-width: 50rem;" > <!-- Wider modal -->
+
+                <!-- Close icon -->
+                <button class="slds-button slds-modal__close slds-button_icon" title="Close" onclick={closeModal}>
+                    <lightning-icon icon-name="utility:close" alternative-text="Close" size="small" variant="bare"></lightning-icon>
+                </button>
+
+                <!-- Header -->
+                <header class="slds-modal__header slds-text-align_center">
+                    <h2 class="slds-modal__title slds-hyphenate">New Contact &amp; Candidate</h2>
+                </header>
+
+                <!-- Body -->
+                <!-- Body -->
+                 <div class="slds-modal__content slds-p-around_medium">
+                    <div class="slds-grid slds-wrap slds-align-top">                        
+                        <div class="slds-col slds-size_1-of-3 ">
+                            <span class="slds-form-element__label slds-align_absolute-center slds-p-bottom_small" style="margin-left: 2rem;"> Select a record type</span>
+
+                        </div>
+                        <div class="slds-col slds-size_2-of-3">
+                            
+                            <div class="slds-theme_default">
+                                <lightning-radio-group
+                                    name="recordType"
+                                    options={recordTypeOptions}
+                                    value={selectedRecordTypeId}
+                                    type="radio"
+                                    onchange={handleRecordTypeChange}
+                                    class="slds-align_absolute-center">
+                                </lightning-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="slds-modal__footer slds-grid slds-grid_align-end">
+                    <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" onclick={handleCreate} disabled={isButtonDisabled}></lightning-button>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Backdrop -->
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

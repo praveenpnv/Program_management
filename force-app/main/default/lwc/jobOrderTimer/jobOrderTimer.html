@@ -1,0 +1,36 @@
+<template>
+    <div class="slds-card job-order" if:true={isShowTimer}>
+         <h3 class="my-title" if:false={isDashboard}>Job Order Timer</h3>
+        <div class="">
+            <div class={timerClass}>{remainingTime}</div>
+            <template if:true={showExtendButton}>
+                <template if:true={isMultipleOptions}>
+                    <lightning-button-menu
+                        label="Extend Job"
+                        alternative-text="Extend Job"
+                        menu-alignment="right"
+                        onselect={handleExtendJob}
+                        tooltip="Choose to extend the job expiration."
+                    >
+                        <template for:each={extensionOptions} for:item="option">
+                            <lightning-menu-item
+                                key={option.value}
+                                value={option.value}
+                                label={option.label}
+                            ></lightning-menu-item>
+                        </template>
+                    </lightning-button-menu>
+                </template>
+
+                <template if:false={isMultipleOptions}>
+                    <lightning-button
+                        label="Extend Job"
+                        title="Extend Job"
+                        onclick={handleExtendJob}
+                    ></lightning-button>
+                </template>
+             
+            </template>
+        </div>
+    </div>
+</template>

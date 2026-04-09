@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>when a job is created and the required CV field is not filled in it will automatically be filled in with the value of the related account</description>
+    <environments>Default</environments>
+    <interviewLabel>Sync Job CV with Account {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Sync Job CV with Account</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Required_CV</name>
+        <label>Update Required CV</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <inputAssignments>
+            <field>required_CV_for_proposal__c</field>
+            <value>
+                <elementReference>$Record.TR1__Account__r.required_CV_for_proposal__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Required_CV</targetReference>
+        </connector>
+        <filterFormula>AND(
+   {!$Setup.Active_Trigger_Flow_VR__c.Job_Flow__c} ,
+   ISBLANK(TEXT({!$Record.required_CV_for_proposal__c}))
+)</filterFormula>
+        <object>TR1__Job__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

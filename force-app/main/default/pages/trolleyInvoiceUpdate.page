@@ -1,0 +1,3 @@
+<apex:page standardController="Trolley_Invoice__c" extensions="trolleyInvoiceUpdate" action="{!toggleCoverFee}">
+Processing...........
+</apex:page>

@@ -1,0 +1,228 @@
+<template>
+    <div class="territory-map-container">
+
+        <!-- ================= LEFT PANEL ================= -->
+        <div class="left-panel">
+            <div class="panel-header">
+                <h3>💼 Sales Territory Intelligence</h3>
+                <p class="slds-text-body_small">Performance & Market Analytics</p>
+
+                <div class="slds-button-group slds-m-top_small" role="group">
+                    <lightning-button
+                        label="Performance"
+                        variant={isPerformanceView}
+                        icon-name="utility:chart"
+                        onclick={handlePerformanceView}>
+                    </lightning-button>
+
+                    <lightning-button
+                        label="Optimization"
+                        variant={isOptimizationView}
+                        icon-name="utility:resource_capacity"
+                        onclick={handleOptimizationView}>
+                    </lightning-button>
+
+                    <lightning-button
+                        label="Market"
+                        variant={isMarketView}
+                        icon-name="utility:world"
+                        onclick={handleMarketView}>
+                    </lightning-button>
+                </div>
+            </div>
+
+            <!-- ========== PERFORMANCE VIEW ========== -->
+            <template if:true={showPerformanceView}>
+                <div class="filter-container">
+
+                    <!-- Overall Quota -->
+                    <div class="filter-section">
+                        <div class="filter-section-title">📊 Quota Attainment</div>
+                        <template if:true={dashboard}>
+                            <div class="performance-summary">
+                                <div class="stat-value-large">
+                                    {dashboard.overallAttainment}%
+                                </div>
+                                <div class="stat-label">Overall Progress</div>
+                                <div class="slds-text-body_small slds-m-top_x-small">
+                                    ${dashboard.totalRevenue} / ${dashboard.totalTarget}
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Top Performers -->
+                    <div class="filter-section">
+                        <div class="filter-section-title">🏆 Top Performers</div>
+                        <template if:true={dashboard}>
+                            <template for:each={dashboard.topPerformers} for:item="p">
+                                <div key={p.territoryName} class="performer-card success">
+                                    <div class="card-title">{p.territoryName}</div>
+                                    <div class="stat-value-large">{p.quotaAttainment}%</div>
+                                    <div class="stat-label">
+                                        ${p.revenue} / ${p.target}
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+
+                    <!-- Needs Attention -->
+                    <div class="filter-section">
+                        <div class="filter-section-title">⚠️ Needs Attention</div>
+                        <template if:true={dashboard}>
+                            <template for:each={dashboard.needsAttention} for:item="n">
+                                <div key={n.territoryName} class="performer-card critical">
+                                    <div class="card-title">{n.territoryName}</div>
+                                    <div class="stat-value-large">{n.quotaAttainment}%</div>
+                                    <div class="slds-text-body_small">
+                                        {n.recommendation}
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+
+                    <!-- All Territories -->
+                    <div class="filter-section">
+                        <div class="filter-section-title">
+                            🗺️ All Territories
+                            <span class="filter-count">
+                                {territorySummaries.length}
+                            </span>
+                        </div>
+
+                        <template for:each={territorySummaries} for:item="t">
+                            <div
+                                key={t.id}
+                                class="territory-card"
+                                data-id={t.id}
+                                onclick={handleTerritoryCardClick}>
+
+                                <div class="territory-header">
+                                    <span class="color-indicator" style={t.colorStyle}></span>
+                                    <span class="card-title">{t.name}</span>
+                                </div>
+
+                                <div class="slds-grid slds-wrap slds-m-top_x-small">
+                                    <div class="slds-col slds-size_1-of-3 slds-text-align_center">
+                                        <div class="stat-value">{t.quotaAttainment}%</div>
+                                        <div class="stat-label">Quota</div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3 slds-text-align_center">
+                                        <div class="stat-value">{t.accounts}</div>
+                                        <div class="stat-label">Accounts</div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3 slds-text-align_center">
+                                        <div class="stat-value">${t.revenue}</div>
+                                        <div class="stat-label">Revenue</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+            </template>
+        </div>
+
+        <!-- ================= MAP ================= -->
+        <div class="map-wrapper">
+            <div class="map-container" lwc:dom="manual"></div>
+
+            <div class="map-legend">
+                <h4 class="slds-text-heading_small slds-m-bottom_x-small">
+                    Territory Status
+                </h4>
+                <div class="legend-item">
+                    <span class="legend-marker green"></span> On Track (&gt;90%)
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker orange"></span> At Risk (70–90%)
+                </div>
+                <div class="legend-item">
+                    <span class="legend-marker red"></span> Behind (&lt;70%)
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= RIGHT PANEL ================= -->
+        <div class={sidePanelClass}>
+            <template if:true={selectedTerritory}>
+
+                <div class="panel-header">
+                    <div>
+                        <h2 class="slds-text-heading_medium">
+                            {selectedTerritory.name}
+                        </h2>
+                        <p class="slds-text-body_small">
+                            {selectedTerritory.accountCount} Accounts •
+                            {selectedTerritory.status}
+                        </p>
+                    </div>
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        variant="bare"
+                        onclick={handleCloseSidePanel}>
+                    </lightning-button-icon>
+                </div>
+
+                <!-- KPI Section -->
+                <div class="panel-section">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        Key Metrics
+                    </h3>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-value">${kpis.revenue}</div>
+                            <div class="kpi-label">Revenue</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">${kpis.pipeline}</div>
+                            <div class="kpi-label">Pipeline</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">{kpis.accounts}</div>
+                            <div class="kpi-label">Accounts</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">{kpis.opportunities}</div>
+                            <div class="kpi-label">Opportunities</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accounts -->
+                <div class="panel-section">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        Accounts ({accounts.length})
+                    </h3>
+
+                    <template for:each={accounts} for:item="a">
+                        <div key={a.id} class="record-card">
+                            <strong>{a.name}</strong><br/>
+                            <span class="slds-text-body_small">
+                                {a.industry} • {a.city}, {a.state}
+                            </span>
+                        </div>
+                    </template>
+                </div>
+
+            </template>
+
+            <template if:false={selectedTerritory}>
+                <div class="empty-panel">
+                    <lightning-icon
+                        icon-name="utility:world"
+                        size="large">
+                    </lightning-icon>
+                    <p class="slds-m-top_medium">
+                        Click a territory to view details
+                    </p>
+                </div>
+            </template>
+        </div>
+
+    </div>
+</template>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Legacy_BH_Date_Modified__c</fullName>
+    <description>Legacy BH Last Modified Date, captured during data load</description>
+    <inlineHelpText>Legacy BH Last Modified Date, captured during data load</inlineHelpText>
+    <label>Legacy BH Date Modified</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

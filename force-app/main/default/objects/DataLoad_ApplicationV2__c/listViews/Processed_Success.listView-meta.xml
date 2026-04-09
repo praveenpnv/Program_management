@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Processed_Success</fullName>
+    <columns>NAME</columns>
+    <columns>Processed__c</columns>
+    <columns>SFDC_ID__c</columns>
+    <columns>Rank__c</columns>
+    <columns>Candidate__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Processed__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Process_Status__c</field>
+        <operation>equals</operation>
+        <value>Success</value>
+    </filters>
+    <label>Processed - Success</label>
+    <language>en_US</language>
+</ListView>

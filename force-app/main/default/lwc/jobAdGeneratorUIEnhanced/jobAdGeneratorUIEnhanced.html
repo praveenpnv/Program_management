@@ -1,0 +1,362 @@
+<template>
+    <div class="final-job-ad-app">
+        <!-- Simplified Header -->
+        <header class="header-container slds-m-bottom_large slds-text-align_left">
+            <div class="header-content">
+                <div class="header-icon-wrapper">
+                    <lightning-icon icon-name="utility:magicwand" size="medium" alternative-text="AI" class="wand-icon"></lightning-icon>
+                </div>
+                <div class="header-content-text">
+                    <h1 class="header-title">Job Ad Generator</h1>
+                    <p class="header-subtitle">Powered By AI</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-wrapper">
+            <div class="content-container"> 
+                
+                <!-- Form Panel -->
+                <div class="form-panel">
+                    
+                    <div class="panel-header">
+                        <lightning-icon icon-name="utility:edit" size="x-small" class="panel-icon"></lightning-icon>
+                        <h2 class="panel-title">Job Details</h2>
+                    </div>
+                    
+                    <div class="divider"></div>
+
+                    <div class="form-content">
+                        
+                        <!-- Loading State -->
+                        <template if:true={loadingJobData}>
+                            <div class="loading-container">
+                                <lightning-spinner size="small" alternative-text="Loading job data..."></lightning-spinner>
+                                <p class="loading-text">Loading job information...</p>
+                            </div>
+                        </template>
+
+                        <template if:false={loadingJobData}>
+                            
+                            <!-- Job Name -->
+                            <div class="field-group">
+                                <lightning-input
+                                    label="Job Name"
+                                    value={jobTitle}
+                                    onchange={handleJobTitleChange}
+                                    required>
+                                </lightning-input>
+                            </div>
+
+                            <!-- Job Description -->
+                           <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
+                                            <span>
+                                            <abbr class="slds-required" title="required">*</abbr>Job Description</span>
+
+                                            <lightning-button-icon
+                                                icon-name="utility:edit"
+                                                variant="bare"
+                                                alternative-text="Edit"
+                                                title="Edit Job Description"
+                                                onclick={enableEditMode}>
+                                            </lightning-button-icon>
+                                        </div>
+
+                                        <!-- Edit Mode -->
+                                        <template if:true={isEditMode}>
+                                            <div class="field-group slds-m-bottom_medium">
+                                                <lightning-textarea
+                                                    value={sanitizedJobDescription}
+                                                    onchange={handleJobDescriptionChange}
+                                                    rows="6">
+                                                </lightning-textarea>
+                                    </div>
+                                        </template>
+                        <!-- View Mode -->
+                                    <template if:false={isEditMode}>
+                                        <div class="field-group slds-m-bottom_medium">
+                                            <lightning-formatted-rich-text
+                                                value={jobDescription}>
+                                            </lightning-formatted-rich-text>
+                                        </div>
+                                    </template>
+                            <!-- Language & Brand as simple fields -->
+                            <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-combobox
+                                        label="Language"
+                                        value={language}
+                                        options={languageOptions}
+                                        onchange={handleLanguageChange}
+                                        required>
+                                    </lightning-combobox>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <lightning-combobox
+                                        label="Brand"
+                                        value={brand}
+                                        options={brandOptions}
+                                        onchange={handleBrandChange}
+                                        readonly
+                                        required>
+                                    </lightning-combobox>
+                                </div>
+                            </div>
+
+                            <!-- Include Fields Section (Collapsible with Pills) -->
+                            <div class={includeFieldsSectionClass}>
+                                <h3 class="slds-section__title">
+                                    <button onclick={handleIncludeFieldsToggle} class="slds-button slds-section__title-action">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small" class="slds-section__title-action-icon" alternative-text="Toggle Include Fields"></lightning-icon>
+                                        <span class="slds-truncate section-title-text">{includeFieldsTitle}</span>
+                                    </button>
+                                </h3>
+                                
+                                <div class="slds-section__content">
+                                    <div class="slds-p-around_small">
+                                        
+                                        <template if:true={hasAvailableFields}>
+                                            <div class="option-group">
+                                                <label class="option-label">Select Fields to Include</label>
+                                                <div class="option-pills">
+                                                    <template for:each={activeFields} for:item="field">
+                                                        <button 
+                                                            key={field.id}
+                                                            data-field={field.apiName}
+                                                            aria-pressed={field.isSelected}
+                                                            onclick={handleFieldToggle}
+                                                            type="button">
+                                                            {field.label}
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template if:false={hasAvailableFields}>
+                                            <div class="slds-text-align_center slds-text-color_weak slds-p-vertical_small">
+                                                <lightning-icon icon-name="utility:info_alt" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                                No configurable fields available.
+                                            </div>
+                                        </template>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Advanced Options Section (Collapsible) -->
+                            <div class={advancedSectionClass}>
+                                <h3 class="slds-section__title">
+                                    <button onclick={handleAdvancedToggle} class="slds-button slds-section__title-action">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small" class="slds-section__title-action-icon" alternative-text="Toggle Advanced Options"></lightning-icon>
+                                        <span class="slds-truncate section-title-text">Advanced Options</span>
+                                    </button>
+                                </h3>
+                                
+                                <div class="slds-section__content">
+                                    <div class="slds-p-around_small">
+                                    
+                                        <div class="option-group">
+                                            <label class="option-label">Length</label>
+                                            <div class="option-pills">
+                                                <template for:each={lengthOptions} for:item="opt">
+                                                    <button 
+                                                        key={opt.value} 
+                                                        class={opt.class} 
+                                                        data-type="length" 
+                                                        data-value={opt.value}
+                                                        onclick={handleOptionSelect} 
+                                                        type="button">
+                                                        {opt.label}
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="option-group">
+                                            <label class="option-label">Formality</label>
+                                            <div class="option-pills">
+                                                <template for:each={formalityOptions} for:item="opt">
+                                                    <button 
+                                                        key={opt.value} 
+                                                        class={opt.class} 
+                                                        data-type="formality" 
+                                                        data-value={opt.value}
+                                                        onclick={handleOptionSelect} 
+                                                        type="button">
+                                                        {opt.label}
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="option-group">
+                                            <label class="option-label">Urgency</label>
+                                            <div class="option-pills">
+                                                <template for:each={urgencyOptions} for:item="opt">
+                                                    <button 
+                                                        key={opt.value} 
+                                                        class={opt.class} 
+                                                        data-type="urgency" 
+                                                        data-value={opt.value}
+                                                        onclick={handleOptionSelect} 
+                                                        type="button">
+                                                        {opt.label}
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="slds-form-element slds-m-bottom_medium slds-m-top_medium">
+                                            <lightning-input
+                                                type="checkbox"
+                                                label="Remove client name (Anonymize)"
+                                                checked={anonymized}
+                                                onchange={handleAnonymizedChange}>
+                                            </lightning-input>
+                                        </div>
+
+                                        <div class="option-group tone-section">
+                                            <lightning-combobox
+                                                label="Tone of voice"
+                                                value={toneOfVoice}
+                                                options={toneOfVoiceOptions}
+                                                onchange={handleToneChange}
+                                                placeholder="Select a tone..."
+                                                dropdown-alignment="auto">
+                                            </lightning-combobox>
+                                        </div>
+                                        
+                                        <div class="option-group">
+                                        <label class="option-label">Structures</label>
+                                        <div class="option-pills">
+                                            <template for:each={structureOptions} for:item="opt">
+                                                <button 
+                                                    key={opt.value} 
+                                                    class={opt.class} 
+                                                    data-value={opt.value}
+                                                    onclick={handleStructureToggle} 
+                                                    type="button">
+                                                    {opt.label}
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Generate Button -->
+                            <div class="button-wrapper">
+                                <button 
+                                    class="generate-btn"
+                                    onclick={handleGenerateJobAd}
+                                    disabled={isGenerating}>
+                                    <template if:false={isGenerating}>
+                                        <lightning-icon icon-name="utility:magicwand" size="small" class="btn-icon"></lightning-icon>
+                                        {buttonLabel}
+                                    </template>
+                                    <template if:true={isGenerating}>
+                                        <span class="spinner-small"></span>
+                                        Generating...
+                                    </template>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-panel">
+                    
+                    <!-- Generating State -->
+                    <template if:true={isGenerating}>
+                        <div class="state-container">
+                            <lightning-spinner size="large" alternative-text="Generating..."></lightning-spinner>
+                            <h3 class="state-title">Generating Your Job Ad</h3>
+                            <p class="state-description">Our AI is crafting the perfect job advertisement...</p>
+                            <p class="state-note">This typically takes 10-30 seconds</p>
+                        </div>
+                    </template>
+
+                    <!-- Error State -->
+                    <template if:true={errorMessage}>
+                        <div class="state-container error">
+                            <lightning-icon icon-name="utility:error" size="large" variant="error"></lightning-icon>
+                            <h3 class="state-title">Generation Failed</h3>
+                            <p class="state-description">{errorMessage}</p>
+                            <button class="retry-btn" onclick={handleGenerateJobAd}>
+                                <lightning-icon icon-name="utility:refresh" size="x-small"></lightning-icon>
+                                Try Again
+                            </button>
+                        </div>
+                    </template>
+
+                    <!-- Success State with Generated Ad -->
+                    <template if:true={generatedJobAd}>
+                        <div class="result-container">
+                            
+                            <div class="result-header">
+                                <lightning-icon icon-name="utility:success" size="small" variant="inverse"></lightning-icon>
+                                <h2 class="result-title slds-text-color_inverse">Generated Job Ad</h2>
+                            </div>
+
+                            <div class="metadata-wrapper">
+                                <button class="metadata-toggle-btn" onclick={handleMetadataToggle}>
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small" class={metadataIconClass}></lightning-icon>
+                                    <span class="meta-toggle-label">External (IDs)</span>
+                                </button>
+                                
+                                <template if:true={isMetadataOpen}>
+                                    <div class="metadata-section">
+                                        <div class="metadata-item">
+                                            <span class="meta-label">CONVERSATION ID</span>
+                                            <span class="meta-value">{conversationId}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="meta-label">MESSAGE ID</span>
+                                            <span class="meta-value">{messageId}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="content-section">
+                                <lightning-formatted-rich-text value={generatedJobAd}></lightning-formatted-rich-text>
+                            </div>
+
+                            <div class="actions-section">
+                                <button class="action-btn" onclick={handleCopyToClipboard}>
+                                    <lightning-icon icon-name="utility:copy" size="x-small"></lightning-icon>
+                                    Copy HTML
+                                </button>
+                                <button class="action-btn success" onclick={handleSaveToJob}>
+                                    <lightning-icon icon-name="utility:save" size="x-small"></lightning-icon>
+                                    Save to Job
+                                </button>
+                                <button class="action-btn" onclick={handleGenerateJobAd}>
+                                    <lightning-icon icon-name="utility:refresh" size="x-small"></lightning-icon>
+                                    Regenerate
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Empty State -->
+                    <template if:false={generatedJobAd}>
+                        <template if:false={isGenerating}>
+                            <template if:false={errorMessage}>
+                                <div class="state-container empty">
+                                    <lightning-icon icon-name="utility:file" size="large" class="empty-icon"></lightning-icon>
+                                    <h3 class="state-title">No Job Ad Generated Yet</h3>
+                                    <p class="state-description">Fill in the job details and click "Generate Ad" to create an AI-powered advertisement</p>
+                                </div>
+                            </template>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

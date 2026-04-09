@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Change_Request_Requires_Impact</fullName>
+    <active>true</active>
+    <description>Change Requests (Category = Change Request) must have an Impact description.</description>
+    <errorConditionFormula>ISPICKVAL(Category__c, &apos;Change Request&apos;) &amp;&amp; ISBLANK(Impact__c)</errorConditionFormula>
+    <errorMessage>Change Requests must include an Impact description before they can be saved.</errorMessage>
+</ValidationRule>

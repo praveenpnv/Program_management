@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AnswerOptions__c</fullName>
+    <description>Comma-delimited list of possible, mutually-exclusive options. An Interface interprets this to render a choice for the user (such as a picklist, radio button, menu)</description>
+    <inlineHelpText>Enter possible values separated by a comma. Eg. &quot;immediately,two week notice,one month notice,more than one month notice&quot;</inlineHelpText>
+    <label>Answer Options</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>TextArea</type>
+</CustomField>

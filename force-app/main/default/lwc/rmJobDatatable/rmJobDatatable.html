@@ -1,0 +1,42 @@
+<template>
+    <lightning-card title="Jobs Management" icon-name="standard:employee_job_position"> </lightning-card>
+        <!-- <div slot="actions">
+            <lightning-button 
+                label="Refresh" 
+                icon-name="utility:refresh" 
+                variant="brand" 
+                onclick={handleRefresh}>
+            </lightning-button>
+        </div> -->
+
+        <div class="slds-p-around_small" style="position:relative">
+          <template if:true={isLoading}>
+            <lightning-spinner 
+                alternative-text="Saving..." 
+                size="medium" 
+                variant="brand"
+                class="spinner-overlay">
+            </lightning-spinner>
+        </template>
+        <c-job-data-table
+            key-field="Id"
+            data={jobs}
+            columns={columns}
+            draft-values={draftValues}
+            hide-checkbox-column="true"
+            onsave={handleSave}
+            onvaluechange={handleLookupChange}
+            default-sort-direction={defaultSortDirection}
+            sorted-direction={sortDirection}
+            sorted-by={sortedBy}
+            onsort={onHandleSort}>
+        </c-job-data-table>
+
+            <div class="slds-grid slds-grid_align-center slds-m-top_small">
+                <lightning-button variant="neutral" label="Previous" onclick={prevPage} disabled={isFirstPage}></lightning-button>
+                <span class="slds-p-horizontal_small">Page {currentPage} of {totalPages}</span>
+                <lightning-button variant="neutral" label="Next" onclick={nextPage} disabled={isLastPage}></lightning-button>
+            </div>
+        </div>
+   
+</template>

@@ -1,0 +1,203 @@
+<template>
+    <div class="slds-p-left_none slds-p-right_none slds-p-vertical_small">
+
+        <!-- Loading Spinner -->
+        <template if:true={showLoadingSpinner}>
+            <div class="slds-align_absolute-center slds-p-vertical_large">
+                <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Main Content -->
+        <template if:true={showContent}>
+        <!-- Edit Mode -->
+        <template if:true={isEditFlag}>
+                <!-- Modal Backdrop -->
+                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+                    <div class="slds-modal__container">
+                        <!-- Modal Header -->
+                        <header class="slds-modal__header">
+                            <h2 class="slds-text-heading_medium">Edit Service & Sub-Service Lines</h2>
+                            <button class="slds-button slds-modal__close slds-button_icon" onclick={handleCancel} title="Close">
+                                <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                            </button>
+                        </header>
+
+                        <!-- Modal Body -->
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <lightning-dual-listbox
+                                name="controllingListbox"
+                                label="Service Line"
+                                source-label="Available"
+                                selected-label="Selected"
+                                options={controllingPicklistOptions}
+                                value={selectedControllingValues}
+                                onchange={handleControllingChange}
+                                required>
+                            </lightning-dual-listbox>
+
+                            <template if:true={hasSelectedControllingValues}>
+                                <lightning-dual-listbox
+                                    name="dependentListbox"
+                                    label="Sub Service Line"
+                                    source-label="Available"
+                                    selected-label="Selected"
+                                    options={dependentPicklistOptions}
+                                    value={selectedDependentValues}
+                                    onchange={handleDependentChange}>
+                                </lightning-dual-listbox>
+
+                                <template if:false={isDependentOptionsAvailable}>
+                                    <div class="slds-text-color_weak slds-box slds-box_x-small slds-theme_shade slds-m-top_small">
+                                        <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small"></lightning-icon>
+                                        No sub service lines are available for the current selection.
+                                    </div>
+                                </template>
+                            </template>
+
+                            <template if:false={hasSelectedControllingValues}>
+                                <div class="slds-text-color_weak slds-box slds-box_x-small slds-theme_shade">
+                                    <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small"></lightning-icon>
+                                    Select one or more Service Lines to see available Sub Service Lines.
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <footer class="slds-modal__footer">
+                            <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}></lightning-button>
+                            <lightning-button label="Save" variant="brand" onclick={handleSave} class="slds-m-left_small"></lightning-button>
+                        </footer>
+                    </div>
+                </section>
+
+                <!-- Backdrop for Edit Modal -->
+                <div class="slds-backdrop slds-backdrop_open" style="z-index: 9000;"></div>
+        </template>
+
+        <!-- Validation Error Popup-->
+        <template if:true={showValidationPopup}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" style="z-index: 9999;">
+                <div class="slds-modal__container">
+                    <!-- Modal Header -->
+                    <header class="slds-modal__header">
+                        <h2 class="slds-text-heading_medium">Complete Required Fields</h2>
+                        <button class="slds-button slds-modal__close slds-button_icon" onclick={handleValidationPopupClose} title="Close">
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                        </button>
+                    </header>
+
+                    <!-- Modal Body -->
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="slds-text-color_destructive slds-m-bottom_medium">
+                            <lightning-icon icon-name="utility:warning" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            Validation failed. Please complete the following required fields to continue:
+                        </div>
+
+                        <!-- Show validation fields if we have them -->
+                        <template if:true={mandatoryFieldsData}>
+                            <template if:true={mandatoryFieldsData.length}>
+                                <div class="slds-m-bottom_medium">
+                                    <strong>Fields requiring attention:</strong>
+                                    <ul class="slds-list_dotted slds-m-top_x-small">
+                                        <template for:each={mandatoryFieldsData} for:item="fieldName">
+                                            <li key={fieldName} class="slds-item">{fieldName}</li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                        </template>
+                        
+                        <lightning-record-edit-form 
+                            object-api-name="Opportunity" 
+                            record-id={recordId}
+                            onsuccess={handleValidationFormSuccess}
+                            onerror={handleValidationFormError}>
+                            
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <template for:each={mandatoryFieldsData} for:item="fieldName">
+                                    <div key={fieldName} class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                                        <lightning-input-field field-name={fieldName}></lightning-input-field>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Modal Footer inside form -->
+                            <footer class="slds-modal__footer slds-m-top_large">
+                                <lightning-button label="Cancel" variant="neutral" onclick={handleValidationPopupClose}></lightning-button>
+                                <lightning-button label="Save" variant="brand" type="submit" class="slds-m-left_small"></lightning-button>
+                            </footer>
+                        </lightning-record-edit-form>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="z-index: 9998;"></div>
+        </template>
+
+        <!-- View Mode -->
+        <template if:false={isEditFlag}>
+            <div class="slds-p-left_medium">
+                <div class="slds-grid slds-gutters slds-wrap">
+                    <!-- Service Lines Field -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element slds-p-bottom_x-small">
+                            <label class="slds-form-element__label">Service Lines:</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-truncate slds-text-body_regular">
+                                        {selectedControllingValuesDisplay}
+                                    </div>
+                                    <!-- Only show edit icon if user has edit access -->
+                                    <template if:true={hasEditAccess}>
+                                    <lightning-button-icon
+                                        icon-name="utility:edit"
+                                        variant="bare"
+                                        alternative-text="Edit Service Lines"
+                                        title="Edit"
+                                        onclick={handleEditClick}>
+                                    </lightning-button-icon>
+                                    </template>
+                                </div>
+                                <div class="slds-border_bottom slds-m-top_x-small"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub Service Lines Field -->
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element slds-p-bottom_x-small">
+                            <label class="slds-form-element__label">Sub Service Lines:</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-truncate slds-text-body_regular">
+                                        {selectedDependentValuesDisplay}
+                                    </div>
+                            <!-- Only show edit icon if user has edit access -->
+                                 <template if:true={hasEditAccess}>
+                                    <lightning-button-icon
+                                        icon-name="utility:edit"
+                                        variant="bare"
+                                        alternative-text="Edit Sub Service Lines"
+                                        title="Edit"
+                                        onclick={handleEditClick}>
+                                    </lightning-button-icon>
+                                </template>
+                                    </div>
+                                    <div class="slds-border_bottom slds-m-top_x-small"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+
+        <!-- Error -->
+        <template if:true={error}>
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-top_medium" role="alert">
+                <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_x-small"></lightning-icon>
+                <h2>{error}</h2>
+            </div>
+        </template>
+    </div>
+</template>

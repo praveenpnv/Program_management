@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Company__c</fullName>
+    <description>Company Name provided by the Creator when he signed up as a customer</description>
+    <externalId>false</externalId>
+    <formula>Torc_Customer__r.company__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Company Name provided by the Creator when he signed up as a customer. For normal users the Organization and Customer Company will be same. For Sales Reps / Admins it can be different, if the Sales Rep creates job on behalf of others.</inlineHelpText>
+    <label>Customer Company</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

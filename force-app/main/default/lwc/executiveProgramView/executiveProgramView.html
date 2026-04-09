@@ -1,0 +1,219 @@
+<template>
+    <div class="epv-wrap">
+
+        <div class="epv-tabs">
+            <template for:each={programTabs} for:item="tab">
+                <button key={tab.id} class={tab.cls} value={tab.id} onclick={handleTabClick}>
+                    {tab.label}
+                </button>
+            </template>
+        </div>
+
+        <div class="epv-kpi-strip">
+            <div class="epv-kpi">
+                <span class="epv-kpi-num">{totals.total}</span>
+                <span class="epv-kpi-lbl">Total Projects</span>
+            </div>
+            <div class="epv-kpi">
+                <span class="epv-kpi-num epv-kpi-green">{totals.ongoing}</span>
+                <span class="epv-kpi-lbl">On going</span>
+            </div>
+            <div class="epv-kpi">
+                <span class="epv-kpi-num epv-kpi-amber">{totals.hold}</span>
+                <span class="epv-kpi-lbl">On Hold</span>
+            </div>
+            <div class="epv-kpi">
+                <span class="epv-kpi-num epv-kpi-blue">{totals.done}</span>
+                <span class="epv-kpi-lbl">Delivered</span>
+            </div>
+            <div class="epv-kpi">
+                <span class="epv-kpi-num epv-kpi-red">{totals.red}</span>
+                <span class="epv-kpi-lbl">&#9679; Red</span>
+            </div>
+            <div class="epv-kpi">
+                <span class="epv-kpi-num epv-kpi-amber">{totals.amber}</span>
+                <span class="epv-kpi-lbl">&#9679; Amber</span>
+            </div>
+        </div>
+
+        <div class="epv-toolbar">
+            <div class="epv-toolbar-left">
+                <h1 class="epv-title">Programme Portfolio</h1>
+                <p class="epv-subtitle">Executive view — projects grouped by programme</p>
+            </div>
+            <div class="epv-toolbar-right">
+                <input class="epv-search" type="text" placeholder="Search projects…" onkeyup={handleSearch} />
+                <select class="epv-filter-select" onchange={handleStatusFilter}>
+                    <template for:each={statusOptions} for:item="opt">
+                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                    </template>
+                </select>
+            </div>
+        </div>
+
+        <div class="epv-swimlanes">
+            
+            <template if:false={isStabilizationTab}>
+                <template if:true={hasSwimlanes}>
+                    <template for:each={swimlanes} for:item="lane">
+                        <div key={lane.type} class="epv-lane">
+
+                            <div class="epv-lane-hdr" style={lane.headerStyle}>
+                                <div class="epv-lane-hdr-left">
+                                    <span class="epv-lane-type">{lane.type}</span>
+                                    <span class="epv-lane-count">{lane.total} projects</span>
+                                </div>
+                                <div class="epv-lane-hdr-stats">
+                                    <template if:true={lane.ongoing}>
+                                        <span class="epv-lane-stat epv-lane-stat-go">{lane.ongoing} On going</span>
+                                    </template>
+                                    <template if:true={lane.onhold}>
+                                        <span class="epv-lane-stat epv-lane-stat-hold">{lane.onhold} On Hold</span>
+                                    </template>
+                                    <template if:true={lane.done}>
+                                        <span class="epv-lane-stat epv-lane-stat-done">{lane.done} Delivered</span>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div class="epv-lane-table">
+                                <div class="epv-tbl-head">
+                                    <div class="epv-th epv-col-name">Project</div>
+                                    <div class="epv-th epv-col-pri">Priority</div>
+                                    <div class="epv-th epv-col-status">Status</div>
+                                    <div class="epv-th epv-col-rag">RAG</div>
+                                    <div class="epv-th epv-col-team">Tech / Func Owner</div>
+                                    <div class="epv-th epv-col-date">Target Date</div>
+                                    <div class="epv-th epv-col-progress">Progress</div>
+                                    <div class="epv-th epv-col-action"></div>
+                                </div>
+
+                                <template for:each={lane.projects} for:item="proj">
+                                    <div key={proj.id} class="epv-tbl-row">
+                                        <div class="epv-td epv-col-name">
+                                            <span class="epv-proj-name">{proj.name}</span>
+                                            <template if:true={proj.programName}>
+                                                <span class="epv-prog-tag">{proj.programName}</span>
+                                            </template>
+                                        </div>
+                                        <div class="epv-td epv-col-pri">
+                                            <span class={proj.priCls}>{proj.priority}</span>
+                                        </div>
+                                        <div class="epv-td epv-col-status">
+                                            <span class={proj.statusCls}>{proj.status}</span>
+                                        </div>
+                                        <div class="epv-td epv-col-rag">
+                                            <span class={proj.ragCls}>&#9679;</span>
+                                        </div>
+                                        <div class="epv-td epv-col-team">
+                                            <template if:true={proj.technicalOwnerName}>
+                                                <span class="epv-owner-chip epv-chip-tech">{proj.technicalOwnerName}</span>
+                                            </template>
+                                            <template if:true={proj.functionalOwnerName}>
+                                                <span class="epv-owner-chip epv-chip-func">{proj.functionalOwnerName}</span>
+                                            </template>
+                                            <template if:false={proj.technicalOwnerName}>
+                                                <template if:false={proj.functionalOwnerName}>
+                                                    <span class="epv-no-owner">—</span>
+                                                </template>
+                                            </template>
+                                        </div>
+                                        <div class="epv-td epv-col-date">
+                                            <span class={proj.dateCls}>{proj.targetLabel}</span>
+                                        </div>
+                                        <div class="epv-td epv-col-progress">
+                                            <div class="epv-prog-bar-wrap">
+                                                <div class="epv-prog-bar-track">
+                                                    <div class="epv-prog-bar-fill" style={proj.progressBar}></div>
+                                                </div>
+                                                <span class="epv-prog-pct">{proj.progress}%</span>
+                                            </div>
+                                        </div>
+                                        <div class="epv-td epv-col-action">
+                                            <button class="epv-open-btn" data-id={proj.id} onclick={handleOpenProject}>View</button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template if:false={hasSwimlanes}>
+                    <div class="epv-empty">
+                        <p>No projects found. Adjust filters or select a different tab.</p>
+                    </div>
+                </template>
+            </template>
+
+            <template if:true={isStabilizationTab}>
+                <div class="epv-lane">
+                    <div class="epv-lane-hdr" style="background:#F1F5F9;color:#334155;border-left:4px solid #94A3B8">
+                        <div class="epv-lane-hdr-left">
+                            <span class="epv-lane-type">Stabilization Analytics</span>
+                            <span class="epv-lane-count">{filteredProjects.length} projects</span>
+                        </div>
+                    </div>
+                    
+                    <div class="epv-stab-grid">
+                        <template for:each={stabilizationProjects} for:item="proj">
+                            <div key={proj.id} class="epv-stab-card">
+                                <div class="epv-stab-card-hdr">
+                                    <h3 class="epv-stab-proj-title">{proj.name}</h3>
+                                    <button class="epv-open-btn" data-id={proj.id} onclick={handleOpenProject}>View</button>
+                                </div>
+                                <p class="epv-stab-velocity-lbl">DELIVERY VELOCITY</p>
+                                <h4 class="epv-stab-pipeline-title">Story Pipeline</h4>
+                                
+                                <div class="epv-stab-stats">
+                                    <div class="epv-stab-stat">
+                                        <span class="epv-stab-num epv-text-green">{proj.storiesDone}</span>
+                                        <span class="epv-stab-lbl">DONE</span>
+                                    </div>
+                                    <div class="epv-stab-divider"></div>
+                                    <div class="epv-stab-stat">
+                                        <span class="epv-stab-num epv-text-blue">{proj.storiesInProgress}</span>
+                                        <span class="epv-stab-lbl">IN PROGRESS</span>
+                                    </div>
+                                    <div class="epv-stab-divider"></div>
+                                    <div class="epv-stab-stat">
+                                        <span class="epv-stab-num epv-text-red">{proj.storiesOverdue}</span>
+                                        <span class="epv-stab-lbl">OVERDUE</span>
+                                    </div>
+                                    <div class="epv-stab-divider"></div>
+                                    <div class="epv-stab-stat">
+                                        <span class="epv-stab-num epv-text-dark">{proj.storiesTotal}</span>
+                                        <span class="epv-stab-lbl">TOTAL</span>
+                                    </div>
+                                </div>
+
+                                <div class="epv-stab-chart-row">
+                                    <div class="epv-donut-ring" style={proj.donutStyle}>
+                                        <div class="epv-donut-hole">
+                                            <span class="epv-donut-pct">{proj.completePct}%</span>
+                                            <span class="epv-donut-lbl">COMPLETE</span>
+                                        </div>
+                                    </div>
+                                    <div class="epv-stab-legend">
+                                        <div class="epv-legend-item">
+                                            <span class="epv-legend-dot epv-bg-green"></span>
+                                            <span class="epv-legend-text">Done ({proj.storiesDone})</span>
+                                        </div>
+                                        <div class="epv-legend-item">
+                                            <span class="epv-legend-dot epv-bg-blue"></span>
+                                            <span class="epv-legend-text">In Progress ({proj.storiesInProgress})</span>
+                                        </div>
+                                        <div class="epv-legend-item">
+                                            <span class="epv-legend-dot epv-bg-red"></span>
+                                            <span class="epv-legend-text">Overdue ({proj.storiesOverdue})</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+        </div>
+    </div>
+</template>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account</fullName>
+    <columns>NAME</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>S3_File_Url__c</columns>
+    <columns>Date_Added__c</columns>
+    <columns>Destination__c</columns>
+    <columns>Error__c</columns>
+    <columns>Exists__c</columns>
+    <columns>File_ID__c</columns>
+    <columns>RowNum__c</columns>
+    <columns>Source_BH_ID__c</columns>
+    <columns>Status__c</columns>
+    <columns>Title__c</columns>
+    <columns>Type__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Destination__c</field>
+        <operation>equals</operation>
+        <value>Account</value>
+    </filters>
+    <label>Account</label>
+    <language>en_US</language>
+</ListView>

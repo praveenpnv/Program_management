@@ -1,0 +1,96 @@
+<template>
+  <div class="slds-grid slds-wrap">
+    <!-- Column 1 of 2 -->
+    <div class="slds-col slds-size_1-of-2">
+      <div class="slds-form slds-form_stacked slds-p-left_small slds-p-right_small slds-p-bottom_small">
+        <div class="slds-form__row">
+
+          <!-- VIEW MODE -->
+          <template if:false={isEditMode}>
+            <div class="slds-form__item" role="listitem">
+              <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
+                <span class="slds-form-element__label">
+                  <abbr class="slds-required" title="required">*</abbr>
+                  {fieldLabel}
+                </span>
+                <div class="slds-form-element__control slds-grid slds-grid_align-spread">
+                  <div class="slds-form-element__static">
+                    <template for:each={selectedRecords} for:item="pill">
+                      <span key={pill.name} class="slds-pill slds-pill_link slds-m-right_x-small">
+    <span class="slds-icon_container slds-pill__icon">
+      <lightning-icon icon-name={pill.iconName} size="x-small" alternative-text={pill.label}></lightning-icon>
+    </span>
+                      <span class="slds-pill__label">
+      <a href={pill.url} target="_blank">{pill.label}</a>
+    </span>
+                      </span>
+                    </template>
+                    <template if:true={noSelectedRecords}>
+                      <span class="slds-text-color_weak">None</span>
+                    </template>
+                  </div>
+                  <template if:false={isReadOnly}>
+                  <lightning-button-icon icon-name="utility:edit" alternative-text="Edit" variant="bare"
+                    onclick={enableEdit} title="Edit" disable={isReadOnly}></lightning-button-icon>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <!-- EDIT MODE -->
+          <template if:true={isEditMode}>
+            <div class="slds-form__item" role="listitem">
+              <div class="slds-form-element slds-form-element_stacked">
+                <label class="slds-form-element__label">{fieldLabel}</label>
+                <div class={comboboxClasses} role="combobox">
+                  <div class="slds-combobox__form-element" role="none">
+                    <lightning-pill-container items={selectedRecords} onitemremove={handleRemove}>
+                    </lightning-pill-container>
+
+                    <input
+                      type="text"
+                      class={inputClasses}
+                      placeholder={placeholder}
+                      onfocus={handleFocus}
+                      onblur={handleBlur}
+                      oninput={handleSearch}
+                      disabled={disableInput}
+                    />
+                  </div>
+
+                  <div if:true={results} class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                    role="listbox">
+                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                      <template for:each={results} for:item="item">
+                        <li key={item.id} class="slds-listbox__item" data-id={item.id} data-type={item.type}
+                          onmousedown={handleSelect}>
+                          <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small">
+                            <span class="slds-media__figure slds-listbox__option-icon">
+                              <lightning-icon icon-name={item.iconName} size="small"></lightning-icon>
+                            </span>
+                            <span class="slds-media__body">
+                              <span class="slds-truncate">{item.name}</span>
+                            </span>
+                          </div>
+                        </li>
+                      </template>
+                    </ul>
+                  </div>
+
+                  <!-- Save/Cancel buttons -->
+                  <div class="slds-m-top_small">
+                    <lightning-button label="Save" variant="brand" onclick={handleSave}></lightning-button>
+                    <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}
+                      class="slds-m-left_x-small"></lightning-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

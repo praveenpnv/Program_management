@@ -1,0 +1,18 @@
+<apex:page controller="QBRedirectController" action="{!parseCode}">
+<apex:sectionHeader title="Authorize QB" />
+
+<apex:pageBlock title="Start Login Process">
+    <a href="{!loginUrl}">
+        <div style="font-size:4em;">Login to Quickbooks </div>
+    </a>
+</apex:pageBlock>
+
+<apex:pageBlock title="Login Response - For Debugging">
+Response
+<br/>
+Access Token = {!response.access_token}, <br/>
+refresh_token = {!response.refresh_token}, <br/>
+token_type = {!response.token_type} <br/>
+</apex:pageBlock>
+
+</apex:page>

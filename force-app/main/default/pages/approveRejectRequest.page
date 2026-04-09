@@ -1,0 +1,3 @@
+<apex:page standardController="Freelancer_Questionnaire__c" extensions="approveRejectRequest" action="{!launch}">
+{!errorMessage}
+</apex:page>

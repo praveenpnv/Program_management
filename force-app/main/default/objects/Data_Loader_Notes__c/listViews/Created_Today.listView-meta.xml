@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Created_Today</fullName>
+    <columns>NAME</columns>
+    <columns>About__c</columns>
+    <columns>Action__c</columns>
+    <columns>commentingPersonID__c</columns>
+    <columns>Date_Added__c</columns>
+    <columns>Error__c</columns>
+    <columns>Exists__c</columns>
+    <columns>SFDC_ID__c</columns>
+    <columns>Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LAST_UPDATE</field>
+        <operation>equals</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>Created - Today</label>
+    <language>en_US</language>
+</ListView>

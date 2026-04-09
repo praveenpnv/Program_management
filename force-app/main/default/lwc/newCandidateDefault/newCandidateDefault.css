@@ -1,0 +1,5 @@
+.custom-modal {
+    max-width: 50rem; /* Increase width */
+    width: 120%;       /* Responsive sizing */
+    min-height: 40rem; /* Optional: taller modal */
+}

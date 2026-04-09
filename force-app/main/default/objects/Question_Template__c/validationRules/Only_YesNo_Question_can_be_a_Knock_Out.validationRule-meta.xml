@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Only_YesNo_Question_can_be_a_Knock_Out</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND( 
+  KnockOut__c,  
+  NOT( ISPICKVAL( AnswerType__c, &apos;Yes/No&apos;) )
+)</errorConditionFormula>
+    <errorDisplayField>KnockOut__c</errorDisplayField>
+    <errorMessage>Only a Yes/No Question can be a Knock Out</errorMessage>
+</ValidationRule>

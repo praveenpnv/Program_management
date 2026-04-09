@@ -1,0 +1,173 @@
+<apex:page standardController="Account" extensions="QBNonTorcSetup" action="{!pageToken}" title="Quickbooks/Trolley Setup">
+<apex:sectionHeader title="Setup Data In Quickbooks/Trolley" subtitle="{!account.name}"/>
+<apex:form id="frm">
+<apex:actionFunction name="dummyCall1" id="dummyCall1" action="{!dummyCall1}" rerender="frm" oncomplete="hideDisable();"/>
+<apex:actionFunction name="SearchVendor" id="SearchVendor" action="{!SearchVendor}" rerender="searchpanel" oncomplete="hideDisable();"/>
+<apex:actionFunction name="cleanupVandors" id="cleanupVandors" action="{!cleanupVandors}" rerender="searchpanel" oncomplete="hidememberSerach();hideDisable();"/>
+<apex:actionFunction name="createTrolleyUser" id="createTrolleyUser" action="{!createTrolleyUser}" rerender="frm" oncomplete="hideDisable();">
+    <apex:param id="createTrolleyId" name="createTrolleyId" value="" assignTo="{!createTrolleyId}"/>
+</apex:actionFunction>
+
+<apex:pageblock mode="edit" title="Non-Torc Vendo List">
+    <apex:pageblockButtons >
+        <apex:commandButton value="Back" action="{!cancel}"/>
+    </apex:pageblockButtons>
+        <apex:pageblockSection columns="2">
+            <apex:pageblockSectionItem >
+                <apex:outputLabel value="Show Rows"/>
+                <apex:selectList id="selc" value="{!showRowsType}" size="1" onchange="showDisable();dummyCall1();">
+                     <apex:selectOptions value="{!ShowTypes}"/>
+                </apex:selectList>
+            </apex:pageblockSectionItem>   
+        </apex:pageblockSection>
+         <apex:pageblocksection columns="1" title="Create/Map Vendor to QuickBooks">
+             <apex:outputPanel >
+                <apex:pageblocktable value="{!filterednontorcuserList}" var="rec">
+                    <apex:column >
+                        <apex:facet name="header">Name</apex:facet>
+                        <apex:outputText value="{!rec.usr.Name}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Given Name</apex:facet>
+                        <apex:outputText value="{!rec.usr.Given_Name__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Family Name</apex:facet>
+                        <apex:outputText value="{!rec.usr.Family_Name__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">QB Vandor Name</apex:facet>
+                        <apex:outputText value="{!rec.usr.Quickbooks_Vendor__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Email</apex:facet>
+                        <apex:outputText value="{!rec.usr.Email__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Reference ID</apex:facet>
+                        <apex:outputText value="{!rec.usr.External_Id__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">QB ID</apex:facet>
+                        <apex:outputText value="{!rec.usr.Quick_Books_vendor_Id__c}"/>
+                        <apex:outputPanel rendered="{!rec.usr.Quick_Books_vendor_Id__c=NULL}">
+                            <input type="button" class="btn" value="Map QB" onclick="showMemberSearch('{!rec.usr.Given_Name__c}','{!rec.usr.family_name__c}','{!rec.usr.id}');"/>
+                        </apex:outputPanel>
+                    </apex:column>
+                    
+                    <apex:column >
+                        <apex:facet name="header">Trolley Reference</apex:facet>
+                        <apex:outputText value="Already requested" rendered="{!AND(rec.usr.Trolley_Creation_Requested__c, rec.tRec=NULL)}"/>
+                        <apex:outputText value="{!rec.tRec.external_Id__c}" rendered="{!rec.tRec<>NULL}"/>
+                        <apex:outputPanel rendered="{!AND(rec.tRec = NULL ,rec.usr.Trolley_Creation_Requested__c=FALSE)}">
+                            <input type="button" class="btn" value="Create Trolley Recipient" onclick="showDisable();createTrolleyUser('{!rec.usr.id}');"/>
+                        </apex:outputPanel>
+                    </apex:column>
+                    
+                </apex:pageblocktable>    
+             </apex:outputPanel>
+         </apex:pageblockSection>          
+</apex:pageblock>
+<script>
+    function showMemberSearch(fn,ln,id)
+    {
+        document.getElementById('tstpopup5').style.display='';
+        document.getElementById('{!$COMPONENT.fnSearch}').value=fn;
+        document.getElementById('{!$COMPONENT.lnSearch}').value=ln;
+        document.getElementById('{!$COMPONENT.TorcmemberidToUpdate}').value=id;
+    }
+    function isVendorMapPeffect()
+    {
+        if(document.getElementById("{!$Component.QBvendoridToUpdate}").value=='')
+        {
+            alert('Please select vendor first.');
+            return false;
+        }
+        showDisable();
+        return true;
+    }
+    function hidememberSerach()
+    {
+        document.getElementById('tstpopup5').style.display='none';
+    }
+</script>
+<div id="tstpopup5" style="display:none">
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.75; z-index: 1000; background-color: black;">
+        &nbsp;
+    </div>
+    <div style="position: fixed; left: 0; top: 0; bottom: 0; right: 0; z-index: 1001; margin: 10% 10%;text-align: right;">  
+        <apex:outputPanel id="searchpanel">
+        <table style="width:100%;background-color: white;"><tr>
+        <td style="width:95%; font-weight:bold;font-size:16px;text-align:left;padding:15px;font-family: Roboto;" id="tdShowMore">
+            Vendor Search In Quick Books...
+        </td>
+        <td>          
+        <input type="Button" style="font-size:14px;font-family: Roboto;" Class="btn" value="X" onclick="showDisable();cleanupVandors();"/><br/>
+        </td></tr><tr>
+        <td colspan="2" style="padding:15px">
+        <div style="line-height:1.5;text-align:left; max-height:500px;overflow:scroll;font-size:15px;padding:18px;background-color:;vertical-align:top;border: 1px solid #d3dae6;border-radius: 15px 0px 15px 15px;flex-grow: 1;" id="showmoretext">
+            <table style="width:100%">
+                <tr style="">
+                    <td>
+                       <font style="font-weight:bold">Given Name</font><br/>
+                       <apex:inputText value="{!fnSearch}" id="fnSearch"/>
+                    </td>
+                    <td>
+                       <font style="font-weight:bold">Family Name</font><br/>
+                       <apex:inputText value="{!lnSearch}" id="lnSearch"/>
+                    </td>
+                    <td>
+                        <apex:inputText value="{!QBvendoridToUpdate}" id="QBvendoridToUpdate" style="display:none"/>
+                        <apex:inputText id="TorcmemberidToUpdate" style="display:none" value="{!TorcmemberidToUpdate}"/><br/>
+                        <input type="button" value="Search" class="btn" onclick="showDisable();SearchVendor();"/>&nbsp;&nbsp; 
+                        <apex:commandButton value="Map Selected" onclick="return isVendorMapPeffect();" action="{!MapMemberToExtsingQBVendor}"  rendered="{!vendors.size>0}"/>&nbsp;&nbsp; 
+                        <apex:commandButton value="Create" action="{!CreateQBVendor}" onclick="showDisable();"/>
+                    </td>   
+               </tr>
+               <tr>
+                   <td colspan="3">
+                           <div style="line-height:1.5;text-align:left; max-height:300px;overflow:scroll;font-size:15px;padding:18px;background-color:;vertical-align:top;border: 1px solid #d3dae6;border-radius: 15px 15px 15px 15px;flex-grow: 1;" id="showmoretext">                           
+                            <apex:outputPanel >
+                                <apex:pageblock >
+                                    
+                                    <script>
+                                        function setQBVendorIdVal(id)
+                                        {
+                                            document.getElementById("{!$Component.QBvendoridToUpdate}").value=id;
+                                        }
+                                    </script>
+                                    <apex:pageblockTable value="{!vendors}" var="cust"  rendered="{!vendors.size>0}">
+                                        <apex:column >
+                                            <apex:facet name="header">Select</apex:facet>
+                                            <input type="radio" id="html" name="fav_language1" onclick="setQBVendorIdVal('{!cust.id}');"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header">ID</apex:facet>
+                                            <apex:outputText value="{!cust.id}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header">Name</apex:facet>
+                                            <apex:outputText value="{!cust.DisplayName}"/>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header">Email</apex:facet>
+                                            <apex:outputText value="{!cust.PrimaryEmailAddr.Address}"/>
+                                        </apex:column>
+                                    </apex:pageblockTable> 
+                                    <apex:outputPanel rendered="{!vendors.size=0}">
+                                        No rows to display.
+                                    </apex:outputPanel>
+                                </apex:pageblock>
+                             </apex:outputPanel>
+                           </div>
+                   </td>
+               </tr>     
+           </table>    
+        </div>
+        </td></tr></table>
+        </apex:outputPanel>
+    </div>            
+</div>
+<c:WaitPopup />
+</apex:form>
+</apex:page>

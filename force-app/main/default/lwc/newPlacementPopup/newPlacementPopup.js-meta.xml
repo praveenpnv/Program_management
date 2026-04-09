@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<masterLabel>New Placement Popup</masterLabel>
+	<apiVersion>62.0</apiVersion>
+	<description>Component to Open Placement New Page With Prefilled Data</description>
+	<isExposed>true</isExposed>
+	<targets>
+		<target>lightning__FlowScreen</target>
+	</targets>
+    <targetConfigs>
+		<targetConfig targets="lightning__FlowScreen">
+            <property name="recordid" label="RecordId" type="String" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

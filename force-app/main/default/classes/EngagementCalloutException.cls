@@ -1,0 +1,1 @@
+public class EngagementCalloutException extends Exception {}

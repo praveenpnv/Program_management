@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Instagram__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Torc_Application__c&lt;&gt;NULL, Torc_Application__r.Torc_User__r.Instagram__c,  Torc_User_Ref__r.Instagram__c )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Instagram</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

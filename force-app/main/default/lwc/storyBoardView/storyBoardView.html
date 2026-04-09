@@ -1,0 +1,91 @@
+<template>
+    <div class="sbv-wrap">
+        <div class="sbv-header">
+            <div class="sbv-header-left">
+                <h1 class="sbv-title">Story Board</h1>
+                <p class="sbv-sub">Drag cards or use ← → buttons to move stories between columns</p>
+            </div>
+            <div class="sbv-header-right">
+                <input class="sbv-search" type="text" placeholder="Search stories…" onkeyup={handleSearch} />
+            </div>
+        </div>
+
+        <div class="sbv-kanban">
+            <template for:each={columns} for:item="col">
+                <div key={col.status}
+                     class={col.colCls}
+                     data-status={col.status}
+                     ondragover={handleDragOver}
+                     ondrop={handleDrop}
+                     ondragleave={handleDragLeave}>
+
+                    <div class="sbv-col-hdr">
+                        <span class="sbv-col-label">{col.label}</span>
+                        <span class="sbv-col-count">{col.count}</span>
+                    </div>
+
+                    <div class="sbv-col-body">
+                        <template for:each={col.cards} for:item="card">
+                            <div key={card.Id}
+                                 class={card.cardCls}
+                                 draggable="true"
+                                 data-id={card.Id}
+                                 data-status={card.Status__c}
+                                 ondragstart={handleDragStart}
+                                 ondragend={handleDragEnd}>
+
+                                <div class="sbv-card-top">
+                                    <span class="sbv-type">{card.Story_Type__c}</span>
+                                    <span class={card.priCls}>{card.Priority__c}</span>
+                                </div>
+
+                                <p class="sbv-card-name">{card.Name}</p>
+
+                                <div class="sbv-card-meta">
+                                    <template if:true={card.featureName}>
+                                        <span class="sbv-feat-tag">{card.featureName}</span>
+                                    </template>
+                                    <template if:true={card.Story_Points__c}>
+                                        <span class="sbv-pts">{card.Story_Points__c}pt</span>
+                                    </template>
+                                </div>
+
+                                <div class="sbv-card-foot">
+                                    <template if:true={card.assigneeName}>
+                                        <span class="sbv-assignee">{card.assigneeName}</span>
+                                    </template>
+                                    <template if:true={card.Is_Global__c}>
+                                        <span class="sbv-global">Global</span>
+                                    </template>
+                                    <template if:true={card.isOverdue}>
+                                        <span class="sbv-overdue">Overdue</span>
+                                    </template>
+                                </div>
+
+                                <div class="sbv-card-actions">
+                                    <template if:true={card.canMovePrev}>
+                                        <button class="sbv-move-btn sbv-move-prev"
+                                                title="Move left"
+                                                value={card.prevStatusKey}
+                                                onclick={handleMove}>&larr;</button>
+                                    </template>
+                                    <button class="sbv-view-btn" value={card.Id} onclick={handleOpen}>View</button>
+                                    <template if:true={card.canMoveNext}>
+                                        <button class="sbv-move-btn sbv-move-next"
+                                                title="Move right"
+                                                value={card.nextStatusKey}
+                                                onclick={handleMove}>&rarr;</button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template if:false={col.hasCards}>
+                            <div class="sbv-empty-col">Drop here</div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

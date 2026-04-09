@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Torc_Non_US_Questionnaire_Approver_Freelancer_Questionnaire</fullName>
+    <filterScope>Queue</filterScope>
+    <label>Torc Non US Questionnaire Approver</label>
+    <queue>Torc_Non_US_Questionnaire_Approver</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

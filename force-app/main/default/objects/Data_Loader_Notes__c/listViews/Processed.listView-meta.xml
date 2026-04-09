@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Processed</fullName>
+    <columns>NAME</columns>
+    <columns>About__c</columns>
+    <columns>Action__c</columns>
+    <columns>commentingPersonID__c</columns>
+    <columns>Date_Added__c</columns>
+    <columns>Error__c</columns>
+    <columns>Exists__c</columns>
+    <columns>SFDC_ID__c</columns>
+    <columns>Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Processed</label>
+    <language>en_US</language>
+</ListView>
